@@ -13,18 +13,14 @@
 
       <label>Password:</label>
       <input type="text" id=password" name="password" required> <br>
-
-      <h3><a href="register.php">New User? Register Here.</a></h3> <br>
-
       <input type="submit" value="Log In">
+
+      <h4><a href="register.php">New User? Register Here.</a></h4> <br>
     </form>
 
   <?php 
     //This is where we will put our POST stuff.
   ?>
-    
-  </body>
-</html>
     
   </body>
 </html>
