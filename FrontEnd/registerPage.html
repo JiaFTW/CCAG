@@ -4,7 +4,9 @@
   <head>
     <title>CCAG Register</title>
   </head>
+  
 <script>
+  //Script to validate password(s).
   function matchingPasswords() {
     var password = document.getElementById("password").value;
     var confirmPassword = document.getElementById("confirmPassword").value;
@@ -16,6 +18,7 @@
     return true; //Submits the form
   }
 </script>
+  
   <body>
     <h2>Register</h2>
     <form action="register.php" method="POST" onsubmit="return matchingPasswords()"> <!-- Inputs the text field to the php file. -->
