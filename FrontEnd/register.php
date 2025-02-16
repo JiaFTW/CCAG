@@ -18,7 +18,7 @@ $statement->bindValue(':email', $email);
 $statement->bindValue(':password', $hash);
 
 if ($statement->execute()) {
-    echo "User Successfully Register!";
+    echo "User Successfully Registered!";
 }
 else {
     echo "Could not register User" . $statement->error;
