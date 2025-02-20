@@ -17,6 +17,12 @@ function handleQuery($q, mysqli $db, $msg = 'Query Successful') {
     }
 }
 
+function duplicateFound($d, $col_name, mysqli $db) {
+    $query = ""; // TODO: add select query
+    $response = handleQuery($query);
+
+}
+
 //Register Functions
 
 
@@ -24,6 +30,8 @@ function addAccount($username, $email ,$password, mysqli $db) {
     $query = "insert into accounts
     (username, email, password) 
     values ('".$username."', '".$email."', '".$password."');";
+
+    //TODO: check if username or email already exsits
 
     $response = handleQuery($query, $db, "Added Account Succesfuly" );
 
