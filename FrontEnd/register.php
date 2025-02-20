@@ -8,5 +8,8 @@ $registerdata = array(
 );
 
 print_r($registerdata);
-
+print_r($registerdata[0]);
+print_r($registerdata[1]);
+print_r($registerdata[2]);
+print_r($registerdata[3]);
 ?>
