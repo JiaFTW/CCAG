@@ -1,5 +1,5 @@
 <?php 
-require_once('testRabbitMQClient.php');
+//require_once('testRabbitMQClient.php');
 
 $registerdata = array(
     'username' => filter_input(INPUT_POST,'username'),
