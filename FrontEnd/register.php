@@ -21,7 +21,7 @@ if ($statement->execute()) {
     echo "User Successfully Registered!";
 }
 else {
-    echo "Could not register User" . $statement->error;
+    echo "Could not register user" . $statement->error;
 }
 
 $statement->close();
