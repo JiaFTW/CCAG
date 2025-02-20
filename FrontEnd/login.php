@@ -6,9 +6,13 @@ require_once('getDatabase.php');
 
 $db = getDB();
 
-$query = 'SELECT password FROM accounts WHERE email = :email';
+$username = filter_input(INPUT_POST, 'username');
+$password = filter_input(INPUT_POST, 'password');
+
+$query = 'SELECT password FROM accounts WHERE username = :username';
+
 $statement = $db->prepare($query);
-$statement->bindValue(':email', $email);
+$statement->bindValue(':username', $username);
 $statement->execute();
 $row = $statement->fetch();
 $statement->close();  
