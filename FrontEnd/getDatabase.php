@@ -1,6 +1,6 @@
 <?
 function getDB() {
-$servername = '127.0.0.1';
+$servername = '192.168.191.78';
 $username = 'ccagUser';
 $password = '12345';
 $database = 'ccagDB';
