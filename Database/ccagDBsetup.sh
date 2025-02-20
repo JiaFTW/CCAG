@@ -20,9 +20,16 @@ sql_query=$(cat <<EOF
 
     CREATE TABLE IF NOT EXISTS accounts (
         uid INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        username VARCHAR(32) UNIQUE NOT NULL,
+        username VARCHAR(32) NOT NULL,
         email VARCHAR(320) UNIQUE NOT NULL,
-        password VARCHAR(150) NOT NULL
+        password VARCHAR(75) NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS sessions (
+        sid INT AUTO_INCREMENT PRIMARY KEY,
+        uid INT NOT NULL FOREIGN KEY,
+        start_time INT NOT NULL,
+        end _time INT NOT NULL
     );
 EOF
 )
