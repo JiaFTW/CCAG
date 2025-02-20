@@ -194,12 +194,12 @@ class rabbitMQClient
 		$json_message = json_encode($message);
 		try
 		{
-      $params = array();
-      $params['host'] = $this->BROKER_HOST;
-      $params['port'] = $this->BROKER_PORT;
-      $params['login'] = $this->USER;
-      $params['password'] = $this->PASSWORD;
-      $params['vhost'] = $this->VHOST;
+		      $params = array();
+		      $params['host'] = $this->BROKER_HOST;
+		      $params['port'] = $this->BROKER_PORT;
+		      $params['login'] = $this->USER;
+		      $params['password'] = $this->PASSWORD;
+		      $params['vhost'] = $this->VHOST;
 
 			$conn = new AMQPConnection($params);
 			$conn->connect();
@@ -207,18 +207,19 @@ class rabbitMQClient
 			$channel = new AMQPChannel($conn);
 
 			$exchange = new AMQPExchange($channel);
-      $exchange->setName($this->exchange);
-      $exchange->setType($this->exchange_type);
-
-      $callback_queue = new AMQPQueue($channel);
-      $callback_queue->setName($this->queue."_response");
-      $callback_queue->declare();
+		       	$exchange->setName($this->exchange);
+			$exchange->setType($this->exchange_type);
+		       
+			$callback_queue = new AMQPQueue($channel);
+		       	$callback_queue->setName($this->queue."_response");
+			$callback_queue->declare();
 			$callback_queue->bind($exchange->getName(),$this->routing_key.".response");
 
 			$this->conn_queue = new AMQPQueue($channel);
 			$this->conn_queue->setName($this->queue);
 			$this->conn_queue->bind($exchange->getName(),$this->routing_key);
 
+			$routing_key = $message['type'];
 			$exchange->publish($json_message,$this->routing_key,AMQP_NOPARAM,array('reply_to'=>$callback_queue->getName(),'correlation_id'=>$uid));
       $this->response_queue[$uid] = "waiting";
 			$callback_queue->consume(array($this,'process_response'));

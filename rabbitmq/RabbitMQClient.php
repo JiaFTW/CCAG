@@ -4,19 +4,19 @@ require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
 
-$client = new rabbitMQClient("conf-RabbitMQ.ini","testServer");
+$client = new rabbitMQClient("conf-RabbitMQ.ini", "testServer");
 
 // Registration Request
 $registrationRequest = [
-    'type' => 'register',
+    'type' => 'user.register', // Updated routing key
     'username' => 'testuser',
     'email' => 'test@ccag.com',
-    'password' => 'hashed_password', // Ensure passwords are hashed
+    'password' => password_hash('testpassword', PASSWORD_BCRYPT), // Hash the password
 ];
 
 // Login Request
 $loginRequest = [
-    'type' => 'login',
+    'type' => 'user.login', // Updated routing key
     'username' => 'testuser',
     'password' => 'hashed_password',
 ];
@@ -29,30 +29,10 @@ echo "Registration Response: " . print_r($response, true) . PHP_EOL;
 $response = $client->send_request($loginRequest);
 echo "Login Response: " . print_r($response, true) . PHP_EOL;
 
-/*if (isset($argv[1]))
-{
-  $msg = $argv[1];
-}
-else
-{
-  $msg = "test message";
-}
-
-$request = array();
-$request['type'] = "Login";
-$request['username'] = "steve";
-$request['password'] = "password";
-$request['message'] = $msg;
-$response = $client->send_request($request);
-//$response = $client->publish($request);
-
 echo "client received response: ".PHP_EOL;
 print_r($response);
 echo "\n\n";
 
 echo $argv[0]." END".PHP_EOL;
 
- */
 ?>
-
-

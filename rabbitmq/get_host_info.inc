@@ -1,28 +1,20 @@
 <?php
-/**
-    @brief gets the currrent machine information and optionally any other task
-    specific INI folder installed in the system path.
-    Uses the default path of /var/system_ini/ unless $INIPATH is set
-
-    @return parsed ini machine information
-*/
-function getHostInfo(array $extra = NULL)
+function getHostInfo($params)
 {
-    $machine;
-    $machine = parse_ini_file("host.ini",$process_sections=true);
-    if ($extra != NULL)
-    {
-        foreach ($extra as $ini)
-        {
-            $parsed = parse_ini_file($ini,true);
-            if ($parsed)
-            {
-                $machine = array_merge($machine,$parsed);
-            }
-        }
-    }
-    return $machine;
+    $hostInfo = [
+        "testServer" => [
+            "BROKER_HOST" => "192.168.191.18", // Replace with your RabbitMQ server IP
+            "BROKER_PORT" => 5672,             // Default RabbitMQ port
+            "USER" => "ccag",                  // RabbitMQ username
+            "PASSWORD" => "ccag",              // RabbitMQ password
+            "VHOST" => "ccagHost",             // RabbitMQ virtual host
+            "EXCHANGE" => "clientExchange",    // Exchange name
+            "QUEUE" => "clientQueue",          // Queue name
+            "EXCHANGE_TYPE" => "topic",        // Exchange type
+            "AUTO_DELETE" => false             // Auto-delete setting
+        ]
+    ];
+
+    return $hostInfo;
 }
-
 ?>
-
