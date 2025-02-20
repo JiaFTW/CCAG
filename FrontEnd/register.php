@@ -8,7 +8,7 @@ $registerdata = array(
 );
 
 //sendMessage($registerdata);
-print_r($registerdata['username']); <br>
-print_r($registerdata['email']); <br>
-print_r($registerdata['password']); <br>
+print_r($registerdata['username']);
+print_r($registerdata['email']); 
+print_r($registerdata['password']); 
 ?>
