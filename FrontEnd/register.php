@@ -7,4 +7,6 @@ $registerdata = array(
     'password' => filter_input(INPUT_POST,'password')
 );
 
+print_r($registerdata);
+
 ?>
