@@ -1,5 +1,5 @@
 <?php 
-require_once('testRabbitMQClient.php');
+//require_once('testRabbitMQClient.php');
 
 $registerdata = array(
     'username' => filter_input(INPUT_POST,'username'),
@@ -7,6 +7,8 @@ $registerdata = array(
     'password' => filter_input(INPUT_POST,'password')
 );
 
-sendMessage($registerdata);
-
+//sendMessage($registerdata);
+print_r($registerdata['username']; <br>
+print_r($registerdata['email']; <br>
+print_r($registerdata['password']; <br>
 ?>
