@@ -3,7 +3,7 @@
 
 //TODO: make this into class or function
 
-require_once 'dbFunctionLib.php';
+require_once 'dbFunctionsLib.php';
 
 //use 127.0.0.1 to connect to your local mysql server.
 $mydb = new mysqli('127.0.0.1','ccagUser','12345','ccagDB');
@@ -36,6 +36,8 @@ else {
 		echo $r['username'].PHP_EOL;
 	}
 } */
+
+duplicateFound("dummyuser", "username","accounts", $mydb);
 
 
 

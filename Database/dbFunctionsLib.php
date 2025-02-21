@@ -3,7 +3,7 @@
 //Universal Functions
 
 
-function handleQuery($q, mysqli $db, $msg = 'Query Successful') {
+function handleQuery($q, mysqli $db, $msg = 'MYSQL: Query Successful') {
 
     $response = $db->query($q);
     if ($db->errno != 0) {
@@ -17,9 +17,21 @@ function handleQuery($q, mysqli $db, $msg = 'Query Successful') {
     }
 }
 
-function duplicateFound($d, $col_name, mysqli $db) {
-    $query = ""; // TODO: add select query
-    $response = handleQuery($query);
+function duplicateFound($attribute, $col_name, $table_name, mysqli $db) {
+    $query = "SELECT COUNT(".$col_name.") 
+    FROM ".$table_name." 
+    WHERE ".$col_name." = '".$attribute."';";
+    $response = handleQuery($query, $db, 'MYSQL: duplicateFound Query Successful');
+
+    $n = $response->fetch_row();
+    if ($n[0] > 0) {
+        echo "MYSQL: ".$n[0]." duplicates found".PHP_EOL;
+        return true;
+    }
+    else {
+        echo "MYSQL: No duplicates found".PHP_EOL;
+        return false;
+    }
 
 }
 
@@ -27,13 +39,13 @@ function duplicateFound($d, $col_name, mysqli $db) {
 
 
 function addAccount($username, $email ,$password, mysqli $db) {
-    $query = "insert into accounts
+    $query = "INSERT INTO accounts
     (username, email, password) 
-    values ('".$username."', '".$email."', '".$password."');";
+    VALUES ('".$username."', '".$email."', '".$password."');";
 
     //TODO: check if username or email already exsits
 
-    $response = handleQuery($query, $db, "Added Account Succesfuly" );
+    $response = handleQuery($query, $db, "MYSQL: Added Account Succesfuly");
 
     if ($response == false) {
         //send error
