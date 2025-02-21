@@ -34,7 +34,7 @@ function requestProcessor($request)
     case "validate_session":
       return doValidate($request['sessionId']);
     case "register":
-      return doRegistration($request['username'],$request['password'],$request('email'));
+      return doRegistration($request['username'],$request['password'],$request['email']);
     default:
       return "type fail".PHP_EOL;
   }
