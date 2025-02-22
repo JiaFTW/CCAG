@@ -5,13 +5,45 @@
 
 require_once 'dbFunctionsLib.php';
 
-//use 127.0.0.1 to connect to your local mysql server.
+class mysqlConnect {
+	protected $dbConnectionStatus = false; 
+	protected $mydb;
+
+	function _construct($address, $db_user, $db_pass, $db_name) {
+		//use 127.0.0.1 to connect to your local mysql server.
+		$this->mydb = new mysqli($address,$db_user ,$db_pass, $db_name);
+	}
+
+	public function connectDB() {
+		
+		if ($mydb->errno != 0) {
+			echo "failed to connect to database: ". $mydb->error . PHP_EOL;
+			$dbConnectionStatus = false;
+		}
+		else {
+			echo "successfully connected to database".PHP_EOL;
+			$dbConnectionStatus = true;
+		}
+	}
+
+
+	public function registerUser($username, $email, $password) {
+		$register_status = '';
+
+	}
+
+}
+
+
+	
+
+	
 $mydb = new mysqli('127.0.0.1','ccagUser','12345','ccagDB');
 
 if ($mydb->errno != 0)
 {
 	echo "failed to connect to database: ". $mydb->error . PHP_EOL;
-	exit(0); //TODO: change to return error or boolean
+	exit(0); 
 }
 
 echo "successfully connected to database".PHP_EOL;
@@ -37,8 +69,10 @@ else {
 	}
 } */
 
-duplicateFound("dummyuser", "username","accounts", $mydb);
+isDuplicateFound("dummyuser", "username","accounts", $mydb);
 
+isDuplicateFound("Joey", "username","accounts", $mydb);
 
+getUIDbyUsername("Bobby", $mydb);
 
 ?>
