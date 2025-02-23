@@ -65,8 +65,21 @@ function addAccount($username, $email ,$password, mysqli $db) {
 }
 
 
-
-
 //Sessions Functions
+
+function generateSession(string $username, int $time_sec, mysqli $db) {
+    $uid = getUIDbyUsername($username, $db);
+    $token = random_int(10000, 99999); 
+    //TODO hash token
+    $start_time = time();
+    $end_time = $start_time + $time_sec;
+
+    $query = "INSERT INTO sessions
+    (uid, token, start_time, end_time)
+    VALUES ('".$uid."', ".$token.", ".$start_time.", ".$end_time.");";
+
+    $response = handleQuery($query, $db, "Query Status: Generate Session Query Successful");
+
+}
 
 ?>

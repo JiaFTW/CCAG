@@ -60,7 +60,7 @@ class mysqlConnect {
 
 		$ac = $response->fetch_assoc();
 
-		if ($ac == null || $password != $ac['password']) { //TODO: change != to password_verify() for hashed
+		if ($ac == null || $password != $ac['password']) { //TODO: change != to password_verify() or bycrypt_vertify() for hashed
 			return 'Invalid';
 		} 
 		else {
@@ -73,9 +73,6 @@ class mysqlConnect {
 	}
 
 }
-
-
-	
 
 	
 /* $mydb = new mysqli('127.0.0.1','ccagUser','12345','ccagDB');
@@ -109,15 +106,17 @@ else {
 	}
 } 
 isDuplicateFound("dummyuser", "username","accounts", $mydb);
-
 isDuplicateFound("Joey", "username","accounts", $mydb);
-
 getUIDbyUsername("Bobby", $mydb);	
 
 */
 
 
 $testObj = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+echo $testObj->registerAccount("Bob","bobby@gmail.com", "crabcake").PHP_EOL;
+echo $testObj->registerAccount("dummyuser","dummy@email.com", "dummypass").PHP_EOL;
+
 echo $testObj->loginAccount("dummyuser", "dummypass").PHP_EOL;
 echo $testObj->registerAccount("dummyuser","dummy@email.com", "dummypass").PHP_EOL;
 
