@@ -11,7 +11,7 @@ body {
 .navbar a {
     color: white;
     text-decoration: none;
-    padding: 14px 20px;
+    padding: 15px 20px;
     display: block;
 }
 .navbar a:hover {
