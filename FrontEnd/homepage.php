@@ -12,6 +12,7 @@ if(!isset($_SESSION['username'])) {
 <html>
   <head>
     <title>CCAG Homepage</title>
+    <link rel="stylesheet" href="styles.css">
   </head>
 
   <body>
