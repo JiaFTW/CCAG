@@ -13,5 +13,16 @@ echo($logindata['type']);
 echo($logindata['username']);
 sendMessage($logindata);
 
+/*if doLogin($logindata['username'], $logindata['password']) {
+echo ("User successfully logged in!");
+session_start();
+$_SESSION['username'] = $logindata['username'];
+//setcookie("username", $logindata['username']);
+}
+else {
+echo ("Login was not successful");
+}
+
+*/
 ?>
 
