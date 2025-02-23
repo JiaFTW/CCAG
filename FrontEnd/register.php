@@ -1,14 +1,15 @@
 <?php 
-//require_once('testRabbitMQClient.php');
+require_once('../rabbitmq/testRabbitMQClient.php');
 
 $registerdata = array(
+    'type' => 'register',
     'username' => filter_input(INPUT_POST,'username'),
     'email' => filter_input(INPUT_POST,'email'),
-    'password' => filter_input(INPUT_POST,'password')
+    'password' => filter_input(INPUT_POST,'password'),
+    'message' => 'Registering user',
 );
 
-//sendMessage($registerdata);
-print_r($registerdata['username']);
-print_r($registerdata['email']); 
-print_r($registerdata['password']); 
+echo ($registerdata['username']);
+sendMessage($registerdata);
+
 ?>
