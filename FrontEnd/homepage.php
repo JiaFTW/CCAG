@@ -1,5 +1,6 @@
 <?php
 session_start();
+$_SESSION['username'] = "testuser";
 
 //Swaps to login page is there is no user logged in.
 if(!isset($_SESSION['username'])) {
