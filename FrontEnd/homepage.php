@@ -1,9 +1,9 @@
 <?php
 session_start();
-$_SESSION['username'] = "testuser";
+$_SESSION['user'] = "testuser";
 
 //Swaps to login page is there is no user logged in.
-if(!isset($_SESSION['username'])) {
+if(!isset($_SESSION['user'])) {
   header("Location: loginPage.html");
   exit();
 }
@@ -17,7 +17,13 @@ if(!isset($_SESSION['username'])) {
   </head>
 
   <body>
-    <p>If you see this you are successfully logged in as <?php echo ($_SESSION['username']); ?></p>
+
+    <div class="navbar">
+      <a href="homepage.php">Home</a>
+      <a href="loginPage.html">Login</a>
+    </div>
+
+    <p>If you see this you are successfully logged in as <?php echo ($_SESSION['user']); ?></p>
   </body>
   
 </html>
