@@ -27,10 +27,11 @@ sql_query=$(cat <<EOF
 
     CREATE TABLE IF NOT EXISTS sessions (
         sid INT AUTO_INCREMENT PRIMARY KEY,
-        uid INT NOT NULL FOREIGN KEY,
+        uid INT NOT NUL,
         start_time INT NOT NULL,
-        end _time INT NOT NULL
-    );
+        end _time INT NOT NULL,
+        FOREIGN KEY (uid) REFERNCES accounts(uid)
+     );
 EOF
 )
 

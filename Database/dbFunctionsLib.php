@@ -3,7 +3,7 @@
 //Universal Functions
 
 
-function handleQuery($q, mysqli $db, $msg = 'MYSQL: Query Successful') {
+function handleQuery($q, mysqli $db, $msg = 'Query Status: Successful') {
 
     $response = $db->execute_query($q);
     if ($db->errno != 0) {
@@ -21,7 +21,7 @@ function isDuplicateFound($attribute, $col_name, $table_name, mysqli $db) {
     $query = "SELECT COUNT(".$col_name.") 
     FROM ".$table_name." 
     WHERE ".$col_name." = '".$attribute."';";
-    $response = handleQuery($query, $db, 'MYSQL: duplicateFound '.$attribute.' Query Successful');
+    $response = handleQuery($query, $db, 'Query Status: duplicateFound '.$attribute.' Successful');
 
     $n = $response->fetch_row();
     if ($n[0] > 0) {
@@ -36,15 +36,15 @@ function isDuplicateFound($attribute, $col_name, $table_name, mysqli $db) {
 
 function getUIDbyUsername(string $username, mysqli $db) {
     $query = "SELECT uid FROM accounts WHERE username = '".$username."';";
-    $response = handleQuery($query, $db, 'MYSQL: get UID by username '.$username.' Query Successful');
+    $response = handleQuery($query, $db, 'Query Status: get UID by username '.$username.' Successful');
     $u = $response->fetch_assoc();
 
     if ($u == null) {
-        echo "MySQL: uid for username ".$username." not found".PHP_EOL;
+        echo "getUIDbyUsername: uid for username ".$username." not found".PHP_EOL;
         return null;
     }
 
-    echo "MYSQL: ".$u['uid']." related to ".$username.PHP_EOL;
+    echo "getUIDbyUsername: ".$u['uid']." related to ".$username.PHP_EOL;
     return $u['uid'];
 
 }
@@ -58,11 +58,14 @@ function addAccount($username, $email ,$password, mysqli $db) {
     (username, email, password) 
     VALUES ('".$username."', '".$email."', '".$password."');";
 
-    $response = handleQuery($query, $db, "MYSQL: Added Account Query Succesful");
+    $response = handleQuery($query, $db, "Query Status: Added Account Query Succesful");
 
     return $response;
     
 }
+
+
+
 
 //Sessions Functions
 
