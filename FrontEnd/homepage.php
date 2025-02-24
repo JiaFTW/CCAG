@@ -1,5 +1,5 @@
 <?php
-session_start();
+//session_start();
 //$_SESSION['user'] = "testuser";
 
 // here we are configuring session cookie settings
@@ -41,9 +41,12 @@ setcookie('csrf_token', $csrf_token, time() + 3600, '/'); // CSRF token for secu
 
 //Swaps to login page is there is no user logged in.
 if(!isset($_SESSION['user'])) {
-  echo ("Please <a href='loginPage.html'>login</a> to view page.");
+  echo ("Please <a href='loginPage.html'>Login.</a>");
   exit();
 }
+/*else {
+setcookie("user",$_SESSION['user'],time() + (7*24*60*60),"/");
+}*/
 
 ?>
 <!DOCTYPE html>
