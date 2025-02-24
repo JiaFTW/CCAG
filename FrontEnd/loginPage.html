@@ -15,6 +15,9 @@
     <h2>Login</h2>
     <form action="login.php" method="POST"> 
 
+	<!-- Hidden CSRF token field -->
+      <input type="hidden" name="csrf_token" value="<?php echo isset($_COOKIE['csrf_token']) ? $_COOKIE['csrf_token'] : ''; ?>">
+      
       <label>Username:</label>
       <input type="text" id=username" name="username" required> <br>
       <input type="text" id="username" name="username" required> <br>
