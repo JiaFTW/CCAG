@@ -31,44 +31,56 @@ class mysqlConnect {
 	}
 
 
-	//Returns String
-	public function registerAccount($username, $email, $password) { 
-		$register_status = isDuplicateFound($username, "username", "accounts", $this->mydb) ? 'Duplicate' : '';
-		$register_status = isDuplicateFound($email, "email", "accounts", $this->mydb) ? 'Duplicate' : '';
+	//Returns Array
+	public function registerAccount($username, $email, $password) {
+		$cookie;
+		$register_status;
+		$invalid_status = isDuplicateFound($username, "username", "accounts", $this->mydb) ? 'user_duplicate' : '';
+		$invalid_status = isDuplicateFound($email, "email", "accounts", $this->mydb) ? 'email_duplicate' : '';
 
-		if ($register_status != '') {
-			return $register_status;
+		if ($invalid_status != '') {
+			$register_status = 'Invalid';
+			return array('status' => $register_status, 'cookie' => $cookie, 'invalid_type' => $invalid_status);
 		}
 		//TODO: Validate Email and user format
 		//TODO: Hash Password before query
 
 		$register_status = addAccount($username, $email, $password, $this->mydb) ? 'Success' : 'Error';
 
-		return $register_status;
+		if ($register_status) {
+
+		}
+
+		return array('status' => $register_status, 'cookie' => $cookie, 'invalid_type' => null);
 	}
 
-	//Returns String
+	//Returns Array
 	public function loginAccount($username, $password) {
 		$query = "SELECT username, password FROM accounts 
 		WHERE username = '".$username."';";
+		$status;
+		$cookie;
 	
 		$response = handleQuery($query, $this->mydb, "MYSQL: Login Query Succesful");
 	
 		if ($response == false) {
-			return 'Error';
+			$status = 'Error';
 		}
 
 		$ac = $response->fetch_assoc();
 
 		if ($ac == null || $password != $ac['password']) { //TODO: change != to password_verify() or bycrypt_vertify() for hashed
-			return 'Invalid';
+			$status = 'Invalid';
 		} 
 		else {
-			return 'Success';
+			$status = 'Success';
+			$cookie = generateSession($username, 3600, $this->mydb);
 		}
 
 		//TODO: generate session server side
 		//TODO: send cookie to client
+
+		return array('status' => $status, 'cookie' => $cookie ); 
 	
 	}
 
