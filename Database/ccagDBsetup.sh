@@ -7,7 +7,7 @@ db_name="ccagDB"
 db_user="ccagUser"
 db_pass="12345"  #TODO store password elsewhere (config file?)
 
-#TODO add session table
+#TODO change accounts.password and sessions.token to Binary(60) for hash storage
 
 sql_query=$(cat <<EOF
 
@@ -19,18 +19,19 @@ sql_query=$(cat <<EOF
     USE \`${db_name}\`;
 
     CREATE TABLE IF NOT EXISTS accounts (
-        uid INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        uid INT AUTO_INCREMENT PRIMARY KEY,
         username VARCHAR(32) UNIQUE NOT NULL,
         email VARCHAR(320) UNIQUE NOT NULL,
-        password VARCHAR(75) NOT NULL
+        password VARCHAR(250) NOT NULL
     );
 
     CREATE TABLE IF NOT EXISTS sessions (
         sid INT AUTO_INCREMENT PRIMARY KEY,
-        uid INT NOT NUL,
+        uid INT NOT NULL,
+        token INT NOT NULL,
         start_time INT NOT NULL,
-        end _time INT NOT NULL,
-        FOREIGN KEY (uid) REFERNCES accounts(uid)
+        end_time INT NOT NULL,
+        FOREIGN KEY (uid) REFERENCES accounts(uid)
      );
 EOF
 )
