@@ -4,7 +4,7 @@ session_start();
 
 //Swaps to login page is there is no user logged in.
 if(!isset($_SESSION['user'])) {
-  echo ("Access denied. Please <a href='loginPage.html'>Login.</a>");
+  echo ("Please <a href='loginPage.html'>login</a> to view page.");
   exit();
 }
 
