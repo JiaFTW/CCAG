@@ -22,12 +22,13 @@ sql_query=$(cat <<EOF
         uid INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
         username VARCHAR(32) UNIQUE NOT NULL,
         email VARCHAR(320) UNIQUE NOT NULL,
-        password VARCHAR(75) NOT NULL
+        password VARCHAR(255) NOT NULL
     );
 
     CREATE TABLE IF NOT EXISTS sessions (
         sid INT AUTO_INCREMENT PRIMARY KEY,
-        uid INT NOT NUL,
+        uid INT NOT NULL,
+        cookie_token VARCHAR(255) NOT NULL,
         start_time INT NOT NULL,
         end _time INT NOT NULL,
         FOREIGN KEY (uid) REFERNCES accounts(uid)
