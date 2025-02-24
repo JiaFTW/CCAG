@@ -1,12 +1,15 @@
 <?php
-session_start();
+//session_start();
 //$_SESSION['user'] = "testuser";
 
 //Swaps to login page is there is no user logged in.
 if(!isset($_SESSION['user'])) {
-  echo ("Access denied. Please <a href='loginPage.html'>Login.</a>");
+  echo ("Please <a href='loginPage.html'>Login.</a>");
   exit();
 }
+/*else {
+setcookie("user",$_SESSION['user'],time() + (7*24*60*60),"/");
+}*/
 
 ?>
 <!DOCTYPE html>
