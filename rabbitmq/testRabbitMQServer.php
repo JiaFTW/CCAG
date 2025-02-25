@@ -8,7 +8,8 @@ function doLogin($username,$password)
 {
     // lookup username in database
     // check password
-    return true;
+    echo "AHHHHHHHHHHHHH";
+    return 'success';
     //return false if not valid
 }
 
