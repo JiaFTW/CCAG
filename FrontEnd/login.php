@@ -48,6 +48,14 @@ setcookie('remember_me', $remember_me_token, time() + (86400 * 30), '/'); // Exp
 
 // Redirect to homepage after successful login
 
+if ($response['success']) {
+    header('Location: loginPage.html?message=Logged in.');
+    exit();
+} 
+else {
+    header('Location: loginPage.html?message=Invalid Username/Password.');
+    exit();
+}
 //header("Location: homepage.php");
 //exit();
 
