@@ -9,7 +9,7 @@ $registerdata = array(
     'message' => 'Registering user',
 );
 
-$ = sendMessage($registerdata);
+$response = sendMessage($registerdata);
 
 if ($response['success']) {
     header('Location: loginPage.html?message=Successfully Registered.');
