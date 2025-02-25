@@ -69,18 +69,17 @@ function addAccount($username, $email ,$password, mysqli $db) {
 
 function generateSession(string $username, int $time_sec, mysqli $db) {
     $uid = getUIDbyUsername($username, $db);
-    $token = bin2hex(random_bytes(32));  //TODO Import Generation code for cookie and session? tokens
+    $token = bin2hex(random_bytes(32)); 
     //TODO hash token $hash_token
     $start_time = time();
     $end_time = $start_time + $time_sec;
 
     $query = "INSERT INTO sessions
     (uid, cookie_token, start_time, end_time)
-    VALUES ('".$uid."', ".$token.", ".$start_time.", ".$end_time.");";
+    VALUES ('".$uid."', '".$token."', ".$start_time.", ".$end_time.");";
 
     $response = handleQuery($query, $db, "Query Status: Generate Session Query Successful");
 
-    //TODO return array or token for cookie
     return $cookie_token = $response ? $token : null;
 }
 

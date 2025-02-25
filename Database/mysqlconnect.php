@@ -26,6 +26,7 @@ class mysqlConnect {
 		}
 	}
 
+	//Returns Bool
 	public function getConnectionStatus () {
 		return $this->dbConnectionStatus;
 	}
@@ -33,25 +34,21 @@ class mysqlConnect {
 
 	//Returns Array
 	public function registerAccount($username, $email, $password) {
-		$cookie;
 		$register_status;
 		$invalid_status = isDuplicateFound($username, "username", "accounts", $this->mydb) ? 'user_duplicate' : '';
 		$invalid_status = isDuplicateFound($email, "email", "accounts", $this->mydb) ? 'email_duplicate' : '';
 
 		if ($invalid_status != '') {
 			$register_status = 'Invalid';
-			return array('status' => $register_status, 'cookie' => $cookie, 'invalid_type' => $invalid_status);
+			return array('status' => $register_status, 'invalid_type' => $invalid_status);
 		}
 		//TODO: Validate Email and user format
 		//TODO: Hash Password before query
 
 		$register_status = addAccount($username, $email, $password, $this->mydb) ? 'Success' : 'Error';
 
-		if ($register_status) {
 
-		}
-
-		return array('status' => $register_status, 'cookie' => $cookie, 'invalid_type' => null);
+		return array('status' => $register_status, 'invalid_type' => null);
 	}
 
 	//Returns Array
@@ -59,7 +56,7 @@ class mysqlConnect {
 		$query = "SELECT username, password FROM accounts 
 		WHERE username = '".$username."';";
 		$status;
-		$cookie;
+		$cookie = null;
 	
 		$response = handleQuery($query, $this->mydb, "MYSQL: Login Query Succesful");
 	
@@ -77,7 +74,6 @@ class mysqlConnect {
 			$cookie = generateSession($username, 3600, $this->mydb);
 		}
 
-		//TODO: generate session server side
 		//TODO: send cookie to client
 
 		return array('status' => $status, 'cookie' => $cookie ); 
@@ -124,13 +120,22 @@ getUIDbyUsername("Bobby", $mydb);
 */
 
 
+//For Testing  and debugging
+function showAr ($array) {
+	foreach ($array as $key => $value) {
+		echo "Key: $key; Value: $value\n";
+	}
+}
+
+
 $testObj = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
 
-echo $testObj->registerAccount("Bob","bobby@gmail.com", "crabcake").PHP_EOL;
-echo $testObj->registerAccount("dummyuser","dummy@email.com", "dummypass").PHP_EOL;
+showAr($testObj->registerAccount("Bob","bobby@gmail.com", "crabcake"));
+showAr($testObj->registerAccount("dummyuser","dummy@email.com", "dummypass"));
+showAr($testObj->registerAccount("Larry2","Larry6@email.com", "snail"));
 
-echo $testObj->loginAccount("dummyuser", "dummypass").PHP_EOL;
-echo $testObj->registerAccount("dummyuser","dummy@email.com", "dummypass").PHP_EOL;
+showAr($testObj->loginAccount("dummyuser", "dummypass"));
+showAr($testObj->registerAccount("dummyuser","dummy@email.com", "dummypass"));
 
 
 
