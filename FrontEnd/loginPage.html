@@ -1,29 +1,40 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>CCAG</title>
-    <link rel="stylesheet" href="./styles/styles.css">
-  </head>
+<head>
+  <title>CCAG Login</title>
+  <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+  <h2>Login</h2>
+  <form id="loginForm" action="login.php" method="POST">
+    <label>Username:</label>
+    <input type="text" name="username" required><br>
+    <label>Password:</label>
+    <input type="password" name="password" required><br>
+    <input type="submit" value="Log In">
+  </form>
 
-  <body>
-    
-    <div class="navbar">
-      <a href="homepage.php">Home</a>
-      <a href="loginPage.html">Login</a>
-    </div>
-    
-    <h2>Login</h2>
-    <form action="login.php" method="POST"> 
-      
-      <label>Username:</label>
-      <input type="text" id="username" name="username" required> <br>
+  <div id="loginMessage"></div>
 
-      <label>Password:</label>
-      <input type="text" id="password" name="password" required> <br>
-      <input type="submit" value="Log In">
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      var formData = new FormData(this);
 
-      <h4><a href="registerPage.html">New User? Register Here.</a></h4> <br>
-    </form>
-  
-  </body>
+      fetch('login.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById('loginMessage').textContent = 'Login Successful!';
+          window.location.href = 'homepage.php'; // Redirect after login
+        } else {
+          document.getElementById('loginMessage').textContent = 'Login Failed: ' + data.message;
+        }
+      });
+    });
+  </script>
+</body>
 </html>
