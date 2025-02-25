@@ -11,13 +11,17 @@ $logindata = array (
     'message' => 'Logging in user',
 );
 
-echo($logindata['type']);
-echo($logindata['username']);
-echo "AHHHHHHHHHHH";
-sendMessage($logindata);
+$response = sendMessage($logindata);
 
+if ($response['success']) {
+    header('Location: loginPage.html?message=Logged in.');
+    exit();
+} 
+else {
+    header('Location: loginPage.html?message=Invalid Username/Password.');
+    exit();
+}
 //header("Location: homepage.php");
 //exit();
 
 ?>
-
