@@ -13,6 +13,7 @@ $logindata = array (
 
 echo($logindata['type']);
 echo($logindata['username']);
+echo "AHHHHHHHHHHH";
 sendMessage($logindata);
 
 //header("Location: homepage.php");
