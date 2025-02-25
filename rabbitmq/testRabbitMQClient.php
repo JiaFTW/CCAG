@@ -35,6 +35,8 @@ $request['message'] = $info['message'];
 $response = $client->send_request($request);
 //$response = $client->publish($request);
 
+return $response;
+
 echo "client received response: ".PHP_EOL;
 print_r($response);
 echo "\n\n";
