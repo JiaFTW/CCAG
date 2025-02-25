@@ -4,7 +4,7 @@ require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
 
-function getDB() {
+/*function getDB() {
     $conn = new mysqli('127.0.0.1','ccagUser','12345','ccagDB');
     
     if ($conn->connect_error) {
@@ -12,7 +12,7 @@ function getDB() {
     }
 
     return $conn;
-}
+}*/
 
 function doLogin($username,$password)
 {
