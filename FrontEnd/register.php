@@ -9,6 +9,14 @@ $registerdata = array(
     'message' => 'Registering user',
 );
 
-sendMessage($registerdata);
+$ = sendMessage($registerdata);
 
+if ($response['success']) {
+    header('Location: loginPage.html?message=Successfully Registered.');
+    exit();
+} 
+else {
+    header('Location: registerPage.html?message=Regristation failed.');
+    exit();
+}
 ?>
