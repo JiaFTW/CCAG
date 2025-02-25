@@ -9,7 +9,7 @@ $registerdata = array(
     'message' => 'Registering user',
 );
 
-echo ($registerdata['username']);
+echo "Sending $registerdata";
 sendMessage($registerdata);
 
 ?>
