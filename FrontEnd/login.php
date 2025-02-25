@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 
-
+//TODO : make new sendMessage type for Session Validation / Check
 $logindata = array (
     'type' => 'login',
     'username' => filter_input(INPUT_POST,'username'),
