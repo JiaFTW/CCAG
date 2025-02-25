@@ -25,7 +25,7 @@ else
 }
 
 function sendMessage($info){
-
+echo "We are in sendMessage bitches";
 $request = array();
 $request['type'] = $info['type'];
 $request['username'] = $info['username'];
