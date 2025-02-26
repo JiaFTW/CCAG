@@ -3,13 +3,17 @@
 require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
+require_once('../Database/mysqlconnect.php');
 
 function doLogin($username,$password)
 {
     // lookup username in database
     // check password
-    return true;
-    //return false if not valid
+
+    $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+    return $connect->loginAccount($username, $password);
+    
 }
 
 function doRegistration($username,$password,$email)
