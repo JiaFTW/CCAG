@@ -1,5 +1,5 @@
 <?php
-//session_start();
+session_start();
 //$_SESSION['user'] = "testuser";
 
 // here we are configuring session cookie settings
@@ -11,42 +11,66 @@ session_set_cookie_params([
     'samesite' => 'Strict' // this will prevent CSRF attacks
 ]);
 
-// Check if the remember_me cookie exists
-if (isset($_COOKIE['remember_me'])) {
-	$remember_me_token = $_COOKIE['remember_me'];
 
-	//this is when we can validate the user with the database, for now i will be setting a dummy user
-/*	$user = validateAuthToken($auth_token);
-	if ($user)
-       	{
-       		 $_SESSION['user'] = $user; // Automatically log the user in
-        }
- */
-	// we are simulating a valid token
-	$_SESSION['user'] = "testuser"; // Replace with actual user data
+// check if the remember_me cookie exists
+if (isset($_COOKIE['remember_me'])) {
+    // automatically log the user in using the remember_me token
+
+    $_SESSION['user'] = "testuser"; 
 }
 
-// Generate a CSRF token
+// check if the auth_token and session_id cookies exist
+if (isset($_COOKIE['auth_token']) && isset($_COOKIE['session_id'])) {
+       
+
+// validate the tokens against the database
+    require_once('../Database/mysqlconnect.php'); // Include the database connection class
+
+    // connect to the database
+    $db = new mysqlConnect('127.0.0.1', 'ccagUser', '12345', 'ccagDB');
+
+    // validate the session
+    $validationResult = $db->validateSession($_COOKIE['auth_token'], $_COOKIE['session_id']);
+
+    if ($validationResult['status'] === 'Success') {
+        // session is valid
+        // fetch user data from the database
+        $userData = $db->getUserByToken($_COOKIE['auth_token']); // Added: Fetch user data
+
+	if ($userData) {
+            // store user data in the session
+            $_SESSION['user'] = $userData; // Added: Store actual user data
+	}
+       	else
+       	{
+            // user data not found
+            echo "User data not found. Please <a href='loginPage.html'>log in</a>.";
+            exit();
+        }
+   
+    }
+   
+    else 
+    {
+        // session is invalid or expired
+        echo "Session expired or invalid. Please <a href='loginPage.html'>log in</a>.";
+        exit();
+    }
+} else {
+    // cookies are missing
+    echo "Please <a href='loginPage.html'>log in</a>.";
+    exit();
+}
+
+// generate a CSRF token
 $csrf_token = bin2hex(random_bytes(32));
 
-// Store the CSRF token in the session
+// store the CSRF token in the session
 $_SESSION['csrf_token'] = $csrf_token;
 
-// Set cookies
+// set cookies
 setcookie('PHPSESSID', session_id(), time() + 3600, '/'); // Session ID cookie
-setcookie('auth_token', bin2hex(random_bytes(32)), time() + 3600, '/'); // Authentication token
-setcookie('remember_me', bin2hex(random_bytes(32)), time() + (86400 * 30), '/'); // Remember me cookie (30 days)
 setcookie('csrf_token', $csrf_token, time() + 3600, '/'); // CSRF token for security
-
-
-//Swaps to login page is there is no user logged in.
-if(!isset($_SESSION['user'])) {
-  echo ("Please <a href='loginPage.html'>Login.</a>");
-  exit();
-}
-/*else {
-setcookie("user",$_SESSION['user'],time() + (7*24*60*60),"/");
-}*/
 
 ?>
 <!DOCTYPE html>

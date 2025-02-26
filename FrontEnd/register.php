@@ -22,7 +22,30 @@ $registerdata = array(
     'message' => 'Registering user',
 );
 
-echo ($registerdata['username']);
+//send registration data to RabbitMQ
+$response = sendMessage($registerdata);
+
+// handle the response from RabbitMQ
+if ($response['status'] === 'Success') {
+    // registration successful
+    // set auth_token and session_id cookies using values returned by RabbitMQ
+    setcookie('auth_token', $response['auth_token'], time() + 3600, '/'); 
+    setcookie('session_id', $response['session_id'], time() + 3600, '/'); 
+
+    // redirect to homepage
+    header("Location: homepage.php"); 
+    exit();
+}
+else {
+    // Registration failed
+    echo "Registration failed. Reason: " . $response['invalid_type']; // Added: Display error message
+    // we could also redirect back to the registration page
+    // header("Location: registerPage.html"); 
+    // exit(); 
+}
+
+
+/*echo ($registerdata['username']);
 sendMessage($registerdata);
 
 // So we could go two ways here option 1: automatically log the user in after registration
@@ -51,5 +74,5 @@ exit();
 // For option 2:we can redirect to login page after registration,whatever option you guys think is better.
 // header("Location: loginPage.html");
 // exit();
-
+ */
 ?>

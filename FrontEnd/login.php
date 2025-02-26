@@ -1,7 +1,7 @@
-<?php 
+<?php
 require_once('../rabbitmq/testRabbitMQClient.php');
 
-// Validate CSRF token
+// we are validating the CSRF token
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['csrf_token']) || !isset($_COOKIE['csrf_token'])) {
         die("CSRF token missing.");
@@ -11,47 +11,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-
-
-
-//TODO : make new sendMessage type for Session Validation / Check
-$logindata = array (
+// login data
+$logindata = array(
     'type' => 'login',
-    'username' => filter_input(INPUT_POST,'username'),
-    'email' => filter_input(INPUT_POST,'email'),
-    'password' => filter_input(INPUT_POST,'password'),
+    'username' => filter_input(INPUT_POST, 'username'),
+    'email' => filter_input(INPUT_POST, 'email'), 
+    'password' => filter_input(INPUT_POST, 'password'),
     'message' => 'Logging in user',
 );
 
-echo($logindata['type']);
-echo($logindata['username']);
-sendMessage($logindata);
+// send login data to RabbitMQ
+$response = sendMessage($logindata);
 
-// Generate a secure auth token
-$auth_token = bin2hex(random_bytes(32));
+// handle the response from RabbitMQ
+if ($response['status'] === 'Success') {
+	// login is successful
 
-/* next we can store the auth token in the database (or session) associated with the user, but for that we need sinchi's help i am king of clueless here.
-Example: saveAuthTokenToDatabase($logindata['username'], $auth_token);
- */
+	// set auth_token, session_id, and remember me cookies
+    setcookie('auth_token', $response['auth_token'], time() + 3600, '/');
+    setcookie('session_id', $response['session_id'], time() + 3600, '/'); 
+    setcookie('remember_me', bin2hex(random_bytes(32)), time() + (86400 * 30), '/'); 
 
-
-// then set the auth_token cookie
-setcookie('auth_token', $auth_token, time() + 3600, '/'); // this will expires in 1 hour
-
-// Generate a secure remember_me token
-$remember_me_token = bin2hex(random_bytes(32));
-
-/* again we have to store the remember_me token in the database (or session) associated with the user
- Example: saveRememberMeTokenToDatabase($logindata['username'], $remember_me_token);
- */
-
-// then set the remember_me cookie
-setcookie('remember_me', $remember_me_token, time() + (86400 * 30), '/'); // Expires in 30 days
-
-// Redirect to homepage after successful login
-
-//header("Location: homepage.php");
-//exit();
+    // redirect to homepage
+    header("Location: homepage.php"); 
+    exit();
+}
+else {
+	    // login failed
+	echo "Login failed. Please check your username and password.";
+	
+    // we could also redirect back to the login page, but it's a bit redundent what do you guys think.
+    // header("Location: loginPage.html"); 
+    // exit();
+}
 
 ?>
-
