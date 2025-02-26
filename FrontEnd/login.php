@@ -38,6 +38,7 @@ if ($response['status'] == 'Success') {
     setcookie('remember_me', $remember_me_token, time() + (86400 * 30), '/'); // Expires in 30 days
 
     header("Location: homepage.php");
+    print($response);
     exit();
 } else {
     echo "Login failed: " . $response['message'];
