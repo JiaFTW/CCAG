@@ -44,7 +44,7 @@ function getUIDbyUsername(string $username, mysqli $db) {
         return null;
     }
 
-    echo "getUIDbyUsername: ".$u['uid']." related to ".$username.PHP_EOL;
+    echo "getUIDbyUsername: ".$u['uid']." is related to ".$username.PHP_EOL;
     return $u['uid'];
 
 }
@@ -58,7 +58,7 @@ function addAccount($username, $email ,$password, mysqli $db) {
     (username, email, password) 
     VALUES ('".$username."', '".$email."', '".$password."');";
 
-    $response = handleQuery($query, $db, "Query Status: Added Account Query Succesful");
+    $response = handleQuery($query, $db, "Query Status: Added Account Succesful");
 
     return $response;
     
@@ -78,7 +78,7 @@ function generateSession(string $username, int $time_sec, mysqli $db) {
     (uid, cookie_token, start_time, end_time)
     VALUES ('".$uid."', '".$token."', ".$start_time.", ".$end_time.");";
 
-    $response = handleQuery($query, $db, "Query Status: Generate Session Query Successful");
+    $response = handleQuery($query, $db, "Query Status: Generate Session Successful");
 
     return $cookie_token = $response ? $token : null;
 }
