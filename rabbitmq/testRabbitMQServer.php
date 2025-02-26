@@ -7,9 +7,7 @@ require_once('../Database/mysqlconnect.php');
 
 function doLogin($username,$password)
 {
-    // lookup username in database
-    // check password
-
+  
     $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
 
     return $connect->loginAccount($username, $password);

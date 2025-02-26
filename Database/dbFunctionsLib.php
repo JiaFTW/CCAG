@@ -1,5 +1,11 @@
 <?php
 
+function showAr ($array) {
+	foreach ($array as $key => $value) {
+		echo "Key: $key; Value: $value\n";
+	}
+}
+
 //Universal Functions
 
 

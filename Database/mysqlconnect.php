@@ -75,8 +75,9 @@ class mysqlConnect {
 			$cookie = generateSession($username, 3600, $this->mydb);
 		}
 
-
-		return array('status' => $status, 'cookie' => $cookie ); 
+		$arraytest = array('status' => $status, 'cookie' => $cookie );
+		showAr($arraytest);
+		return $arraytest; 
 	
 	}
 
@@ -110,7 +111,7 @@ class mysqlConnect {
 
 
 //For Testing  and debugging
-function showAr ($array) {
+/*function showAr ($array) {
 	foreach ($array as $key => $value) {
 		echo "Key: $key; Value: $value\n";
 	}
@@ -124,7 +125,7 @@ showAr($testObj->registerAccount("dummyuser","dummy@email.com", "dummypass"));
 showAr($testObj->registerAccount("Larry2","Larry6@email.com", "snail"));
 
 showAr($testObj->loginAccount("dummyuser", "dummypass"));    //TODO test validSession function
-showAr($testObj->registerAccount("dummyuser","dummy@email.com", "dummypass"));
+showAr($testObj->registerAccount("dummyuser","dummy@email.com", "dummypass")); */
 
 
 
