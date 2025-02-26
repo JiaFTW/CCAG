@@ -28,13 +28,9 @@ $logindata = array (
 $response = sendMessage($logindata);
 
 if ($response['status'] == 'Success') {
-    // Generate a secure auth token
-    $auth_token = bin2hex(random_bytes(32));
-
-    //next we can store the auth token in the database (or session) associated with the user, but for that we need sinchi's help i am king of clueless here.
-    saveAuthTokenToDatabase($logindata['username'], $auth_token);
-    // then set the auth_token cookie
-    setcookie('auth_token', $auth_token, time() + 3600, '/'); // this will expires in 1 hour
+   
+    //Set the auth_token cookie
+    setcookie('auth_token', $response['cookie'], time() + 3600, '/'); // this will expires in 1 hour
 
     // Generate a secure remember_me token
     $remember_me_token = bin2hex(random_bytes(32));
