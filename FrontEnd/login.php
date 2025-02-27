@@ -12,9 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 */
 
-
-
-
 //TODO : make new sendMessage type for Session Validation / Check
 $logindata = array (
     'type' => 'login',
@@ -28,14 +25,13 @@ $logindata = array (
 $response = sendMessage($logindata);
 
 if ($response['status'] == 'Success') {
-   
-    //Set the auth_token cookie
-    //setcookie('auth_token', $response['cookie'], time() + 3600, '/'); // this will expires in 1 hour
 
-    // Generate a secure remember_me token
-    //$remember_me_token = bin2hex(random_bytes(32));
-    //saveRememberMeTokenToDatabase($logindata['username'], $remember_me_token);
-    //setcookie('remember_me', $remember_me_token, time() + (86400 * 30), '/'); // Expires in 30 days
+    //TEST CODE FOR $_SESSION ON CLIENT SIDE//
+    session_start();
+    $_SESSION['is_valid_user'] = true;
+    $_SESSION['user'] = $logindata['username']; 
+    //TEST CODE FOR $_SESSION ON CLIENT SIDE//
+
     print($logindata['username]']);
     header("Location: testpage.php");
     die();

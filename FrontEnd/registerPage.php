@@ -22,10 +22,6 @@
   
   <body>
 
-    <div class="navbar">
-      <a href="loginPage.html">Login</a>
-    </div>
-
     <h2>Register</h2>
     <form action="register.php" method="POST" onsubmit="return matchingPasswords()"> <!-- Inputs the text field to the php file. And calls the matchingPasswords function.-->
 
