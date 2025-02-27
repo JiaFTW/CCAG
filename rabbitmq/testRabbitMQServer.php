@@ -16,11 +16,18 @@ function doLogin($username,$password)
 
 function doRegistration($username,$password,$email)
 {
-    // lookup username in databas
-    // check password
-    return true;
-    //return false if not valid
+    $connect = new sqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+    return $connect->registerAccount($username, $password, $email);
 }
+
+function doValidate($token) {
+
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+    return $connect->validateSession($token);
+}
+
 function requestProcessor($request)
 {
   echo "received request".PHP_EOL;
