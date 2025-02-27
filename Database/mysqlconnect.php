@@ -58,7 +58,7 @@ class mysqlConnect {
 		$status;
 		$cookie = null;
 	
-		$response = handleQuery($query, $this->mydb, "Query Status: Login Succesful");
+		$response = handleQuery($query, $this->mydb, "Query Status: Login Succesfull");
 	
 		if ($response == false) {
 			$status = 'Error';
@@ -75,7 +75,7 @@ class mysqlConnect {
 			$cookie = generateSession($username, 3600, $this->mydb);
 		}
 
-		$arraytest = array('status' => $status, 'cookie' => $cookie );
+		$arraytest = array('status' => $status, 'cookie' => $cookie, 'username' => $username );
 		//showAr($arraytest);
 		return $arraytest; 
 	
@@ -87,7 +87,7 @@ class mysqlConnect {
 		$status;
 		$query = "SELECT cookie_token, end_time FROM sessions 
 		WHERE cookie_token = '".$token."';";    //TODO change to verftiy() for hashed tokens (might need to change query)
-		$response = handleQuery($query, $this->mydb, "Query Status: Validate Session Succesful");
+		$response = handleQuery($query, $this->mydb, "Query Status: Validate Session Succesfull");
 		if ($response == false) {
 			$status = 'Error';
 			return array('status' => $status);
@@ -99,10 +99,21 @@ class mysqlConnect {
 			$status = 'NotFound';
 			return array('status' => $status);
 		}
+		elseif ($response_arr['end_time'] <= time()) {
+			$status = 'Expired';
+			return array('status' => $status);
+		} 
 		else {
-			$status = ($response_arr['end_time'] > time()) ? 'Success' : 'Expired';
+			$status = 'Success';
 			return array('status' => $status);
 		}
+	}
+
+	public function invalidateSession($token) {
+		$query = "DELETE FROM sessions WHERE cookie_token = '".$token."';";
+		$response = handleQuery($query, $this->mydb, "Query Status: Invalidate Session Successfull");
+		
+		return array('status' => $response ? 'Success' : 'Error');
 	}
 
 }

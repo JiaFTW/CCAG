@@ -23,9 +23,15 @@ function doRegistration($username,$password,$email)
 function doValidate($token){
 
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
-  
+
   return $connect->validateSession($token);
   
+}
+
+function doLogout($token) {
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+  return $connect->invalidateSession($token);
 }
 
 function requestProcessor($request)
@@ -42,6 +48,8 @@ function requestProcessor($request)
       return doLogin($request['username'],$request['password']);
     case "validate_session":
       return doValidate($request['sessionId']);
+    case "logout":
+      return doLogout($request['sessionId']);
     case "register":
       return doRegistration($request['username'],$request['password'],$request['email']);
     default:

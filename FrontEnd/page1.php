@@ -1,3 +1,8 @@
+<?php
+require_once('sessionValidate.php');
+?>
+
+
 <html>
     <head>
     <title>CCAG Page 1</title>

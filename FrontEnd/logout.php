@@ -1,9 +1,20 @@
 <?php
-//TEST CODE FOR $_SESSION ON CLIENT SIDE//
-    session_start();
-    $_SESSION = [];
-    session_destroy();
-//TEST CODE FOR $_SESSION ON CLIENT SIDE//
+require_once('../rabbitmq/testRabbitMQClient.php');
 
-    header("Location: homepage.php")
+if (isset($_COOKIE['session_token'])) {
+    $logoutData = array(
+        'type' => 'logout',
+        'sessionId' => $_COOKIE['session_token'],
+    );
+
+    $response = sendMessage($logoutData);
+
+    if ($response['status'] == 'Success') {
+        setcookie('session_token', '', time()-3600,"/");
+        setcookie('username','',time()-3600,"/");
+    }
+}
+
+header("Location: homepage.php");
+die();
 ?>
