@@ -36,7 +36,9 @@ if ($response['status'] == 'Success') {
     header("Location: homepage.php");
     die();
 } else {
-    echo 'Login failed:' .$response['status'];
+    echo "<script>alert('Invalid Credentials');
+    window.location.href='homepage.php';</script>";
+    die();
 }
 
 
