@@ -32,6 +32,7 @@ $request['username'] = $info['username'];
 $request['password'] = $info['password'];
 $request['email'] = $info['email'];
 $request['message'] = $info['message'];
+$request['sessionId'] = $info['sessionId'];
 $response = $client->send_request($request);
 //$response = $client->publish($request);
 return $response;

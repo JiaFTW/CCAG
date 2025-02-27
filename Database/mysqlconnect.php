@@ -58,10 +58,11 @@ class mysqlConnect {
 		$status;
 		$cookie = null;
 	
-		$response = handleQuery($query, $this->mydb, "MYSQL: Login Query Succesful");
+		$response = handleQuery($query, $this->mydb, "Query Status: Login Succesful");
 	
 		if ($response == false) {
 			$status = 'Error';
+			return array('status' => $status, 'cookie' => $cookie );
 		}
 
 		$ac = $response->fetch_assoc();
@@ -74,54 +75,43 @@ class mysqlConnect {
 			$cookie = generateSession($username, 3600, $this->mydb);
 		}
 
-		//TODO: send cookie to client
-
-		return array('status' => $status, 'cookie' => $cookie ); 
+		$arraytest = array('status' => $status, 'cookie' => $cookie );
+		//showAr($arraytest);
+		return $arraytest; 
 	
+	}
+
+
+	//returns Array
+	public function validateSession($token) {
+		$status;
+		$query = "SELECT cookie_token, end_time FROM sessions 
+		WHERE cookie_token = '".$token."';";    //TODO change to verftiy() for hashed tokens (might need to change query)
+		$response = handleQuery($query, $this->mydb, "Query Status: Validate Session Succesful");
+		if ($response == false) {
+			$status = 'Error';
+			return array('status' => $status);
+		}
+
+		$response_arr = $response->fetch_assoc();
+		
+		if($response_arr == null) {
+			$status = 'NotFound';
+			return array('status' => $status);
+		}
+		else {
+			$status = ($response_arr['end_time'] > time()) ? 'Success' : 'Expired';
+			return array('status' => $status);
+		}
 	}
 
 }
 
 	
-/* $mydb = new mysqli('127.0.0.1','ccagUser','12345','ccagDB');
-
-if ($mydb->errno != 0)
-{
-	echo "failed to connect to database: ". $mydb->error . PHP_EOL;
-	exit(0); 
-}
-
-echo "successfully connected to database".PHP_EOL;
-
-
-//Test Adding to Database
-//addAccount("Bob","bobby@gmail.com","crabcake",$mydb);
-
-//Test Query
-/*$query = "select * from accounts;";
-
-$response = $mydb->query($query);
-if ($mydb->errno != 0)
-{
-	echo "failed to execute query:".PHP_EOL;
-	echo __FILE__.':'.__LINE__.":error: ".$mydb->error.PHP_EOL;
-	exit(0);
-}
-if successful, echos out all usernames from accounts table (for testing)
-else { 
-	while ($r = mysqli_fetch_assoc($response)) {
-		echo $r['username'].PHP_EOL;
-	}
-} 
-isDuplicateFound("dummyuser", "username","accounts", $mydb);
-isDuplicateFound("Joey", "username","accounts", $mydb);
-getUIDbyUsername("Bobby", $mydb);	
-
-*/
 
 
 //For Testing  and debugging
-function showAr ($array) {
+/*function showAr ($array) {
 	foreach ($array as $key => $value) {
 		echo "Key: $key; Value: $value\n";
 	}
@@ -134,8 +124,8 @@ showAr($testObj->registerAccount("Bob","bobby@gmail.com", "crabcake"));
 showAr($testObj->registerAccount("dummyuser","dummy@email.com", "dummypass"));
 showAr($testObj->registerAccount("Larry2","Larry6@email.com", "snail"));
 
-showAr($testObj->loginAccount("dummyuser", "dummypass"));
-showAr($testObj->registerAccount("dummyuser","dummy@email.com", "dummypass"));
+showAr($testObj->loginAccount("dummyuser", "dummypass"));    //TODO test validSession function
+showAr($testObj->registerAccount("dummyuser","dummy@email.com", "dummypass")); */
 
 
 

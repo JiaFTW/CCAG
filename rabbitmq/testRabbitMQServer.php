@@ -20,6 +20,14 @@ function doRegistration($username,$password,$email)
 
   return $connect->registerAccount($username, $email, $password);
 }
+function doValidate($token){
+
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+  
+  return $connect->validateSession($token);
+  
+}
+
 function requestProcessor($request)
 {
   echo "received request".PHP_EOL;

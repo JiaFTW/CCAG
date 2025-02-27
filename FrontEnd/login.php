@@ -25,19 +25,27 @@ $logindata = array (
 $response = sendMessage($logindata);
 
 if ($response['status'] == 'Success') {
+    
+    
+    $sessionId = array (
+        'type' => 'validate_session',
+        'sessionId' => $response['cookie'],
+    );
+    
+    $sessioncheck = sendMessage($sessionId);
 
+    //print_r($sessioncheck);
     //TEST CODE FOR $_SESSION ON CLIENT SIDE//
-    session_start();
-    $_SESSION['is_valid_user'] = true;
-    $_SESSION['user'] = $logindata['username']; 
+    //session_start();
+    //$_SESSION['is_valid_user'] = true;
+    //$_SESSION['user'] = $logindata['username']; 
     //TEST CODE FOR $_SESSION ON CLIENT SIDE//
 
-    print($logindata['username]']);
-    header("Location: homepage.php");
-    die();
+    //header("Location: homepage.php");
+    //die();
 } else {
     echo "<script>alert('Invalid Credentials');
-    window.location.href='homepage.php';</script>";
+    window.location.href='loginPage.php';</script>";
     die();
 }
 
