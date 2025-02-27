@@ -47,8 +47,9 @@ class mysqlConnect {
 
 		$register_status = addAccount($username, $email, $password, $this->mydb) ? 'Success' : 'Error';
 
-
-		return array('status' => $register_status, 'invalid_type' => null);
+		$arrayTest = array('status' => $register_status, 'invalid_type' => null);
+		showAr($arrayTest);
+		return $arrayTest;
 	}
 
 	//Returns Array
@@ -86,7 +87,7 @@ class mysqlConnect {
 	public function validateSession($token) {
 		$status;
 		$query = "SELECT cookie_token, end_time FROM sessions 
-		WHERE cookie_token = '".$token.";";    //TODO change to verftiy() for hashed tokens (might need to change query)
+		WHERE cookie_token = '".$token."';";    //TODO change to verftiy() for hashed tokens (might need to change query)
 		$response = handleQuery($query, $this->mydb, "Query Status: Validate Session Succesful");
 		if ($response == false) {
 			$status = 'Error';
@@ -95,8 +96,8 @@ class mysqlConnect {
 
 		$response_arr = $response->fetch_assoc();
 		
-		if($response_arr = null) {
-			$staus = 'NotFound';
+		if($response_arr == null) {
+			$status = 'NotFound';
 			return array('status' => $status);
 		}
 		else {

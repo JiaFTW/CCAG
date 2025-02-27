@@ -16,7 +16,7 @@ function doLogin($username,$password)
 
 function doRegistration($username,$password,$email)
 {
-    $connect = new sqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+    $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
 
     return $connect->registerAccount($username, $password, $email);
 }
