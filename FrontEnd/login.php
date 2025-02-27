@@ -33,7 +33,7 @@ if ($response['status'] == 'Success') {
     //TEST CODE FOR $_SESSION ON CLIENT SIDE//
 
     print($logindata['username]']);
-    header("Location: testpage.php");
+    header("Location: homepage.php");
     die();
 } else {
     echo 'Login failed:' .$response['status'];

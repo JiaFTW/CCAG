@@ -4,6 +4,7 @@
   <head>
     <title>CCAG Register</title>
     <link rel="stylesheet" href="./styles/styles.css">
+    <?php include('header.php'); ?>
   </head>
   
 <script>

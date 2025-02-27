@@ -7,11 +7,8 @@
 
   <body>
 
-    <div class="navbar">
-      <a href="homepage.php">Home</a>
-      <a href="loginPage.html">Login</a>
-    </div>
-
+  <?php include('header.php'); ?>
+  
   </body>
   
 </html>

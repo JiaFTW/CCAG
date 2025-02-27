@@ -3,6 +3,7 @@
   <head>
     <title>CCAG</title>
     <link rel="stylesheet" href="./styles/styles.css">
+    <?php include('header.php'); ?>
   </head>
 
   <body>
