@@ -25,9 +25,6 @@
 
     <h2>Register</h2>
     <form action="register.php" method="POST" onsubmit="return matchingPasswords()"> <!-- Inputs the text field to the php file. And calls the matchingPasswords function.-->
-
-      <!-- Hidden CSRF token field 
-      <input type="hidden" name="csrf_token" value="<?php echo isset($_COOKIE['csrf_token']) ? $_COOKIE['csrf_token'] : ''; ?>"> -->
       
       <label for="username">Username:</label>
       <input type="text" id="username" name="username" required> <br>
