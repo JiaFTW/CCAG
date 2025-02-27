@@ -1,18 +1,6 @@
 <?php 
 require_once('../rabbitmq/testRabbitMQClient.php');
 
-/* Validate CSRF token
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_POST['csrf_token']) || !isset($_COOKIE['csrf_token'])) {
-        die("CSRF token missing.");
-    }
-    if ($_POST['csrf_token'] !== $_COOKIE['csrf_token']) {
-        die("CSRF token validation failed.");
-    }
-}
-*/
-
-//TODO : make new sendMessage type for Session Validation / Check
 $logindata = array (
     'type' => 'login',
     'username' => filter_input(INPUT_POST,'username'),
