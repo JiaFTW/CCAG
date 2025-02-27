@@ -1,7 +1,7 @@
 <?php 
 require_once('../rabbitmq/testRabbitMQClient.php');
 
-// Validate CSRF token
+/* Validate CSRF token
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['csrf_token']) || !isset($_COOKIE['csrf_token'])) {
         die("CSRF token missing.");
@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("CSRF token validation failed.");
     }
 }
-
+*/
 
 
 
@@ -30,18 +30,17 @@ $response = sendMessage($logindata);
 if ($response['status'] == 'Success') {
    
     //Set the auth_token cookie
-    setcookie('auth_token', $response['cookie'], time() + 3600, '/'); // this will expires in 1 hour
+    //setcookie('auth_token', $response['cookie'], time() + 3600, '/'); // this will expires in 1 hour
 
     // Generate a secure remember_me token
-    $remember_me_token = bin2hex(random_bytes(32));
-    saveRememberMeTokenToDatabase($logindata['username'], $remember_me_token);
-    setcookie('remember_me', $remember_me_token, time() + (86400 * 30), '/'); // Expires in 30 days
-
-    header("Location: homepage.php");
-    print($response);
-    exit();
+    //$remember_me_token = bin2hex(random_bytes(32));
+    //saveRememberMeTokenToDatabase($logindata['username'], $remember_me_token);
+    //setcookie('remember_me', $remember_me_token, time() + (86400 * 30), '/'); // Expires in 30 days
+    print($logindata['username]']);
+    header("Location: testpage.php");
+    die();
 } else {
-    echo "Login failed: " . $response['message'];
+    echo 'Login failed:' .$response['status'];
 }
 
 

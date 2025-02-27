@@ -1,5 +1,4 @@
 <?php
-//session_start();
 //$_SESSION['user'] = "testuser";
 
 // here we are configuring session cookie settings
@@ -63,7 +62,7 @@ setcookie("user",$_SESSION['user'],time() + (7*24*60*60),"/");
       <a href="loginPage.html">Login</a>
     </div>
 
-    <p>If you see this you are successfully logged in as <?php echo ($_SESSION['user']); ?></p>
+    <p>If you see this you are successfully logged in.</p>
   </body>
   
 </html>
