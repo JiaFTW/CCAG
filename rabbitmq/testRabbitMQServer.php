@@ -8,7 +8,7 @@ require_once('../Database/mysqlconnect.php');
 function doLogin($username,$password)
 {
   
-    $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+    $connect = new mysqlConnect('192.168.193.78','ccagUser','12345','ccagDB');
 
     return $connect->loginAccount($username, $password);
     
@@ -16,20 +16,20 @@ function doLogin($username,$password)
 
 function doRegistration($username,$password,$email)
 {
-  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+  $connect = new mysqlConnect('192.168.193.78','ccagUser','12345','ccagDB');
 
   return $connect->registerAccount($username, $email, $password);
 }
 function doValidate($token){
 
-  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+  $connect = new mysqlConnect('192.168.193.78','ccagUser','12345','ccagDB');
 
   return $connect->validateSession($token);
   
 }
 
 function doLogout($token) {
-  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+  $connect = new mysqlConnect('192.168.193.78','ccagUser','12345','ccagDB');
 
   return $connect->invalidateSession($token);
 }
