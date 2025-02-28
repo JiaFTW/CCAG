@@ -26,6 +26,7 @@ class mysqlConnect {
 		}
 	}
 
+	//Returns Bool
 	public function getConnectionStatus () {
 		return $this->dbConnectionStatus;
 	}
@@ -33,25 +34,21 @@ class mysqlConnect {
 
 	//Returns Array
 	public function registerAccount($username, $email, $password) {
-		$cookie;
 		$register_status;
 		$invalid_status = isDuplicateFound($username, "username", "accounts", $this->mydb) ? 'user_duplicate' : '';
 		$invalid_status = isDuplicateFound($email, "email", "accounts", $this->mydb) ? 'email_duplicate' : '';
 
 		if ($invalid_status != '') {
 			$register_status = 'Invalid';
-			return array('status' => $register_status, 'cookie' => $cookie, 'invalid_type' => $invalid_status);
+			return array('status' => $register_status, 'invalid_type' => $invalid_status);
 		}
 		//TODO: Validate Email and user format
 		//TODO: Hash Password before query
 
 		$register_status = addAccount($username, $email, $password, $this->mydb) ? 'Success' : 'Error';
 
-		if ($register_status) {
 
-		}
-
-		return array('status' => $register_status, 'cookie' => $cookie, 'invalid_type' => null);
+		return array('status' => $register_status, 'invalid_type' => null);
 	}
 
 	//Returns Array
@@ -59,12 +56,13 @@ class mysqlConnect {
 		$query = "SELECT username, password FROM accounts 
 		WHERE username = '".$username."';";
 		$status;
-		$cookie;
+		$cookie = null;
 	
-		$response = handleQuery($query, $this->mydb, "MYSQL: Login Query Succesful");
+		$response = handleQuery($query, $this->mydb, "Query Status: Login Succesfull");
 	
 		if ($response == false) {
 			$status = 'Error';
+			return array('status' => $status, 'cookie' => $cookie );
 		}
 
 		$ac = $response->fetch_assoc();
@@ -77,61 +75,68 @@ class mysqlConnect {
 			$cookie = generateSession($username, 3600, $this->mydb);
 		}
 
-		//TODO: generate session server side
-		//TODO: send cookie to client
-
-		return array('status' => $status, 'cookie' => $cookie ); 
+		$arraytest = array('status' => $status, 'cookie' => $cookie, 'username' => $username );
+		showAr($arraytest);
+		return $arraytest; 
 	
+	}
+
+
+	//returns Array
+	public function validateSession($token) {
+		$status;
+		$query = "SELECT cookie_token, end_time FROM sessions 
+		WHERE cookie_token = '".$token."';";    //TODO change to verftiy() for hashed tokens (might need to change query)
+		$response = handleQuery($query, $this->mydb, "Query Status: Validate Session Succesfull");
+		if ($response == false) {
+			$status = 'Error';
+			return array('status' => $status);
+		}
+
+		$response_arr = $response->fetch_assoc();
+		
+		if($response_arr == null) {
+			$status = 'NotFound';
+			return array('status' => $status);
+		}
+		elseif ($response_arr['end_time'] <= time()) {
+			$status = 'Expired';
+			return array('status' => $status);
+		} 
+		else {
+			$status = 'Success';
+			return array('status' => $status);
+		}
+	}
+
+	public function invalidateSession($token) {
+		$query = "DELETE FROM sessions WHERE cookie_token = '".$token."';";
+		$response = handleQuery($query, $this->mydb, "Query Status: Invalidate Session Successfull");
+		
+		return array('status' => $response ? 'Success' : 'Error');
 	}
 
 }
 
-
 	
 
-	
-/* $mydb = new mysqli('127.0.0.1','ccagUser','12345','ccagDB');
 
-if ($mydb->errno != 0)
-{
-	echo "failed to connect to database: ". $mydb->error . PHP_EOL;
-	exit(0); 
-}
-
-echo "successfully connected to database".PHP_EOL;
-
-
-//Test Adding to Database
-//addAccount("Bob","bobby@gmail.com","crabcake",$mydb);
-
-//Test Query
-/*$query = "select * from accounts;";
-
-$response = $mydb->query($query);
-if ($mydb->errno != 0)
-{
-	echo "failed to execute query:".PHP_EOL;
-	echo __FILE__.':'.__LINE__.":error: ".$mydb->error.PHP_EOL;
-	exit(0);
-}
-if successful, echos out all usernames from accounts table (for testing)
-else { 
-	while ($r = mysqli_fetch_assoc($response)) {
-		echo $r['username'].PHP_EOL;
+//For Testing  and debugging
+/*function showAr ($array) {
+	foreach ($array as $key => $value) {
+		echo "Key: $key; Value: $value\n";
 	}
-} 
-isDuplicateFound("dummyuser", "username","accounts", $mydb);
-
-isDuplicateFound("Joey", "username","accounts", $mydb);
-
-getUIDbyUsername("Bobby", $mydb);	
-
-*/
+}
 
 
 $testObj = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
-echo $testObj->loginAccount("dummyuser", "dummypass").PHP_EOL;
-echo $testObj->registerAccount("dummyuser","dummy@email.com", "dummypass").PHP_EOL;
+
+showAr($testObj->registerAccount("Bob","bobby@gmail.com", "crabcake"));
+showAr($testObj->registerAccount("dummyuser","dummy@email.com", "dummypass"));
+showAr($testObj->registerAccount("Larry2","Larry6@email.com", "snail"));
+
+showAr($testObj->loginAccount("dummyuser", "dummypass"));    //TODO test validSession function
+showAr($testObj->registerAccount("dummyuser","dummy@email.com", "dummypass")); */
 
 
 

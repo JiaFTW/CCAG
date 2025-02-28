@@ -12,4 +12,7 @@ $registerdata = array(
 echo ($registerdata['username']);
 sendMessage($registerdata);
 
+header("Location: loginPage.php");
+exit();
+
 ?>

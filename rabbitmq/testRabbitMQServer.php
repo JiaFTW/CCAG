@@ -3,22 +3,37 @@
 require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
+require_once('../Database/mysqlconnect.php');
 
 function doLogin($username,$password)
 {
-    // lookup username in database
-    // check password
-    return true;
-    //return false if not valid
+  
+    $connect = new mysqlConnect('192.168.193.78','ccagUser','12345','ccagDB');
+
+    return $connect->loginAccount($username, $password);
+    
 }
 
 function doRegistration($username,$password,$email)
 {
-    // lookup username in databas
-    // check password
-    return true;
-    //return false if not valid
+  $connect = new mysqlConnect('192.168.193.78','ccagUser','12345','ccagDB');
+
+  return $connect->registerAccount($username, $email, $password);
 }
+function doValidate($token){
+
+  $connect = new mysqlConnect('192.168.193.78','ccagUser','12345','ccagDB');
+
+  return $connect->validateSession($token);
+  
+}
+
+function doLogout($token) {
+  $connect = new mysqlConnect('192.168.193.78','ccagUser','12345','ccagDB');
+
+  return $connect->invalidateSession($token);
+}
+
 function requestProcessor($request)
 {
   echo "received request".PHP_EOL;
@@ -33,6 +48,8 @@ function requestProcessor($request)
       return doLogin($request['username'],$request['password']);
     case "validate_session":
       return doValidate($request['sessionId']);
+    case "logout":
+      return doLogout($request['sessionId']);
     case "register":
       return doRegistration($request['username'],$request['password'],$request['email']);
     default:
@@ -48,4 +65,5 @@ $server->process_requests('requestProcessor');
 echo "testRabbitMQServer END".PHP_EOL;
 exit();
 ?>
+
 
