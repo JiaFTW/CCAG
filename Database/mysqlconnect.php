@@ -76,7 +76,7 @@ class mysqlConnect {
 		}
 
 		$arraytest = array('status' => $status, 'cookie' => $cookie, 'username' => $username );
-		//showAr($arraytest);
+		showAr($arraytest);
 		return $arraytest; 
 	
 	}
