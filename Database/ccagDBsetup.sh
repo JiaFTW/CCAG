@@ -7,7 +7,7 @@ db_name="ccagDB"
 db_user="ccagUser"
 db_pass="12345"  #TODO store password elsewhere (config file?)
 
-#TODO add session table
+#TODO add personal deliverable tables
 
 sql_query=$(cat <<EOF
 
@@ -30,9 +30,66 @@ sql_query=$(cat <<EOF
         uid INT NOT NULL,
         cookie_token VARCHAR(255) NOT NULL,
         start_time INT NOT NULL,
-        end _time INT NOT NULL,
-        FOREIGN KEY (uid) REFERNCES accounts(uid)
-     );
+        end_time INT NOT NULL,
+        FOREIGN KEY (uid) REFERENCES accounts(uid)
+    );
+
+
+    CREATE TABLE IF NOT EXISTS recipes (
+        rid INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(75) NOT NULL,
+        num_ingredients INT,
+        ingredients TEXT,
+        calories INT,
+        servings INT
+    );
+    
+    CREATE TABLE IF NOT EXISTS labels (
+        label_id INT AUTO_INCREMENT PRIMARY KEY,
+        label_name VARCHAR(25) NOT NULL,
+        description TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS recipe_labels (
+        rid INT NOT NULL,
+        label_id INT NOT NULL,
+        PRIMARY KEY (rid, label_id), 
+        FOREIGN KEY (rid) REFERENCES recipes(rid) ON DELETE CASCADE,
+        FOREIGN KEY (label_id) REFERENCES labels(label_id) ON DELETE CASCADE
+    );
+    
+    CREATE TABLE IF NOT EXISTS bookmarks (
+        uid INT NOT NULL,
+        rid INT NOT NULL,
+        PRIMARY KEY (uid, rid),
+        FOREIGN KEY (uid) REFERENCES accounts(uid) ON DELETE CASCADE,
+        FOREIGN KEY (rid) REFERENCES recipes(rid) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS reviews (
+        rate_id INT AUTO_INCREMENT PRIMARY KEY,
+        uid INT NOT NULL,
+        rid INT NOT NULL,
+        rating TINYINT NOT NULL,
+        description TEXT,
+        FOREIGN KEY (uid) REFERENCES accounts(uid),
+        FOREIGN KEY (rid) REFERENCES recipes(rid)
+    );
+
+    CREATE TABLE IF NOT EXISTS mealplans (
+        cid INT AUTO_INCREMENT PRIMARY KEY,
+        uid INT NOT NULL,
+        FOREIGN KEY (uid) REFERENCES accounts(uid)
+    );
+
+    CREATE TABLE IF NOT EXISTS mealplan_entries (
+        cid INT NOT NULL,
+        rid INT NOT NULl,
+        day VARCHAR(9) NOT NULL,
+        meal_type VARCHAR(9) NOT NULL,
+        FOREIGN KEY (cid) REFERENCES mealplans(cid) ON DELETE CASCADE,
+        FOREIGN KEY (rid) REFERENCES recipes(rid)
+    );
 EOF
 )
 
