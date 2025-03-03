@@ -8,6 +8,7 @@ require_once('../Database/mysqlconnect.php');
 function getRecipe($info)
 {
   //DMZ stuff here
+  echo "getting here".PHP_EOL;
   return true;
 }
 

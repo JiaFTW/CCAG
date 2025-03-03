@@ -28,11 +28,25 @@ function sendMessage($info){
 $client = new rabbitMQClient("testRabbitMQ.ini","testServer");
 $request = array();
 $request['type'] = $info['type'];
-$request['username'] = $info['username'];
-$request['password'] = $info['password'];
-$request['email'] = $info['email'];
+switch ($request['type'])
+  {
+    case "login":
+      $request['username'] = $info['username'];
+      $request['password'] = $info['password'];
+    case "validate_session":
+      $request['sessionId'] = $info['sessionId'];
+    case "logout":
+      $request['sessionId'] = $info['sessionId'];
+    case "register":
+      $request['username'] = $info['username'];
+      $request['password'] = $info['password'];
+      $request['email'] = $info['email'];
+    case "getRecipe":
+      //put whatever data we need to search the database or dmz here
+    default:
+      return "Invalid Message Type".PHP_EOL;
+  }
 $request['message'] = $info['message'];
-$request['sessionId'] = $info['sessionId'];
 $response = $client->send_request($request);
 //$response = $client->publish($request);
 return $response;
