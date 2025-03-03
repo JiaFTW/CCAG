@@ -34,6 +34,19 @@ function doLogout($token) {
   return $connect->invalidateSession($token);
 }
 
+function doRecipe($info)
+{
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+  //check if stuff we need is in db, if not, send message to dmz
+
+  $client = new rabbitMQClient("testRabbitMQ.ini","DMZServer");
+  $request = array();
+  $request['type'] = "getRecipe";
+  $request['info'] = $info; //placeholder stuff until we define the system more
+  $response = $client->send_request($request);
+  return $response;
+}
+
 function requestProcessor($request)
 {
   echo "received request".PHP_EOL;
@@ -52,6 +65,8 @@ function requestProcessor($request)
       return doLogout($request['sessionId']);
     case "register":
       return doRegistration($request['username'],$request['password'],$request['email']);
+    case "getRecipe":
+      return doRecipe($request);
     default:
       return "type fail".PHP_EOL;
   }
