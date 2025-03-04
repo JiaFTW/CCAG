@@ -44,6 +44,7 @@ function doRecipe($info)
   $request['type'] = "getRecipe";
   $request['info'] = $info; //placeholder stuff until we define the system more
   $response = $client->send_request($request);
+  //populate db with response
   return $response;
 }
 
