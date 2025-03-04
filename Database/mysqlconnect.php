@@ -117,7 +117,7 @@ class mysqlConnect {
 	}
 	
 	//recipes
-	public function searchRecipe($keywords, $labels_string) {
+	public function searchRecipe($keywords, $labels_string = '') {
 		//Query stuff here 
 		$query = "";
 		$response = handleQuery($query, $this->mydb, "Query Status: Initial Search Recipe Successfull");
@@ -130,6 +130,11 @@ class mysqlConnect {
 			
 		}
 
+	}
+
+	public function addBookmark($uid, $rid) {
+		$query = "";
+		
 	}
 }
 

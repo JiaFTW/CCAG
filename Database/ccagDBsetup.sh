@@ -38,6 +38,7 @@ sql_query=$(cat <<EOF
     CREATE TABLE IF NOT EXISTS recipes (
         rid INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(75) NOT NULL,
+        image TEXT,
         num_ingredients INT,
         ingredients TEXT,
         calories INT,
@@ -84,11 +85,11 @@ sql_query=$(cat <<EOF
 
     CREATE TABLE IF NOT EXISTS mealplan_entries (
         cid INT NOT NULL,
-        rid INT NOT NULl,
-        day VARCHAR(9) NOT NULL,
-        meal_type VARCHAR(9) NOT NULL,
+        rid INT,
+        day VARCHAR(9),
+        meal_type VARCHAR(9),
         FOREIGN KEY (cid) REFERENCES mealplans(cid) ON DELETE CASCADE,
-        FOREIGN KEY (rid) REFERENCES recipes(rid)
+        FOREIGN KEY (rid) REFERENCES recipes(rid) ON DELETE CASCADE
     );
 EOF
 )

@@ -78,6 +78,11 @@ function getUserPreference($uid) {
 
 }
 
+
+function getReview($rate_id) {
+    
+}
+
 //Sessions Functions
 
 function generateSession(string $username, int $time_sec, mysqli $db) {
@@ -102,14 +107,20 @@ function addRecipe() {
 //might have to use explode()
 }
 
+function getRecipe($rid) {
 
+}
+
+function getSimpleRecipe($rid) {
+    
+}
 //Bookmark Functions
 function addBookmark($uid, $rid) {
 
 }
 
 function removeBookmark($uid, $rid) {
-    
+
 }
 
 ?>
