@@ -7,9 +7,6 @@
             <a href="searchPage.php">Search</a>
         <?php if (isset($_COOKIE['session_token'])) { ?>
             <a href="profilePage.php">Profile</a>
-            <a href="">Favorites</a>
-            <a href="">My Reviews</a>
-            <a href="">Meal Plans</a>
         <?php } ?>
         </div>
 

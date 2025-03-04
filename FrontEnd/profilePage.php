@@ -10,8 +10,9 @@ require_once('sessionValidate.php')
   </head>
     <body>
     <?php include('header.php'); ?>
+    <?php include('headerprofile.php'); ?>
         <main>
-            <p>This is page 2</p>
+            <p></p>
         </main>
     </body>
 </html>

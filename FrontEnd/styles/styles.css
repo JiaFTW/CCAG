@@ -11,6 +11,28 @@ body {
     color: white;
 }
 
+.navbar2 {
+    background-color: #65d189;
+    overflow: hidden;
+    display: flex;
+    padding: 10px 20px;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+.navbar2 a{
+    color: white;
+    text-decoration: none;
+    margin: 0px;
+    padding: 15px 20px;
+}
+
+.navbar2 a:hover{
+    background-color:#3d8555;
+    border-radius: 5px;
+}
+
 .nav-left, .nav-right {
     display: flex;
     align-items: center;
