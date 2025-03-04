@@ -115,7 +115,22 @@ class mysqlConnect {
 		
 		return array('status' => $response ? 'Success' : 'Error');
 	}
+	
+	//recipes
+	public function searchRecipe($keywords, $labels_string) {
+		//Query stuff here 
+		$query = "";
+		$response = handleQuery($query, $this->mydb, "Query Status: Initial Search Recipe Successfull");
+		$response_arr = $response->fetch_assoc();
 
+		if ($response_arr == null) {
+			//send request to DMZ
+			//add response to database addRecipe()
+			$new_response = handleQuery($query, $this->mydb, "Query Status: Local Re-Search Successfull");
+			
+		}
+
+	}
 }
 
 	
