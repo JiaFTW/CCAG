@@ -119,15 +119,47 @@ class mysqlConnect {
 	//recipes
 	public function checkRecipe($keywords, $labels = '') {
 		//TODO: move indexing to script
+		
+		$label_query = ($labels == '') ? '' : 'queryHere'; //TODO add query
 		$query = "SELECT recipes.name, recipes.image, recipes.num_ingredients, recipes.ingredients, recipes.calories, recipes.servings, GROUP_CONCAT(labels.label_name SEPARATOR ', ') AS labels_str
 		FROM recipes INNER JOIN recipe_labels  ON recipes.rid = recipe_labels.rid INNER JOIN labels ON recipe_labels.label_id = labels.label_id
 		WHERE MATCH(recipes.name) AGAINST ('+".$keywords."*') ".$label_query."
 		GROUP BY recipes.rid;";
 
 		$response = handleQuery($query, $this->mydb, "Query Status: Check Recipe Successfull");
-		$response_arr = $response->fetch_assoc();
+		if ($response === false) {
+			return $response;
+		}
+		$response_arr = $response->fetch_all();
 
 		return $response_arr;
+	}
+
+	public function populateRecipe($array) {
+		$fail_counter = 0;
+		$total = count($array);
+
+		if ($total == 0) {
+			return false;
+		}
+
+		foreach($array as $row) {
+			$success = addRecipe($row['name'],
+            $row['image'],
+            $row['num_ingredients'],
+            $row['ingredients'],
+            $row['calories'],
+            $row['servings'],
+            $row['labels'],
+			$this->mydb);
+
+			if(!$success) {
+				$fail_counter++;
+			}
+		}
+
+		return $fail_counter < $total;
+
 	}
 
 	public function addFavorite($uid, $rid) {

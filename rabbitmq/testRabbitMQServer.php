@@ -39,12 +39,21 @@ function doRecipe($keyword, $labels)
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
   //check if stuff we need is in db, if not, send message to dmz
   //TODO add functions
-  $connect->checkRecipe($keyword, $lables);
-  $client = new rabbitMQClient("testRabbitMQ.ini","DMZServer");
-  $request = array();
-  $request['type'] = "getRecipe";
-  $request['info'] = $info; //placeholder stuff until we define the system more
-  $response = $client->send_request($request);
+  $response = $connect->checkRecipe($keyword, $lables); 
+  if($response == false) {
+    //return error
+  }
+  if ($response === null){
+    $client = new rabbitMQClient("testRabbitMQ.ini","DMZServer");
+    $request = array();
+    $request['type'] = "getRecipe";
+    $request['info'] = $keyword; //placeholder stuff until we define the system more
+    $dmz_response = $client->send_request($request);
+    if($connect->populateRecipe($dmz_response) === false) {
+      //return error
+    }
+  }
+  
   //populate db with response
   return $response;
 }
