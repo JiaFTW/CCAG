@@ -34,11 +34,12 @@ function doLogout($token) {
   return $connect->invalidateSession($token);
 }
 
-function doRecipe($info)
+function doRecipe($keyword, $labels)
 {
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
   //check if stuff we need is in db, if not, send message to dmz
-
+  //TODO add functions
+  $connect->checkRecipe($keyword, $lables);
   $client = new rabbitMQClient("testRabbitMQ.ini","DMZServer");
   $request = array();
   $request['type'] = "getRecipe";

@@ -78,7 +78,6 @@ function getUserPreference($uid) {
 
 }
 
-
 function getReview($rate_id) {
     
 }
@@ -103,24 +102,40 @@ function generateSession(string $username, int $time_sec, mysqli $db) {
 
 //Recipe Funcitons
 
-function addRecipe() {
-//might have to use explode()
+function addRecipe($name, $image, $num_ingredients, $ingredients, $calories, $servings, $labels, mysqli $db) {
+//might have to use explode() 
+//TODO modify labels to suit query (might need to refactor label string first)
+
+$query = "START TRANSACTION; 
+INSERT INTO recipes (name, image, num_ingredients, ingredients, calories, servings) 
+VALUES ('".$name."', '".$image."', '".$num_ingredients."', '".$ingredients."', '".$calories."', '".$servings."');
+
+INSERT INTO recipe_labels (rid, label_id)
+SELECT LAST_INSERT_ID(), label_id
+FROM labels WHERE labels IN (".$labels.");
+COMMIT;";
+$response = handleQuery($query, $db, "Query Status: Add Recipe & Recipe Labels Successfull");
+
+return $response;
 }
 
 function getRecipe($rid) {
 
 }
 
-function getSimpleRecipe($rid) {
-    
-}
 //Bookmark Functions
-function addBookmark($uid, $rid) {
+function addBookmark($uid, $rid, mysqli $db) {
+    $query = "";
+    $response = handleQuery($query, $db, "Query Status: Add Bookmark Successfull");
 
+    return $response;
 }
 
 function removeBookmark($uid, $rid) {
+    $query = "";
+    $response = handleQuery($query, $db, "Query Status: Remove Bookmark Successfull");
 
+    return $response;
 }
 
 ?>

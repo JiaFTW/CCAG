@@ -117,23 +117,20 @@ class mysqlConnect {
 	}
 	
 	//recipes
-	public function searchRecipe($keywords, $labels_string = '') {
-		//Query stuff here 
-		$query = "";
-		$response = handleQuery($query, $this->mydb, "Query Status: Initial Search Recipe Successfull");
+	public function checkRecipe($keywords, $labels = '') {
+		//TODO: move indexing to script
+		$query = "SELECT recipes.name, recipes.image, recipes.num_ingredients, recipes.ingredients, recipes.calories, recipes.servings, GROUP_CONCAT(labels.label_name SEPARATOR ', ') AS labels_str
+		FROM recipes INNER JOIN recipe_labels  ON recipes.rid = recipe_labels.rid INNER JOIN labels ON recipe_labels.label_id = labels.label_id
+		WHERE MATCH(recipes.name) AGAINST ('+".$keywords."*') ".$label_query."
+		GROUP BY recipes.rid;";
+
+		$response = handleQuery($query, $this->mydb, "Query Status: Check Recipe Successfull");
 		$response_arr = $response->fetch_assoc();
 
-		if ($response_arr == null) {
-			//send request to DMZ
-			//add response to database addRecipe()
-			$new_response = handleQuery($query, $this->mydb, "Query Status: Local Re-Search Successfull");
-			
-		}
-
+		return $response_arr;
 	}
 
-	public function addBookmark($uid, $rid) {
-		$query = "";
+	public function addFavorite($uid, $rid) {
 		
 	}
 }
