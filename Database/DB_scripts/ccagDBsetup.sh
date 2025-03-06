@@ -9,8 +9,6 @@ db_pass="12345"  #TODO store password elsewhere (config file?)
 
 #TODO add personal deliverable tables
 
-#IMPORTANT Add these
-
 sql_query=$(cat <<EOF
 
     CREATE DATABASE IF NOT EXISTS \`${db_name}\`;
@@ -36,6 +34,7 @@ sql_query=$(cat <<EOF
         FOREIGN KEY (uid) REFERENCES accounts(uid)
     );
 
+
     CREATE TABLE IF NOT EXISTS recipes (
         rid INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(75) NOT NULL,
@@ -48,7 +47,7 @@ sql_query=$(cat <<EOF
     
     CREATE TABLE IF NOT EXISTS labels (
         label_id INT AUTO_INCREMENT PRIMARY KEY,
-        label_name VARCHAR(25) UNIQUE NOT NULL,
+        label_name VARCHAR(25) NOT NULL,
         description TEXT
     );
 
@@ -57,6 +56,14 @@ sql_query=$(cat <<EOF
         label_id INT NOT NULL,
         PRIMARY KEY (rid, label_id), 
         FOREIGN KEY (rid) REFERENCES recipes(rid) ON DELETE CASCADE,
+        FOREIGN KEY (label_id) REFERENCES labels(label_id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS user_pref (
+        uid INT NOT NULL,
+        label_id INT NOT NULL,
+        PRIMARY KEY (uid, label_id),
+        FOREIGN KEY (uid) REFERENCES accounts(uid) ON DELETE CASCADE,
         FOREIGN KEY (label_id) REFERENCES labels(label_id) ON DELETE CASCADE
     );
     
@@ -81,7 +88,8 @@ sql_query=$(cat <<EOF
     CREATE TABLE IF NOT EXISTS mealplans (
         cid INT AUTO_INCREMENT PRIMARY KEY,
         uid INT NOT NULL,
-        FOREIGN KEY (uid) REFERENCES accounts(uid)
+        mp_name VARCHAR(32) NOT NULL,
+        FOREIGN KEY (uid) REFERENCES accounts(uid) ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS mealplan_entries (
@@ -92,13 +100,8 @@ sql_query=$(cat <<EOF
         FOREIGN KEY (cid) REFERENCES mealplans(cid) ON DELETE CASCADE,
         FOREIGN KEY (rid) REFERENCES recipes(rid) ON DELETE CASCADE
     );
-
-    
 EOF
 )
-
-
-#Include t
 
 sudo mysql -e "$sql_query"
 
