@@ -52,6 +52,7 @@ function requestProcessor($request)
 		    $request['image_url'],
 		    $request['ingredients'],
 		    $request['health_labels'],
+		     );
     default:
 	    return [
 		    'status' => 'error',
