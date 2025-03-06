@@ -104,7 +104,7 @@ function generateSession(string $username, int $time_sec, mysqli $db) {
 
 function addRecipe($name, $image, $num_ingredients, $ingredients, $calories, $servings, $labels, mysqli $db) {
 //might have to use explode() 
-//TODO modify labels to suit query (might need to refactor label string first)
+//TODO modify labels to suit query (might need to refactor label string first) -> ('like', 'this', 'format')
 
 $query = "START TRANSACTION; 
 INSERT INTO recipes (name, image, num_ingredients, ingredients, calories, servings) 

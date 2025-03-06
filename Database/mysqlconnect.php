@@ -31,7 +31,6 @@ class mysqlConnect {
 		return $this->dbConnectionStatus;
 	}
 
-
 	//Returns Array
 	public function registerAccount($username, $email, $password) {
 		$register_status;
@@ -82,7 +81,7 @@ class mysqlConnect {
 	}
 
 
-	//returns Array
+	//Returns Array
 	public function validateSession($token) {
 		$status;
 		$query = "SELECT cookie_token, end_time FROM sessions 
@@ -119,12 +118,14 @@ class mysqlConnect {
 	//recipes
 	public function checkRecipe($keywords, $labels = '') {
 		//TODO: move indexing to script
+		//Notice: labels must be wraps with " " before query starts -> ' "Like This?" '
 		
-		$label_query = ($labels == '') ? '' : 'queryHere'; //TODO add query
-		$query = "SELECT recipes.name, recipes.image, recipes.num_ingredients, recipes.ingredients, recipes.calories, recipes.servings, GROUP_CONCAT(labels.label_name SEPARATOR ', ') AS labels_str
+		$label_query = ($labels == '') ? '' : `AND MATCH(labels.label_name) AGAINST('(`.$labels.`)' IN BOOLEAN MODE)`;
+
+		$query = `SELECT recipes.name, recipes.image, recipes.num_ingredients, recipes.ingredients, recipes.calories, recipes.servings, GROUP_CONCAT(labels.label_name SEPARATOR ', ') AS labels_str
 		FROM recipes INNER JOIN recipe_labels  ON recipes.rid = recipe_labels.rid INNER JOIN labels ON recipe_labels.label_id = labels.label_id
-		WHERE MATCH(recipes.name) AGAINST ('+".$keywords."*') ".$label_query."
-		GROUP BY recipes.rid;";
+		WHERE MATCH(recipes.name) AGAINST ('+"`.$keywords.`*"' IN BOOLEAN MODE) `.$label_query.`
+		GROUP BY recipes.rid;`;
 
 		$response = handleQuery($query, $this->mydb, "Query Status: Check Recipe Successfull");
 		if ($response === false) {
@@ -150,7 +151,7 @@ class mysqlConnect {
             $row['ingredients'],
             $row['calories'],
             $row['servings'],
-            $row['labels'],
+            $row['labels'], //long string
 			$this->mydb);
 
 			if(!$success) {
