@@ -34,27 +34,28 @@ function doLogout($token) {
   return $connect->invalidateSession($token);
 }
 
-function doRecipe($keyword, $labels)
+function doRecipe($keyword, $labels = '') //perform search check
 {
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
-  //check if stuff we need is in db, if not, send message to dmz
-  //TODO add functions
+ 
   $response = $connect->checkRecipe($keyword, $lables); 
-  if($response == false) {
-    //return error
+  if($response == false) { //return if mysql error
+    return array('status' => 'DB_Error');
   }
-  if ($response === null){
+  if ($response === null){ //will fetch from DMZ if no results from database
     $client = new rabbitMQClient("testRabbitMQ.ini","DMZServer");
     $request = array();
     $request['type'] = "getRecipe";
     $request['info'] = $keyword; //placeholder stuff until we define the system more
     $dmz_response = $client->send_request($request);
-    if($connect->populateRecipe($dmz_response) === false) {
-      //return error
+
+    if($connect->populateRecipe($dmz_response) === false) {  //populate db with response
+      return array('status' => 'DB_Error');
     }
+    $response = $connect->checkRecipe($keyword, $lables); //perform search check agian
   }
   
-  //populate db with response
+ 
   return $response;
 }
 
