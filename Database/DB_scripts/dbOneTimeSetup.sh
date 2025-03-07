@@ -14,10 +14,10 @@ sql_query=$(cat <<EOF
     USE \`${db_name}\`;
 
     CREATE FULLTEXT INDEX idx_recipes_name ON recipes(name);
-    CREATE FULLTEXT INDEX idx_labels_name ON labels(labels_name);
+    CREATE FULLTEXT INDEX idx_labels_name ON labels(label_name);
 
     INSERT INTO labels(label_name) VALUES
-    ('balanced'), ('high-fiber'), ('high-protien'), ('low-carb'), ('low-fat'), ('low-sodium'),
+    ('balanced'), ('high-fiber'), ('high-protein'), ('low-carb'), ('low-fat'), ('low-sodium'),
     ('alcohol-cocktail'), ('alcohol-free'), ('celery-free'), ('crustacean-free'), ('dairy-free'), 
     ('DASH'), ('egg-free'), ('fish-free'), ('fodmap-free'), ('gluten-free'), ('immuno-supportive'),
     ('keto-friendly'), ('kidney-friendly'), ('kosher'), ('low-potassium'), ('low-sugar'), ('lupine-free'),
