@@ -28,6 +28,9 @@
       <label for="username">Username:</label>
       <input type="text" id="username" name="username" required> <br>
 
+      <label for="email">E-Mail:</label>
+      <input type="text" id="email" name="email" required> <br>
+
       <h5>Passwords must match and special characters allowed.</h5>
       <label for="password">Password:</label>
       <input type="password" id="password" pattern="[A-Za-z0-9]+" name="password" required> <br>
