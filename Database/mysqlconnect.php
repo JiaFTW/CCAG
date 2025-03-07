@@ -118,21 +118,26 @@ class mysqlConnect {
 	//recipes
 	public function checkRecipe($keywords, $labels = '') {
 		
-		$formatted_arr = '';
+		$formatted_labels = '';
+		$formatted_search = '';
+
+		$serch_arr = array_filter(array_map('trim', explode(' ', $keywords)));
+		$formatted_search = array_map(function($keyword) {return '+' . $keyword . '*'; }, $serch_arr);
+
 		if ($labels !== '') {
 			$label_arr = array_map('trim', explode(',', $labels));
-			$formatted_arr = array_map(function($label) { return "'" . $label . "'";}, $label_arr);
+			$formatted_labels = array_map(function($label) { return "'" . $label . "'";}, $label_arr);
 		}
 
 		$label_query = ($labels === '') ? '' : "INNER JOIN (
             SELECT recipe_labels.rid 
             FROM recipe_labels 
             INNER JOIN labels ON recipe_labels.label_id = labels.label_id
-            WHERE labels.label_name IN (" . implode(',', $formatted_arr) . ")
+            WHERE labels.label_name IN (" . implode(',', $formatted_labels) . ")
             GROUP BY recipe_labels.rid
           ) AS filtered_rids ON recipes.rid = filtered_rids.rid";
 
-		$query = "SELECT recipes.name, recipes.image, recipes.num_ingredients, recipes.ingredients, recipes.calories, recipes.servings, GROUP_CONCAT(DISTINCT labels.label_name SEPARATOR ', ') AS labels_str
+		$query = "SELECT recipes.rid, recipes.name, recipes.image, recipes.num_ingredients, recipes.ingredients, recipes.calories, recipes.servings, GROUP_CONCAT(DISTINCT labels.label_name SEPARATOR ', ') AS labels_str
 		FROM recipes INNER JOIN recipe_labels  ON recipes.rid = recipe_labels.rid INNER JOIN labels ON recipe_labels.label_id = labels.label_id
 		".$label_query." WHERE MATCH(recipes.name) AGAINST ('+".$keywords."*' IN BOOLEAN MODE) 
 		GROUP BY recipes.rid;";
@@ -296,6 +301,7 @@ $chickenRecipes = [
 //$testObj->populateRecipe($chickenRecipes);
 
 showTwoAr($testObj->checkRecipe('Chicken', 'keto-friendly','high-protein'));
+showTwoAr($testObj->checkRecipe('Caesar Salad'));
 
 /*showAr($testObj->registerAccount("Bob","bobby@gmail.com", "crabcake"));
 showAr($testObj->registerAccount("dummyuser","dummy@email.com", "dummypass"));

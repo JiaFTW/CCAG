@@ -106,8 +106,7 @@ function addRecipe($name, $image, $num_ingredients, $ingredients, $calories, $se
 
 $labels_arr = array_map('trim', explode(',', $labels));
 $formatted_labels = "'" . implode("','", $labels_arr) . "'";
-echo $formatted_labels;
-
+//echo $formatted_labels;
 
 $first_query = 
 "INSERT INTO recipes (name, image, num_ingredients, ingredients, calories, servings) 
@@ -118,7 +117,10 @@ $second_query =
 SELECT LAST_INSERT_ID(), label_id
 FROM labels WHERE label_name IN (".$formatted_labels.");";
 
-$response = handleQuery($first_query, $db, "Query Status: Add Recipe  Successfull");
+$response = handleQuery($first_query, $db, "Query Status: Add Recipe Successfull");
+if (!$response) {
+    return $response;
+}
 $response = handleQuery($second_query, $db, "Query Status: Add Recipe Labels Successfull");
 
 return $response;
