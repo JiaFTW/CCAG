@@ -4,7 +4,7 @@
         <div class="nav-left">
             <div class="title">CCAG</div>
             <a href="homepage.php">Homepage</a>
-            <a href="searchPage.php">Search</a>
+            <a href="searchPage.php">Recipes</a>
         <?php if (isset($_COOKIE['session_token'])) { ?>
             <a href="profilePage.php">Profile</a>
         <?php } ?>
