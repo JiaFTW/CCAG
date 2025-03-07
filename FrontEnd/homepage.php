@@ -16,8 +16,7 @@
         <div class="nav-left">
             <div class="title">CCAG</div>
             <a href="homepage.php">Homepage</a>
-            <a href="page1.php">Page 1</a>
-            <a href="page2.php">Page 2</a>
+            <a href="searchPage.php">Recipes</a>
         </div>
 
                     
