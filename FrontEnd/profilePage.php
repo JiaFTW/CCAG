@@ -1,17 +1,18 @@
 <?php
-require_once('sessionValidate.php');
+require_once('sessionValidate.php')
 ?>
 
 
 <html>
     <head>
-    <title>CCAG Page 1</title>
+    <title>CCAG Profile</title>
     <link rel="stylesheet" href="./styles/styles.css">
   </head>
     <body>
     <?php include('header.php'); ?>
+    <?php include('headerprofile.php'); ?>
         <main>
-            <p>This is page 1</p>
+            <p></p>
         </main>
     </body>
 </html>
