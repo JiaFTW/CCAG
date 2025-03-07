@@ -37,7 +37,7 @@ function storeRecipe($recipeData)
 
 }
 // function to fetch recipes from Edamam API
-function getRecipe($query)
+/*function getRecipe($query)
 {
     // fetch data from Edamam API
     $edamamData = fetchEdamamData($query);
@@ -77,7 +77,26 @@ function getRecipe($query)
         ];
     }
 }
+ */
 
+function getRecipe($query)
+{
+    // Fetch data from Edamam API
+    $recipes = fetchEdamamData($query);
+
+    if (!empty($recipes)) {
+        return [
+            'status' => 'success',
+            'message' => 'Recipes fetched successfully',
+            'recipes' => $recipes,
+        ];
+    } else {
+        return [
+            'status' => 'error',
+            'message' => 'Failed to fetch recipes from Edamam API',
+        ];
+    }
+}
 
 function requestProcessor($request)
 {
@@ -140,5 +159,6 @@ $server->process_requests('requestProcessor');
 echo "DMZServer END".PHP_EOL;
 exit();
 ?>
+
 
 

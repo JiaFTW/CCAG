@@ -1,11 +1,8 @@
-
-
 <?php
 
 require_once('../rabbitmq/path.inc');          
 require_once('../rabbitmq/get_host_info.inc');
 require_once('../rabbitmq/rabbitMQLib.inc');  
-//require_once('../rabbitmq/DMZServer.php');
 
 // Edamam API credentials
 $app_id = "e87d2844";               
@@ -45,10 +42,14 @@ $edamamData = fetchEdamamData($query);
 // check if data was successfully fetched
 if ($edamamData && isset($edamamData['hits'])) 
 {
+	/*
 	echo "Recipes for '$query':\n";
 	echo "=====================\n";
+	 */
+	$client = new rabbitMQClient("testRabbitMQ.ini", "DMZServer");
+	
 
-	$client = new rabbitMQClient("conf-RabbitMQ.ini", "DMZServer");
+
 	//$client = new rabbitMQClient("conf-RabbitMQ.ini", "testServer");
 
 	// multidimensional array to store all recipes
@@ -74,7 +75,7 @@ if ($edamamData && isset($edamamData['hits']))
 			// adding recipe to the multidimensional array
 			$recipes[] = $recipeData;
 
-
+/*
 			// print the recipe details to the terminal for bug fixes
 			echo "name: " . $recipeData['name'] . "\n";
             		echo "servings: " . $recipeData['servings'] . " servings\n";
@@ -84,9 +85,10 @@ if ($edamamData && isset($edamamData['hits']))
             		echo "ingredients: '" . $recipeData['ingredients'] . "'\n";
             		echo "labels: '" . $recipeData['labels'] . "'\n";
             		echo "\n"; // Add a blank line between recipes
-		}
-	}
 
+ */		}
+	}
+/*
 	// prepppare tosend the message to RabbitM
 	$message = [
 		'type' => 'storeRecipe',
@@ -94,7 +96,9 @@ if ($edamamData && isset($edamamData['hits']))
 	];
 	// send the message to RabbitMQ
 	$response = $client->send_request($message);
-	echo "Data sent to RabbitMQ. Response: " . print_r($response, true) . PHP_EOL;
+ 	echo "Data sent to RabbitMQ. Response: " . print_r($response, true) . PHP_EOL;
+ */
+	return $recipes;
 }
 
 
