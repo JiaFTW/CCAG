@@ -45,60 +45,56 @@ if ($edamamData && isset($edamamData['hits']))
 	echo "Recipes for '$query':\n";
 	echo "=====================\n";
 
-	/*
+	
 	$client = new rabbitMQClient("conf-RabbitMQ.ini", "testServer");
-	 */
 
-	// loop through each recipe 
+	// multidimensional array to store all recipes
+	$recipes = [];
+
 	foreach ($edamamData['hits'] as $hit) 
+	
 	{
-	       	if (isset($hit['recipe'])) 
+		if (isset($hit['recipe'])) 
 		{
 			$recipe = $hit['recipe'];
-			                   
-			// get the required fields
 
-			$recipeData =[
-				'recipe_name' => $recipe['label'],
-				'yield' => $recipe['yield'],
-				'image_url' => $recipe['image'],
-				'ingredients' => $recipe['ingredientLines'],
-				'health_labels' => $recipe['healthLabels'],
+			$recipeData = [
+				'name' => $recipe['label'],
+				'image' => $recipe['image'],
+				'num_ingredients' => count($recipe['ingredientLines']),
+				'ingredients' => implode("', '", $recipe['ingredientLines']),
+				'calories' => $recipe['calories'],
+				'servings' => $recipe['yield'],
+				'labels' => implode("', '", $recipe['healthLabels']),
 			];
 
+			// adding recipe to the multidimensional array
+			$recipes[] = $recipeData;
 
-			echo "Recipe: " . $recipeData['recipe_name'] . "\n";
-			echo "Yield: " . $recipeData['yield'] . " servings\n";
-			echo "Image URL: " . $recipeData['image_url'] . "\n";
-			echo "Ingredients:\n";
-			foreach ($recipeData['ingredients'] as $ingredient)
-			{
-			       	echo "- " . $ingredient . "\n";
-		       	}
-			echo "Health Labels:\n";
-			
-			foreach ($recipeData['health_labels'] as $label) 
-			{
-				echo "- " . $label . "\n";
-	       		}
-			echo "\n"; 
 
-			/*
-			 $message = [
-				 'type' => 'storeRecipe',
-				 'recipe_name' => $recipeData['recipe_name'],
-				 'yield' => $recipeData['yield'],
-				 'image_url' => $recipeData['image_url'],
-				 'ingredients' => $recipeData['ingredients'],
-				 'health_labels' => $recipeData['health_labels'],
-			 ];
+			// print the recipe details to the terminal for bug fixes
+			echo "name: " . $recipeData['name'] . "\n";
+            		echo "servings: " . $recipeData['servings'] . " servings\n";
+            		echo "image: " . $recipeData['image'] . "\n";
+            		echo "calories: " . $recipeData['calories'] . "\n";
+            		echo "num_ingredients: " . $recipeData['num_ingredients'] . "\n";
+            		echo "ingredients: '" . $recipeData['ingredients'] . "'\n";
+            		echo "labels: '" . $recipeData['labels'] . "'\n";
+            		echo "\n"; // Add a blank line between recipes
+		}
+	}
 
-			 $response = $client->send_request($message);
-			 echo "Data sent to RabbitMQ. Response: " . print_r($response, true) . PHP_EOL;
-			 */
-	       	}
-       	}
+	// prepppare tosend the message to RabbitM
+	$message = [
+		'type' => 'storeRecipe',
+		'recipes' => $recipes, // send the multidimensional array
+	];
+	// send the message to RabbitMQ
+	$response = $client->send_request($message);
+	echo "Data sent to RabbitMQ. Response: " . print_r($response, true) . PHP_EOL;
 }
+
+
 else
 {
        	echo "Failed to fetch data from Edamam API.\n";
