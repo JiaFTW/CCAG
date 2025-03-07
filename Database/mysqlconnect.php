@@ -117,13 +117,18 @@ class mysqlConnect {
 	
 	//recipes
 	public function checkRecipe($keywords, $labels = '') {
-		//Notice: labels must be wraps with " " before query starts -> ` "Like This For Each" `
 		
+		$formatted_arr = '';
+		if ($labels !== '') {
+			$label_arr = array_map('trim', explode(',', $labels));
+			$formatted_arr = array_map(function($label) { return "'" . $label . "'";}, $label_arr);
+		}
+
 		$label_query = ($labels === '') ? '' : "INNER JOIN (
-            SELECT recipe_labels .rid 
+            SELECT recipe_labels.rid 
             FROM recipe_labels 
             INNER JOIN labels ON recipe_labels.label_id = labels.label_id
-            WHERE MATCH(labels.label_name) AGAINST ('+(".str_replace(',', ' +', $labels).")' IN BOOLEAN MODE)
+            WHERE labels.label_name IN (" . implode(',', $formatted_arr) . ")
             GROUP BY recipe_labels.rid
           ) AS filtered_rids ON recipes.rid = filtered_rids.rid";
 
@@ -288,9 +293,9 @@ $chickenRecipes = [
     ]
 ];
 
-$testObj->populateRecipe($chickenRecipes);
+//$testObj->populateRecipe($chickenRecipes);
 
-showTwoAr($testObj->checkRecipe('Chicken'));
+showTwoAr($testObj->checkRecipe('Chicken', 'keto-friendly','high-protein'));
 
 /*showAr($testObj->registerAccount("Bob","bobby@gmail.com", "crabcake"));
 showAr($testObj->registerAccount("dummyuser","dummy@email.com", "dummypass"));

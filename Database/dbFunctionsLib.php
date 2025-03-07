@@ -103,11 +103,12 @@ function generateSession(string $username, int $time_sec, mysqli $db) {
 //Recipe Funcitons
 
 function addRecipe($name, $image, $num_ingredients, $ingredients, $calories, $servings, $labels, mysqli $db) {
-//TODO fix issue here
-$formatted_labels = "'" . implode("','", explode(',', $labels)) . "'";
+
+$labels_arr = array_map('trim', explode(',', $labels));
+$formatted_labels = "'" . implode("','", $labels_arr) . "'";
 echo $formatted_labels;
 
-//$start_query = "START TRANSACTION;";
+
 $first_query = 
 "INSERT INTO recipes (name, image, num_ingredients, ingredients, calories, servings) 
 VALUES ('".$name."', '".$image."', ".$num_ingredients.", '".$ingredients."', ".$calories.", ".$servings.");";
@@ -116,12 +117,9 @@ $second_query =
 "INSERT INTO recipe_labels (rid, label_id)
 SELECT LAST_INSERT_ID(), label_id
 FROM labels WHERE label_name IN (".$formatted_labels.");";
-//$end_query = "COMMIT;";
 
-//$response = handleQuery($start_query, $db, "Query Status: Start Transaction Successfull");
 $response = handleQuery($first_query, $db, "Query Status: Add Recipe  Successfull");
 $response = handleQuery($second_query, $db, "Query Status: Add Recipe Labels Successfull");
-//$response = handleQuery($end_query, $db, "Query Status: End Transaction Successfull");
 
 return $response;
 }
