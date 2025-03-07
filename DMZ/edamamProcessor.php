@@ -1,8 +1,11 @@
+
+
 <?php
 
 require_once('../rabbitmq/path.inc');          
 require_once('../rabbitmq/get_host_info.inc');
 require_once('../rabbitmq/rabbitMQLib.inc');  
+//require_once('../rabbitmq/DMZServer.php');
 
 // Edamam API credentials
 $app_id = "e87d2844";               
@@ -45,8 +48,8 @@ if ($edamamData && isset($edamamData['hits']))
 	echo "Recipes for '$query':\n";
 	echo "=====================\n";
 
-	
-	$client = new rabbitMQClient("conf-RabbitMQ.ini", "testServer");
+	$client = new rabbitMQClient("conf-RabbitMQ.ini", "DMZServer");
+	//$client = new rabbitMQClient("conf-RabbitMQ.ini", "testServer");
 
 	// multidimensional array to store all recipes
 	$recipes = [];
