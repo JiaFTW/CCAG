@@ -48,7 +48,7 @@ function doRecipe($keyword, /*$labels = '' */) //perform search check
     /* $client = new rabbitMQClient("testRabbitMQ.ini","DMZServer");
     $request = array();
     $request['type'] = "getRecipe";
-    $request['info'] = $keyword; //placeholder stuff until we define the system more
+    $request['keyword'] = $keyword; //placeholder stuff until we define the system more
     $dmz_response = $client->send_request($request);
 
     if($connect->populateRecipe($dmz_response) === false) {  //populate db with response
