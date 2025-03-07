@@ -31,6 +31,7 @@ $request['type'] = $info['type'];
 switch ($request['type'])
   {
     case "login":
+      echo 'logging in';
       $request['username'] = $info['username'];
       $request['password'] = $info['password'];
       break;
