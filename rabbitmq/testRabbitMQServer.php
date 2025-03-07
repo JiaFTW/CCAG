@@ -34,11 +34,11 @@ function doLogout($token) {
   return $connect->invalidateSession($token);
 }
 
-function doRecipe($keyword, $labels = '') //perform search check
+function doRecipe($keyword, /*$labels = '' */) //perform search check
 {
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
  
-  $response = $connect->checkRecipe($keyword, $lables); 
+  $response = $connect->checkRecipe($keyword); 
   if($response == false) { //return if mysql error
     return array('status' => 'DB_Error');
   }
