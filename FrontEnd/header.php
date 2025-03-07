@@ -4,9 +4,10 @@
         <div class="nav-left">
             <div class="title">CCAG</div>
             <a href="homepage.php">Homepage</a>
-            <a href="searchPage.php">Search</a>
+            <a href="page1.php">Page 1</a>
+            <a href="page2.php">Page 2</a>
         <?php if (isset($_COOKIE['session_token'])) { ?>
-            <a href="profilePage.php">Profile</a>
+            <a href="secretpage.php">Secret Page</a> 
         <?php } ?>
         </div>
 

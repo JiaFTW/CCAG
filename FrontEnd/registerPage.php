@@ -3,8 +3,11 @@
 <html>
   <head>
     <title>CCAG Register</title>
+<<<<<<< HEAD:FrontEnd/registerPage.html
+=======
     <link rel="stylesheet" href="./styles/styles.css">
     <?php include('header.php'); ?>
+>>>>>>> yummy_cookies:FrontEnd/registerPage.php
   </head>
   
 <script>
@@ -22,14 +25,15 @@
 </script>
   
   <body>
+<<<<<<< HEAD:FrontEnd/registerPage.html
+=======
+
+>>>>>>> yummy_cookies:FrontEnd/registerPage.php
     <h2>Register</h2>
     <form action="register.php" method="POST" onsubmit="return matchingPasswords()"> <!-- Inputs the text field to the php file. And calls the matchingPasswords function.-->
       
       <label for="username">Username:</label>
-      <input type="text" id="username" name="username" required> <br>
-
-      <label for="email">E-Mail:</label>
-      <input type="text" id="email" name="email" required> <br>
+      <input type="text" id=username" name="username" required> <br>
 
       <h5>Passwords must match and special characters allowed.</h5>
       <label for="password">Password:</label>
