@@ -10,7 +10,6 @@ $logindata = array (
 );
 
 //Sends the login request
-echo 'hello';
 $response = sendMessage($logindata);
 var_dump($response);
 if ($response['status'] == 'Success') {
