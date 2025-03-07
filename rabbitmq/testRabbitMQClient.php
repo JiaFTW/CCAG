@@ -31,7 +31,6 @@ $request['type'] = $info['type'];
 switch ($request['type'])
   {
     case "login":
-      echo 'logging in';
       $request['username'] = $info['username'];
       $request['password'] = $info['password'];
       break;
@@ -48,6 +47,7 @@ switch ($request['type'])
       break;
     case "getRecipe":
       //put whatever data we need to search the database or dmz here
+      break;
     default:
       return $request['type'].PHP_EOL;
   }
