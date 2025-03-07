@@ -125,18 +125,19 @@ class mysqlConnect {
 		$serch_arr = array_filter(array_map('trim', explode(' ', $keywords)));
 		$formatted_search = array_map(function($keyword) {return '+' . $keyword . '*'; }, $serch_arr);
 
-		if ($labels !== '') {
+		$label_query = '';
+    	if ($labels !== '') {
 			$label_arr = array_map('trim', explode(',', $labels));
-			$formatted_labels = array_map(function($label) { return "'" . $label . "'";}, $label_arr);
-		}
-
-		$label_query = ($labels === '') ? '' : "INNER JOIN (
-            SELECT recipe_labels.rid 
-            FROM recipe_labels 
-            INNER JOIN labels ON recipe_labels.label_id = labels.label_id
-            WHERE labels.label_name IN (" . implode(',', $formatted_labels) . ")
-            GROUP BY recipe_labels.rid
-          ) AS filtered_rids ON recipes.rid = filtered_rids.rid";
+			$formatted_labels = array_map(function($label) { return "'" . $label . "'"; }, $label_arr);
+ 
+        $label_query = "INNER JOIN (
+            SELECT rl.rid 
+            FROM recipe_labels rl
+            INNER JOIN labels l ON rl.label_id = l.label_id
+            WHERE l.label_name IN (" . implode(',', $formatted_labels) . ")
+            GROUP BY rl.rid
+            HAVING COUNT(DISTINCT l.label_name) = " . count($label_arr) . ") AS filtered_rids ON recipes.rid = filtered_rids.rid";
+    	}
 
 		$query = "SELECT recipes.rid, recipes.name, recipes.image, recipes.num_ingredients, recipes.ingredients, recipes.calories, recipes.servings, GROUP_CONCAT(DISTINCT labels.label_name SEPARATOR ', ') AS labels_str
 		FROM recipes INNER JOIN recipe_labels  ON recipes.rid = recipe_labels.rid INNER JOIN labels ON recipe_labels.label_id = labels.label_id
@@ -148,7 +149,7 @@ class mysqlConnect {
 			echo "ERROR";
 			return $response;
 		}
-		$response_arr = $response->fetch_all();
+		$response_arr = $response->fetch_all(MYSQLI_ASSOC);
 
 		return $response_arr;
 	}
@@ -189,7 +190,7 @@ class mysqlConnect {
 
 
 //For Testing  and debugging
-/*
+
 function showAr ($array) {
 	foreach ($array as $key => $value) {
 		echo "Key: $key; Value: $value\n";
@@ -302,7 +303,7 @@ $chickenRecipes = [
 
 //$testObj->populateRecipe($chickenRecipes);
 
-showTwoAr($testObj->checkRecipe('Chicken', 'keto-friendly'));
+showTwoAr($testObj->checkRecipe('Chicken', 'high-protein, dairy-free'));
 showTwoAr($testObj->checkRecipe('Caesar Salad'));
 
 /*showAr($testObj->registerAccount("Bob","bobby@gmail.com", "crabcake"));
