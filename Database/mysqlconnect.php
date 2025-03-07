@@ -188,6 +188,7 @@ class mysqlConnect {
 
 
 //For Testing  and debugging
+/*
 function showAr ($array) {
 	foreach ($array as $key => $value) {
 		echo "Key: $key; Value: $value\n";
@@ -300,7 +301,7 @@ $chickenRecipes = [
 
 //$testObj->populateRecipe($chickenRecipes);
 
-showTwoAr($testObj->checkRecipe('Chicken', 'keto-friendly','high-protein'));
+showTwoAr($testObj->checkRecipe('Chicken', 'keto-friendly'));
 showTwoAr($testObj->checkRecipe('Caesar Salad'));
 
 /*showAr($testObj->registerAccount("Bob","bobby@gmail.com", "crabcake"));

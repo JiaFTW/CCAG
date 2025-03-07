@@ -43,7 +43,9 @@ function doRecipe($keyword, $labels = '') //perform search check
     return array('status' => 'DB_Error');
   }
   if ($response === null){ //will fetch from DMZ if no results from database
-    $client = new rabbitMQClient("testRabbitMQ.ini","DMZServer");
+    
+    echo "this is  null";
+    /* $client = new rabbitMQClient("testRabbitMQ.ini","DMZServer");
     $request = array();
     $request['type'] = "getRecipe";
     $request['info'] = $keyword; //placeholder stuff until we define the system more
@@ -52,7 +54,7 @@ function doRecipe($keyword, $labels = '') //perform search check
     if($connect->populateRecipe($dmz_response) === false) {  //populate db with response
       return array('status' => 'DB_Error');
     }
-    $response = $connect->checkRecipe($keyword, $lables); //perform search check agian
+    $response = $connect->checkRecipe($keyword, $lables); //perform search check agian */
   }
   
  
@@ -78,7 +80,7 @@ function requestProcessor($request)
     case "register":
       return doRegistration($request['username'],$request['password'],$request['email']);
     case "getRecipe":
-      return doRecipe($request);
+      return doRecipe($request['keyword']);
     default:
       return "type fail".PHP_EOL;
   }
