@@ -53,6 +53,7 @@ class mysqlConnect {
 
 	//Returns Array
 	public function loginAccount($username, $password) {
+		echo 'sdioj';
 		$query = "SELECT username, password FROM accounts 
 		WHERE username = '".$username."';";
 		$status;

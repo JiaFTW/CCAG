@@ -10,8 +10,9 @@ $logindata = array (
 );
 
 //Sends the login request
+echo 'hello';
 $response = sendMessage($logindata);
-
+var_dump($response);
 if ($response['status'] == 'Success') {
     setcookie("session_token", $response['cookie'],time()+3600,"/");
     setcookie("username", $response['username'], time()+3600,"/");
