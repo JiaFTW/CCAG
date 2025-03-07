@@ -17,7 +17,7 @@ function handleQuery($q, mysqli $db, $msg = 'Query Status: Successful') {
     }
 }
 
-function isDuplicateFound($attribute, $col_name, $table_name, mysqli $db) {
+function isDuplicateFound($attribute, $col_name, $table_name, mysqli $db) {  //returns boolean if a duplicate is found
     $query = "SELECT COUNT(".$col_name.") 
     FROM ".$table_name." 
     WHERE ".$col_name." = '".$attribute."';";
@@ -33,6 +33,8 @@ function isDuplicateFound($attribute, $col_name, $table_name, mysqli $db) {
         return false;
     }
 }
+
+
 
 function getUIDbyUsername(string $username, mysqli $db) {
     $query = "SELECT uid FROM accounts WHERE username = '".$username."';";
@@ -64,8 +66,21 @@ function addAccount($username, $email ,$password, mysqli $db) {
     
 }
 
+function getBookmarks($uid) {
 
+}
 
+function getMealPlan($uid) {
+
+}
+
+function getUserPreference($uid) {
+
+}
+
+function getReview($rate_id) {
+    
+}
 
 //Sessions Functions
 
@@ -83,6 +98,51 @@ function generateSession(string $username, int $time_sec, mysqli $db) {
     $response = handleQuery($query, $db, "Query Status: Generate Session Query Successful");
 
     return $cookie_token = $response ? $token : null;
+}
+
+//Recipe Funcitons
+
+function addRecipe($name, $image, $num_ingredients, $ingredients, $calories, $servings, $labels, mysqli $db) {
+
+$labels_arr = array_map('trim', explode(',', $labels));
+$formatted_labels = "'" . implode("','", $labels_arr) . "'";
+//echo $formatted_labels;
+
+$first_query = 
+"INSERT INTO recipes (name, image, num_ingredients, ingredients, calories, servings) 
+VALUES ('".$name."', '".$image."', ".$num_ingredients.", '".$ingredients."', ".$calories.", ".$servings.");";
+
+$second_query = 
+"INSERT INTO recipe_labels (rid, label_id)
+SELECT LAST_INSERT_ID(), label_id
+FROM labels WHERE label_name IN (".$formatted_labels.");";
+
+$response = handleQuery($first_query, $db, "Query Status: Add Recipe Successfull");
+if (!$response) {
+    return $response;
+}
+$response = handleQuery($second_query, $db, "Query Status: Add Recipe Labels Successfull");
+
+return $response;
+}
+
+function getRecipe($rid) {
+
+}
+
+//Bookmark Functions
+function addBookmark($uid, $rid, mysqli $db) {
+    $query = "";
+    $response = handleQuery($query, $db, "Query Status: Add Bookmark Successfull");
+
+    return $response;
+}
+
+function removeBookmark($uid, $rid) {
+    $query = "";
+    $response = handleQuery($query, $db, "Query Status: Remove Bookmark Successfull");
+
+    return $response;
 }
 
 ?>

@@ -34,17 +34,30 @@ function doLogout($token) {
   return $connect->invalidateSession($token);
 }
 
-function doRecipe($info)
+function doRecipe($keyword, /*$labels = '' */) //perform search check
 {
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
-  //check if stuff we need is in db, if not, send message to dmz
+ 
+  $response = $connect->checkRecipe($keyword); 
+  if($response == false) { //return if mysql error
+    return array('status' => 'DB_Error');
+  }
+  if ($response === null){ //will fetch from DMZ if no results from database
+    
+    echo "this is  null";
+    /* $client = new rabbitMQClient("testRabbitMQ.ini","DMZServer");
+    $request = array();
+    $request['type'] = "getRecipe";
+    $request['keyword'] = $keyword; //placeholder stuff until we define the system more
+    $dmz_response = $client->send_request($request);
 
-  $client = new rabbitMQClient("testRabbitMQ.ini","DMZServer");
-  $request = array();
-  $request['type'] = "getRecipe";
-  $request['info'] = $info; //placeholder stuff until we define the system more
-  $response = $client->send_request($request);
-  //populate db with response
+    if($connect->populateRecipe($dmz_response) === false) {  //populate db with response
+      return array('status' => 'DB_Error');
+    }
+    $response = $connect->checkRecipe($keyword, $lables); //perform search check agian */
+  }
+  
+ 
   return $response;
 }
 
@@ -67,7 +80,7 @@ function requestProcessor($request)
     case "register":
       return doRegistration($request['username'],$request['password'],$request['email']);
     case "getRecipe":
-      return doRecipe($request);
+      return doRecipe($request['keyword']);
     default:
       return "type fail".PHP_EOL;
   }
