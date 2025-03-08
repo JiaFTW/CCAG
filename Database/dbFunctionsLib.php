@@ -54,7 +54,7 @@ function getUIDbyUsername(string $username, mysqli $db) {
 
 //Account Functions
 
-function addAccount($username, $email ,$password, mysqli $db) {
+function addAccount(string $username, $email , $password, mysqli $db) {
     $query = "INSERT INTO accounts
     (username, email, password) 
     VALUES ('".$username."', '".$email."', '".$password."');";
@@ -65,16 +65,25 @@ function addAccount($username, $email ,$password, mysqli $db) {
     
 }
 
-function getBookmarks($uid) {
+function getUserBookmarks($uid) {
 
 }
 
-function getMealPlan($uid) {
+function getUserMealPlans($uid) {
 
 }
 
-function getUserPreference($uid) {
+function getUserPref(string $username, mysqli $db) { //returns numbric array
+    $uid = getUIDbyUsername($username, $db);
+    $query = "SELECT labels.label_name FROM labels
+    JOIN user_pref ON user_pref.label_id = labels.label_id
+    WHERE user_pref.uid = '".$uid."';";
 
+    $response = handleQuery($query, $db, "Query Status: Get User Pref Query Succesful");
+    $user_pref_arr = $response->fetch_all(MYSQLI_NUM);
+    $flatten_arr = array_column($user_pref_arr, 0);
+
+    return $flatten_arr;
 }
 
 function getReview($rate_id) {
@@ -101,7 +110,7 @@ function generateSession(string $username, int $time_sec, mysqli $db) {
 
 //Recipe Funcitons
 
-function addRecipe($name, $image, $num_ingredients, $ingredients, $calories, $servings, $labels, mysqli $db) {
+function addRecipe(string $name, $image, $num_ingredients, $ingredients, $calories, $servings, string $labels, mysqli $db) {
 
     $labels_arr = array_map('trim', explode(',', $labels));
     $formatted_labels = "'" . implode("','", $labels_arr) . "'";
