@@ -181,6 +181,30 @@ class mysqlConnect {
 
 	}
 
+	//user funcitons
+	public function changeUserPref($username, $pref_array) {
+		$uid = getUIDbyUsername($username, $this->mydb);
+		$formatted_labels = "'" . implode("','", $pref_arr) . "'";
+
+		$checkNumQuery = "SELECT COUNT(uid) AS total FROM user_pref WHERE uid = ".$uid.";" ;
+		$response = handleQuery($checkNumQuery, $this->mydb, "Query Status: User Pref Count Successfull");
+		$sum_arr = $response->fetch_assoc();
+		if ($sum_arr['total'] > 0) {
+			$delete_query = "DELETE FROM user_pref WHERE uid = ".$uid.";" ;
+			$response = handleQuery($checkNumQuery, $this->mydb, "Query Status: User Pref Delete Successfull");
+			if ($response === false) {
+				return array('status' => 'Error');
+			}
+		}
+
+		$query = "INSERT INTO user_pref (uid, label_id)
+		SELECT ".$uid.", label_id
+		FROM labels WHERE label_name IN (".$formatted_labels.");";
+		$response = handleQuery($checkNumQuery, $this->mydb, "Query Status: Add User: ".$username." Prefs Successfull");
+		
+		return array('status' => $response ? 'Success' : 'Error');
+	}
+
 	public function addFavorite($uid, $rid) {
 		
 	}
