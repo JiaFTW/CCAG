@@ -13,19 +13,19 @@ $response = sendMessage($recipedata);*/
 //Test Code (To Do: Replace with real API call)
 $mockResponse = [
     [
-        "name" => "Creamy Garlic Pasta",
-        "image" => "https://via.placeholder.com/250",
-        "url" => "https://example.com/recipe1",
+        "name" => "Bob's Crabcakes",
+        "image" => "https://crabcake.com/",
+        "url" => "https://crabcake.com/recipe",
     ],
     [
-        "name" => "Spaghetti Carbonara",
-        "image" => "https://via.placeholder.com/250",
-        "url" => "https://example.com/recipe2",
+        "name" => "Bob's Pizza",
+        "image" => "https://bobcrabcake.com/",
+        "url" => "https://bobcrabcake.com/recipe2",
     ],
     [
-        "name" => "Pesto Pasta",
-        "image" => "https://via.placeholder.com/250",
-        "url" => "https://example.com/recipe3",
+        "name" => "Bob's Pasta",
+        "image" => "https://bobcrabcake.com/",
+        "url" => "https://bobcrabcake.com/recipe3",
     ]
 ];
 

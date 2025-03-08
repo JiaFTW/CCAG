@@ -46,7 +46,7 @@ require_once('sessionValidate.php');
                         <div class="recipe-card">
                             <h3>${recipe.name}</h3>
                             <img src="${recipe.image}" alt="${recipe.name}" class="recipe-img">
-                            <p><a href="${recipe.url}" target="_blank" rel="noopener noreferrer">View Recipe</a></p>
+                            <p><a href="${recipe.url}" target="_blank">View Recipe</a></p>
                         </div>
                     `;
                     resultsContainer.append(recipeCard);
