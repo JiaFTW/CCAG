@@ -10,5 +10,5 @@ $recipedata = array (
 //Sends the login request
 $response = sendMessage($recipedata);
 
-print_r($response);
+
 ?>

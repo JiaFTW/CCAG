@@ -171,6 +171,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $restrictions[] = 'low-sugar';
     }
 
+
+    //THIS IS WHERE WE WILL NEED TO DO SENDMESSAGE FOR THE LABELS/RESTRICTION FUNCTIONS FOR USER.
     print_r($restrictions);
 }
 
