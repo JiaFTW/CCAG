@@ -4,8 +4,8 @@ set -e
 #IMPORTANT: ONLY RUN THIS ONCE AFTER USING ccagDBsetup!!!
 # Run this script to add Indexing and populate labels table. Requires sudo access 
 
-
-db_pass="12345"  
+db_name="ccagDB"
+ 
 
 sql_query=$(cat <<EOF
 
