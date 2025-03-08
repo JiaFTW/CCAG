@@ -153,3 +153,31 @@ main {
 .recipe-card a:hover {
     background-color: #3d8555;
 }
+
+.favorite-btn, .unfavorite-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.favorite-btn {
+    background-color: #65d189;
+    color: white;
+}
+
+.favorite-btn:hover {
+    background-color: #3d8555;
+}
+
+.unfavorite-btn {
+    background-color: #3d8555;
+    color: white;
+}
+
+.unfavorite-btn:hover {
+    background-color: #65d189; 
+}
