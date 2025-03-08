@@ -155,12 +155,6 @@ function getRecipe($rid) {
 }
 
 //Bookmark Functions
-function addBookmark($uid, $rid, mysqli $db) {
-    $query = "";
-    $response = handleQuery($query, $db, "Query Status: Add Bookmark Successfull");
-
-    return $response;
-}
 
 function removeBookmark($uid, $rid) {
     $query = "";

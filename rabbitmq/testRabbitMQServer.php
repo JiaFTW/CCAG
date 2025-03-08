@@ -34,6 +34,18 @@ function doLogout($token) {
   return $connect->invalidateSession($token);
 }
 
+function doDiet($username, $pref_array) {
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+  return $connect->changeUserPref($username, $pref_array);
+}
+
+function doAddFavorite($username, $rid) {
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+  return $connect->addFavorite($username, $rid);
+}
+
 function doRecipe($keyword, /*$labels = '' */) //perform search check
 {
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
@@ -81,6 +93,10 @@ function requestProcessor($request)
       return doRegistration($request['username'],$request['password'],$request['email']);
     case "getRecipe":
       return doRecipe($request['keyword']);
+    case "diet":
+      return doDiet($request['username'], $request['restrictions']);
+    case "addFavorite":
+      return doAddFavorite($request['username'], $request['rid']);
     default:
       return "type fail".PHP_EOL;
   }
