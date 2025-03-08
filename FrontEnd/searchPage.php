@@ -28,20 +28,13 @@ require_once('sessionValidate.php');
                 
                 $.post("search.php", { search: keyword }, function (response) {
                     let recipes = JSON.parse(response);
-                    checkFavorites(recipes);
+                    displayResults(recipes);
                 });
 
                 $("#search").val("");
             });
 
-            function checkFavorites(recipes) {
-                $.post("favorite.php", { action: "check" }, function (favoritedRecipes) {
-                    let favorited = JSON.parse(favoritedRecipes);
-                    displayResults(recipes, favorited);
-                });
-            }
-
-            function displayResults(recipes, favorited) {
+            function displayResults(recipes) {
                 let resultsContainer = $("#results-container");
                 resultsContainer.empty();
 
@@ -51,10 +44,6 @@ require_once('sessionValidate.php');
                 }
 
                 recipes.forEach(recipe => {
-                    let isFavorited = favorited.includes(recipe.name);
-                    let buttonText = isFavorited ? "💔 Unfavorite" : "❤️ Favorite";
-                    let buttonClass = isFavorited ? "unfavorite-btn" : "favorite-btn";
-
                     let recipeCard = `
                         <div class="recipe-card">
                             <h3>${recipe.name}</h3>
@@ -64,21 +53,9 @@ require_once('sessionValidate.php');
                             <p><strong># of Ingredients: </strong> ${recipe.num_ingredients}</p>
                             <p><strong>Ingredients: </strong> ${recipe.ingredients}</p>
                             <p><strong>Labels: </strong> ${recipe.labels_str}</p>
-                            <button class="${buttonClass}" data-recipe='${JSON.stringify(recipe)}'>${buttonText}</button>
                         </div>
                     `;
                     resultsContainer.append(recipeCard);
-                });
-
-                $(".favorite-btn, .unfavorite-btn").click(function () {
-                    let recipeData = $(this).data("recipe");
-                    let isUnfavoriting = $(this).hasClass("unfavorite-btn");
-                    let action = isUnfavoriting ? "unfavorite" : "favorite";
-
-                    $.post("favorite.php", { action: action, recipe: JSON.stringify(recipeData) }, function (response) {
-                        alert(response); 
-                        checkFavorites(recipes); 
-                    });
                 });
             }
         });
