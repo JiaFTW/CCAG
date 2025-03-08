@@ -34,6 +34,22 @@ function isDuplicateFound($attribute, $col_name, $table_name, mysqli $db) {  //r
     }
 }
 
+function isTwoDuplicatesFound($attribute1, $attribute2, $col_name1, $col_name2, $table_name, mysqli $db) {  //returns boolean if duplicates are found
+    $query = "SELECT COUNT(*) 
+    FROM ".$table_name." 
+    WHERE ".$col_name1." = '".$attribute1."' AND ".$col_name2." = '".$attribute2."';";
+    $response = handleQuery($query, $db, 'Query Status: twoduplicateFound Successful');
+
+    $n = $response->fetch_row();
+    if ($n[0] > 0) {
+        echo "MYSQL: ".$n[0]." duplicates found".PHP_EOL;
+        return true;
+    }
+    else {
+        echo "MYSQL: No duplicates found".PHP_EOL;
+        return false;
+    }
+}
 
 
 function getUIDbyUsername(string $username, mysqli $db) {

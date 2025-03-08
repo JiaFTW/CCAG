@@ -14,7 +14,7 @@ sql_query=$(cat <<EOF
     USE \`${db_name}\`;
 
     CREATE FULLTEXT INDEX idx_recipes_name ON recipes(name);
-    CREATE FULLTEXT INDEX idx_labels_name ON labels(label_name);
+    
 
     INSERT INTO labels(label_name) VALUES
 
@@ -41,3 +41,7 @@ echo "One time setup successful"
 #('Mediterranean'), ('mollusk-free'), ('No-oil-added'), ('paleo'), ('peanut-free'), ('pecatarian'),
 #('pork-free'), ('red-meat-free'), ('sesame-free'), ('shellfish-free'), ('soy-free'), ('sugar-conscious'),
 #('sulfite-free'), ('tree-nut-free'), ('vegan'), ('vegetarian'), ('wheat-free')
+
+#UNUSED Indexs
+
+#CREATE FULLTEXT INDEX idx_labels_name ON labels(label_name);

@@ -207,11 +207,24 @@ class mysqlConnect {
 
 		//$debug = getUserPref($username, $this->mydb);
 		//print_r($debug);
-		return array('status' => $response ? 'Success' : 'Error');
+		//return array('status' => $response ? 'Success' : 'Error');
+		return getUserPref($username, $this->mydb);
 	}
 
-	public function addFavorite($uid, $rid) {
+	public function addFavorite($username, $rid) {
+		$uid = getUIDbyUsername($username, $this->mydb);
 		
+		if($uid === null) {
+			return array('status' => 'Error');
+		}
+		if(isTwoDuplicatesFound($uid, $rid, 'uid', 'rid', 'bookmarks', $this->mydb)) {
+			return array('status' => 'Error_Duplicate');
+		}
+
+		$query = "INSERT INTO bookmarks VALUES (".$uid.", ".$rid.");";
+		$response = handleQuery($query, $this->mydb, "Query Status: Add Favorite Successfull");
+		
+		return array('status' => $response ? 'Success' : 'Error');
 	}
 }
 
@@ -226,18 +239,6 @@ function showAr ($array) {
 	}
 } 
 
-function showTwoAR ($array) {
-	foreach($array as $row) {
-		showAr($row);
-		echo "\n";
-	}
-}
-
-function showRows($array) {
-	foreach($array as $row) {
-		echo $row."\n";
-	}
-}
 
 
 $testObj = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
@@ -338,11 +339,12 @@ $chickenRecipes = [
 
 //$testObj->populateRecipe($chickenRecipes);
 
-showTwoAr($testObj->checkRecipe('Chicken', 'high-protein, dairy-free'));
-showTwoAr($testObj->checkRecipe('Caesar Salad'));
+print_r($testObj->checkRecipe('Chicken', 'high-protein, dairy-free'));
+print_r($testObj->checkRecipe('Caesar Salad'));
 
 $test_prefs = ['dairy-free', 'gluten-free', 'high-protein', 'Kosher'];
-$testObj->changeUserPref('Bob', $test_prefs);
+print_r($testObj->changeUserPref('Bob', $test_prefs));
+print_r($testObj->addFavorite('Bob', 60))
 
 
 /*showAr($testObj->registerAccount("Bob","bobby@gmail.com", "crabcake"));
