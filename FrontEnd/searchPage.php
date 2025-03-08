@@ -30,6 +30,8 @@ require_once('sessionValidate.php');
                     let recipes = JSON.parse(response);
                     displayResults(recipes);
                 });
+
+                $("#search").val("");
             });
 
             function displayResults(recipes) {
@@ -46,7 +48,11 @@ require_once('sessionValidate.php');
                         <div class="recipe-card">
                             <h3>${recipe.name}</h3>
                             <img src="${recipe.image}" alt="${recipe.name}" class="recipe-img">
-                            <p><a href="${recipe.url}" target="_blank">View Recipe</a></p>
+                            <p><strong>Calories: </strong> ${recipe.calories} kcal</p>
+                            <p><strong>Servings: </strong> ${recipe.servings}</p>
+                            <p><strong># of Ingredients: </strong> ${recipe.num_ingredients}</p>
+                            <p><strong>Ingredients: </strong> ${recipe.ingredients}</p>
+                            <p><strong>Labels: </strong> ${recipe.labels_str}</p>
                         </div>
                     `;
                     resultsContainer.append(recipeCard);
