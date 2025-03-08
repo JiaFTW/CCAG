@@ -1,6 +1,17 @@
 body {
     font-family: Arial, sans-serif;
 }
+
+main {
+    font-family: Arial, sans-serif;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    margin: 0;
+    display: flex;
+}
+
+
 .navbar {
     background-color: #333;
     overflow: hidden;
@@ -86,5 +97,20 @@ body {
 }
 
 .search-button:hover {
+    background-color: #3d8555;
+}
+
+.save-button {
+    padding: 15px 25px;
+    font-size: 24px;
+    border: none;
+    border-radius: 10px;
+    background-color: #65d189;
+    color: white;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.save-button:hover {
     background-color: #3d8555;
 }
