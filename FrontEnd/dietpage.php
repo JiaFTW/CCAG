@@ -171,9 +171,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $restrictions[] = 'low-sugar';
     }
 
+    $dietdata = array (
+        'type' => 'diet',
+        'username' => $_COOKIE['username'],
+        'restrictions' => $restrictions
+    );
 
-    //THIS IS WHERE WE WILL NEED TO DO SENDMESSAGE FOR THE LABELS/RESTRICTION FUNCTIONS FOR USER.
+    $response = sendMessage($dietdata);
+
+    /*THIS IS WHERE WE WILL NEED TO DO SENDMESSAGE FOR THE LABELS/RESTRICTION FUNCTIONS FOR USER.
+    echo "THIS IS TESTING DIET FOR ";
+    echo $_COOKIE['username'];
+    echo "ARRAY BEING SENT: ";
     print_r($restrictions);
+    echo "THIS IS DIETDATA ARRAY: ";
+    echo $dietdata['type'];
+    echo $dietdata['username'];
+    echo $dietdata['restrictions'];*/
 }
 
 ?>
