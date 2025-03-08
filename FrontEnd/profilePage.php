@@ -11,8 +11,6 @@ require_once('sessionValidate.php')
     <body>
     <?php include('header.php'); ?>
     <?php include('headerprofile.php'); ?>
-        <main>
-            <p></p>
-        </main>
+        
     </body>
 </html>
