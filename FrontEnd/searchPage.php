@@ -53,10 +53,28 @@ require_once('sessionValidate.php');
                             <p><strong># of Ingredients: </strong> ${recipe.num_ingredients}</p>
                             <p><strong>Ingredients: </strong> ${recipe.ingredients}</p>
                             <p><strong>Labels: </strong> ${recipe.labels_str}</p>
+                            <button class="favorite-btn" data-id="$recipe.rid}" data-fav="false">Favorite</button>
                         </div>
                     `;
                     resultsContainer.append(recipeCard);
                 });
+
+                $(".favorite-btn").click(function() {
+                    let button = $(this);
+                    let recipeId = button.data("id"); //Gets recipe ID
+                    let isFavorite = button.data("fav");
+
+                    if (!isFavorite) {
+                        $.post("favorite.php", {recipe_id: recipeId}, function (response) {
+                            if (response === "Success") {
+                                button.text("Remove Favorite");
+                                button.data("fav", true);
+                            }
+                        });
+                    }
+                });
+
+
             }
         });
     </script>

@@ -54,6 +54,10 @@ switch ($request['type'])
       $request['username'] = $info['username'];
       $request['restrictions'] = $info['restrictions'];
       break;
+    case "addFavorite":
+      $request['username'] = $info['username'];
+      $request['rid'] = $info['rid'];
+      break;
     default:
       return $request['type'].PHP_EOL;
   }
