@@ -4,37 +4,39 @@ require_once('../rabbitmq/path.inc');
 require_once('../rabbitmq/get_host_info.inc');
 require_once('../rabbitmq/rabbitMQLib.inc');  
 
-// Edamam API credentials
 $app_id = "e87d2844";               
 $app_key = "5a5a8669d8e868a26407128df3f1f1d7"; 
 
-// function to fetch data from Edamam API
+// list of all allowed labels
+$allowedLabels = ['Dairy-Free', 'Egg-Free', 'Peanut-Free', 'Tree-Nut-Free', 'Wheat-Free','Soy-Free', 'Fish-Free', 'Shellfish-Free', 'Sesame-Free', 'Gluten-Free','Alcohol-Free', 'Kosher', 'Keto', 'Vegetarian', 'High-Fiber', 'High-Protein','Low-Carb', 'Low-Fat', 'Low-Sodium', 'Low-Sugar'];
+
+// function used to fetch data from Edamam API
 function fetchEdamamData($query) 
 {
-	global $app_id, $app_key;
-       	
-	//create the API URL with the query and credentials
-	$url = "https://api.edamam.com/search?q=" . urlencode($query) . "&app_id=" . $app_id . "&app_key=" . $app_key;
-	
+	global $app_id, $app_key, $allowedLabels;
+
 	// initialize cURL to make an HTTP request to the Edamam API
-	 $ch = curl_init(); // initialize cURL session
-	 curl_setopt($ch, CURLOPT_URL, $url); // set the URL to fetch
-	 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // return the response as a string instead of outputting it
-	 $response = curl_exec($ch); // execute the cURL request and store the response
-	 curl_close($ch); 
-	 return json_decode($response, true);
+	$url = "https://api.edamam.com/search?q=" . urlencode($query) . "&app_id=" . $app_id . "&app_key=" . $app_key . "&to=25";
+	$ch = curl_init(); 
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+	$response = curl_exec($ch);
+	curl_close($ch); 
+	return json_decode($response, true);
 }
 
-// checking if a query is provided as a command-line argument
-if ($argc < 2)
+
+
+// function used to filter and merge health and diet labels
+function filterLabels($healthLabels, $dietLabels) 
 {
-       	echo "Usage: php edamamProcessor.php <query>\n";
-       	exit(1);
+	global $allowedLabels;
+	$allLabels = array_merge($healthLabels, $dietLabels);
+	return array_intersect($allLabels, $allowedLabels);
 }
 
-// Get the query from the command-line argument
-$query = $argv[1]; 
 
+$query = implode(" ", array_slice($argv, 1)); 
 
 // fetch data from Edamam API using the query
 $edamamData = fetchEdamamData($query);
@@ -42,41 +44,27 @@ $edamamData = fetchEdamamData($query);
 // check if data was successfully fetched
 if ($edamamData && isset($edamamData['hits'])) 
 {
-	/*
-	echo "Recipes for '$query':\n";
-	echo "=====================\n";
-	 */
-	$client = new rabbitMQClient("testRabbitMQ.ini", "DMZServer");
 	
-
-
-	//$client = new rabbitMQClient("conf-RabbitMQ.ini", "testServer");
-
 	// multidimensional array to store all recipes
 	$recipes = [];
-
-	foreach ($edamamData['hits'] as $hit) 
-	
+	foreach ($edamamData['hits'] as $hit)
 	{
-		if (isset($hit['recipe'])) 
+		if (isset($hit['recipe']))
 		{
 			$recipe = $hit['recipe'];
-
-			$recipeData = [
+			$labels = filterLabels($recipe['healthLabels'], $recipe['dietLabels']);
+		       	$recipeData = [
 				'name' => $recipe['label'],
-				'image' => $recipe['image'],
-				'num_ingredients' => count($recipe['ingredientLines']),
-				'ingredients' => implode("', '", $recipe['ingredientLines']),
-				'calories' => $recipe['calories'],
-				'servings' => $recipe['yield'],
-				'labels' => implode("', '", $recipe['healthLabels']),
+                		'image' => $recipe['image'],
+                		'num_ingredients' => count($recipe['ingredientLines']),
+                		'ingredients' => implode("', '", $recipe['ingredientLines']),
+                		'calories' => $recipe['calories'],
+                		'servings' => $recipe['yield'],
+                		'labels' => implode("', '", $labels),
 			];
-
 			// adding recipe to the multidimensional array
 			$recipes[] = $recipeData;
-
-/*
-			// print the recipe details to the terminal for bug fixes
+/*			
 			echo "name: " . $recipeData['name'] . "\n";
             		echo "servings: " . $recipeData['servings'] . " servings\n";
             		echo "image: " . $recipeData['image'] . "\n";
@@ -84,27 +72,16 @@ if ($edamamData && isset($edamamData['hits']))
             		echo "num_ingredients: " . $recipeData['num_ingredients'] . "\n";
             		echo "ingredients: '" . $recipeData['ingredients'] . "'\n";
             		echo "labels: '" . $recipeData['labels'] . "'\n";
-            		echo "\n"; // Add a blank line between recipes
-
- */		}
+            		echo "\n"; 
+*/ 
+		}
 	}
-/*
-	// prepppare tosend the message to RabbitM
-	$message = [
-		'type' => 'storeRecipe',
-		'recipes' => $recipes, // send the multidimensional array
-	];
-	// send the message to RabbitMQ
-	$response = $client->send_request($message);
- 	echo "Data sent to RabbitMQ. Response: " . print_r($response, true) . PHP_EOL;
- */
+	
 	return $recipes;
 }
-
-
 else
 {
-       	echo "Failed to fetch data from Edamam API.\n";
+    echo "Failed to fetch data from Edamam API.\n";
+    return [];
 }
-   
 ?>
