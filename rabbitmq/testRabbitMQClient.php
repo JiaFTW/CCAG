@@ -47,7 +47,8 @@ switch ($request['type'])
       $request['email'] = $info['email'];
       break;
     case "getRecipe":
-      //put whatever data we need to search the database or dmz here
+      $request['username'] = $info['username'];
+      $request['keyword'] = $info['keyword'];
       break;
     case "diet":
       $request['username'] = $info['username'];

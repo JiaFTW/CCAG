@@ -1,16 +1,17 @@
 <?php 
 require_once('../rabbitmq/testRabbitMQClient.php');
 
-/*$recipedata = array (
+$recipedata = array (
     'type' => 'getRecipe',
     'username' => $_COOKIE['username'],
     'keyword' => filter_input(INPUT_POST,'search'),
 );
 
 //Sends the login request
-$response = sendMessage($recipedata);*/
+$response = sendMessage($recipedata);
+echo json_encode($response); 
 
-//Test Code (To Do: Replace with real API call)
+/*//Test Code (To Do: Replace with real API call)
 $mockResponse = [
     [
         "name" => "Bob's Crabcakes",
@@ -39,8 +40,6 @@ $mockResponse = [
         "servings" => "2",
         "labels_str" => "dairy-free, gluten-free, high-protein",
     ]
-];
-
-echo json_encode($mockResponse); 
+];*/
 
 ?>
