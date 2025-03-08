@@ -49,6 +49,10 @@ switch ($request['type'])
     case "getRecipe":
       //put whatever data we need to search the database or dmz here
       break;
+    case "diet":
+      $request['username'] = $info['username'];
+      $request['restrictions'] = $info['restrictions'];
+      break;
     default:
       return $request['type'].PHP_EOL;
   }
