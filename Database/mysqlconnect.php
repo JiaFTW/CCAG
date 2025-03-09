@@ -274,7 +274,7 @@ class mysqlConnect {
 
 //For Testing  and debugging
 
-/*function showAr ($array) {
+function showAr ($array) {
 	foreach ($array as $key => $value) {
 		echo "Key: $key; Value: $value\n";
 	}
@@ -383,9 +383,14 @@ print_r($testObj->checkRecipe('Chicken', $test_labels));
 print_r($testObj->checkRecipe('Caesar Salad'));
 
 $test_prefs = ['dairy-free', 'gluten-free', 'high-protein', 'Kosher'];
-print_r($testObj->changeUserPref('Bob', $test_prefs));
+//print_r($testObj->changeUserPref('Bob', $test_prefs));
 print_r($testObj->addFavorite('Bob', 60));
+print_r($testObj->addFavorite('Bob', 64));
 
+print_r($testObj->getUserDiet('Bob'));
+print_r($testObj->getUserFavorites('Bob'));
+
+//print_r($testObj->changeUserPref('Bob', $test_labels));
 
 /*showAr($testObj->registerAccount("Bob","bobby@gmail.com", "crabcake"));
 showAr($testObj->registerAccount("dummyuser","dummy@email.com", "dummypass"));
