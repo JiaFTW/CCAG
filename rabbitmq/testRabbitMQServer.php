@@ -46,30 +46,45 @@ function doAddFavorite($username, $rid) {
   return $connect->addFavorite($username, $rid);
 }
 
-function doRecipe($keyword, /*$labels = '' */) //perform search check
+function doRemoveFavorite($username, $rid) {
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+  return $connect->removeFavorite($username, $rid);
+}
+
+function doRecipe($keyword, $username) //perform search check
 {
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+  $labels = $connect->getUserDiet($username);
+
+  print_r($labels);
  
-  $response = $connect->checkRecipe($keyword); 
-  if($response == false) { //return if mysql error
+  $response = $connect->checkRecipe($keyword, $labels); 
+
+  if($response == 'false') { //return if mysql error
+    echo "Recipe Search: Database ERROR | Returning DB_ERROR".PHP_EOL;
     return array('status' => 'DB_Error');
   }
-  if ($response === null){ //will fetch from DMZ if no results from database
+
+  if ($response == null) { //will fetch from DMZ if no results from database
     
-    echo "this is  null";
-    /* $client = new rabbitMQClient("testRabbitMQ.ini","DMZServer");
+    echo "Recipe Search: Not Enough Results Found in Database | Calling DMZ".PHP_EOL;
+    $client = new rabbitMQClient("testRabbitMQ.ini","DMZServer");
     $request = array();
-    $request['type'] = "getRecipe";
-    $request['keyword'] = $keyword; //placeholder stuff until we define the system more
+    $request['type'] = "searchRecipe";
+    $request['query'] = $keyword; 
     $dmz_response = $client->send_request($request);
 
     if($connect->populateRecipe($dmz_response) === false) {  //populate db with response
+      "Recipe Search: Database Populating Issue | Returning DB_ERROR".PHP_EOL;
       return array('status' => 'DB_Error');
     }
+
     $response = $connect->checkRecipe($keyword, $lables); //perform search check agian */
   }
-  
- 
+
+  echo "Recipe Search: Results Found in Database  | Returning Array".PHP_EOL;
   return $response;
 }
 
@@ -92,11 +107,13 @@ function requestProcessor($request)
     case "register":
       return doRegistration($request['username'],$request['password'],$request['email']);
     case "getRecipe":
-      return doRecipe($request['keyword']);
+      return doRecipe($request['keyword'], $request['username']);
     case "diet":
       return doDiet($request['username'], $request['restrictions']);
     case "addFavorite":
       return doAddFavorite($request['username'], $request['rid']);
+    case "removeFavorite":
+      return doRemoveFavorite($request['username'], $request['rid']);
     default:
       return "type fail".PHP_EOL;
   }
