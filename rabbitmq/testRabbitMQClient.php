@@ -58,6 +58,8 @@ switch ($request['type'])
       $request['username'] = $info['username'];
       $request['rid'] = $info['rid'];
       break;
+    case "getFavorites":
+      $request['username'] = $info['username'];
     default:
       return $request['type'].PHP_EOL;
   }
