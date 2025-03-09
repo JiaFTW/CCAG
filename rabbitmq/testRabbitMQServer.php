@@ -40,6 +40,12 @@ function doDiet($username, $pref_array) {
   return $connect->changeUserPref($username, $pref_array);
 }
 
+function doGetDiet($username) {
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+  return $connect->getUserDiet($username);
+}
+
 function doAddFavorite($username, $rid) {
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
 
@@ -50,6 +56,12 @@ function doRemoveFavorite($username, $rid) {
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
 
   return $connect->removeFavorite($username, $rid);
+}
+
+function doGetFavorites($username) {
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+  return $connect->getUserFavorites($username);
 }
 
 function doRecipe($keyword, $username) //perform search check
@@ -110,10 +122,14 @@ function requestProcessor($request)
       return doRecipe($request['keyword'], $request['username']);
     case "diet":
       return doDiet($request['username'], $request['restrictions']);
+    case "getDiet":
+      return doGetDiet($request['username']);
     case "addFavorite":
       return doAddFavorite($request['username'], $request['rid']);
     case "removeFavorite":
       return doRemoveFavorite($request['username'], $request['rid']);
+    case "getFavorites":
+      return doGetFavorites($request['username']);
     default:
       return "type fail".PHP_EOL;
   }

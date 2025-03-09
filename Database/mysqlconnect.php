@@ -116,10 +116,15 @@ class mysqlConnect {
 		return array('status' => $response ? 'Success' : 'Error');
 	}
 	
-	public function getUserDiet(string $username) {
+	//wrappers
+	public function getUserDiet(string $username) { //wrapper function for getUserPref()
 		return getUserPref($username, $this->mydb);
 	}
 
+	public function getUserFavorites(string $username) { //wrapper funciton for getUserBookmarks()
+		return getUserBookmarks($username, $this->mydb);
+	}
+ 
 	//recipes
 	public function checkRecipe($keywords, $labels = '') {
 		
@@ -249,6 +254,18 @@ class mysqlConnect {
 		$response = handleQuery($query, $this->mydb, "Query Status: Add Favorite Successfull");
 		
 		return array('status' => $response ? 'Success' : 'Error');
+	}
+
+
+	//review functions
+	public function makeReview($username, $rid, $rate, $text) {
+		$uid = getUIDbyUsername($username, $this->mydb);
+		if($uid === null || !is_int($rid)) {
+			return array('status' => 'Error');
+		}
+		if(isTwoDuplicatesFound($uid, $rid, 'uid', 'rid', 'reviews', $this->mydb)) {
+			return array('status' => 'Error_Duplicate');
+		}
 	}
 }
 

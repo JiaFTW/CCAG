@@ -76,13 +76,21 @@ function addAccount(string $username, $email , $password, mysqli $db) {
     VALUES ('".$username."', '".$email."', '".$password."');";
 
     $response = handleQuery($query, $db, "Query Status: Added Account Query Succesful");
-
+    
     return $response;
     
 }
 
-function getUserBookmarks($uid) {
+function getUserBookmarks(string $username, mysqli $db) {
+    $uid = getUIDbyUsername($username, $db);
+    $query = "SELECT recipes.* FROM bookmarks 
+    INNER JOIN recipes ON recipes.rid 
+    WHERE bookmark.uid = ".$uid.""; 
 
+    $response = handleQuery($query, $db, "Query Status: Get User Pref Query Succesful");
+    $user_bm_arr = $response->fetch_all(MYSQLI_ASSOC);
+
+    return $user_bm_arr;
 }
 
 function getUserMealPlans($uid) {
