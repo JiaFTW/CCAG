@@ -116,27 +116,32 @@ class mysqlConnect {
 		return array('status' => $response ? 'Success' : 'Error');
 	}
 	
+	public function getUserDiet(string $username) {
+		return getUserPref($username, $this->mydb);
+	}
+
 	//recipes
 	public function checkRecipe($keywords, $labels = '') {
 		
-		$formatted_labels = '';
+		$formatted_labels = ''; //Declaring Strings
 		$formatted_search = '';
+		$label_query = '';
 
 		$serch_arr = array_filter(array_map('trim', explode(' ', $keywords)));
-		$formatted_search = array_map(function($keyword) {return '+' . $keyword . '*'; }, $serch_arr);
+		$formatted_search = array_map(function($keyword) {return '+' . $keyword . '*'; }, $serch_arr); //Reformating to be compatible with query
 
-		$label_query = '';
+		
     	if ($labels !== '') {
-			$label_arr = array_map('trim', explode(',', $labels));
-			$formatted_labels = array_map(function($label) { return "'" . $label . "'"; }, $label_arr);
+			echo "Check Recipe: Label Filter Enabled".PHP_EOL;
+			$formatted_labels = array_map(function($label) { return "'" . $label . "'"; }, $labels);
  
-        $label_query = "INNER JOIN (
+        	$label_query = "INNER JOIN (
             SELECT rl.rid 
             FROM recipe_labels rl
             INNER JOIN labels l ON rl.label_id = l.label_id
             WHERE l.label_name IN (" . implode(',', $formatted_labels) . ")
             GROUP BY rl.rid
-            HAVING COUNT(DISTINCT l.label_name) = " . count($label_arr) . ") AS filtered_rids ON recipes.rid = filtered_rids.rid";
+            HAVING COUNT(DISTINCT l.label_name) = " . count($labels) . ") AS filtered_rids ON recipes.rid = filtered_rids.rid";
     	}
 
 		$query = "SELECT recipes.rid, recipes.name, recipes.image, recipes.num_ingredients, recipes.ingredients, recipes.calories, recipes.servings, GROUP_CONCAT(DISTINCT labels.label_name SEPARATOR ', ') AS labels_str
@@ -146,11 +151,19 @@ class mysqlConnect {
 
 		$response = handleQuery($query, $this->mydb, "Query Status: Check Recipe Successfull");
 		if ($response === false) {
-			echo "ERROR";
-			return $response;
+			echo "Check Recipe Status: ERROR!! | Returning String: false".PHP_EOL;
+			return 'false';
 		}
-		$response_arr = $response->fetch_all(MYSQLI_ASSOC);
 
+		$response_arr = $response->fetch_all(MYSQLI_ASSOC); 
+
+		if ($response_arr == null) {
+			echo "Check Recipe Status: NULL | Returning NULL";
+			return null;
+		}
+
+		echo "Check Recipe Status: Success| Returning Results";
+		//print_r($response_arr);
 		return $response_arr;
 	}
 
@@ -182,7 +195,7 @@ class mysqlConnect {
 	}
 
 	//user funcitons
-	public function changeUserPref($username, $pref_array) {
+	public function changeUserPref(string $username, $pref_array) {
 		$uid = getUIDbyUsername($username, $this->mydb);
 		if($uid === null) {
 			return array('status' => 'Error');
@@ -213,8 +226,7 @@ class mysqlConnect {
 
 	public function addFavorite($username, $rid) {
 		$uid = getUIDbyUsername($username, $this->mydb);
-		
-		if($uid === null) {
+		if($uid === null || !is_int($rid)) {
 			return array('status' => 'Error');
 		}
 		if(isTwoDuplicatesFound($uid, $rid, 'uid', 'rid', 'bookmarks', $this->mydb)) {
@@ -222,6 +234,18 @@ class mysqlConnect {
 		}
 
 		$query = "INSERT INTO bookmarks VALUES (".$uid.", ".$rid.");";
+		$response = handleQuery($query, $this->mydb, "Query Status: Add Favorite Successfull");
+		
+		return array('status' => $response ? 'Success' : 'Error');
+	}
+
+	public function removeFavorite($username, $rid) {
+		$uid = getUIDbyUsername($username, $this->mydb);
+		if($uid === null || !is_int($rid)) {
+			return array('status' => 'Error');
+		}
+
+		$query = "DELETE FROM bookmarks WHERE uid = ".$uid." AND rid = ".$rid.";";
 		$response = handleQuery($query, $this->mydb, "Query Status: Add Favorite Successfull");
 		
 		return array('status' => $response ? 'Success' : 'Error');
@@ -238,8 +262,6 @@ class mysqlConnect {
 		echo "Key: $key; Value: $value\n";
 	}
 } 
-
-
 
 $testObj = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
 
@@ -339,12 +361,13 @@ $chickenRecipes = [
 
 //$testObj->populateRecipe($chickenRecipes);
 
-print_r($testObj->checkRecipe('Chicken', 'high-protein, dairy-free'));
+$test_labels = ['high-protein'];
+print_r($testObj->checkRecipe('Chicken', $test_labels));
 print_r($testObj->checkRecipe('Caesar Salad'));
 
 $test_prefs = ['dairy-free', 'gluten-free', 'high-protein', 'Kosher'];
 print_r($testObj->changeUserPref('Bob', $test_prefs));
-print_r($testObj->addFavorite('Bob', 60))
+print_r($testObj->addFavorite('Bob', 60));
 
 
 /*showAr($testObj->registerAccount("Bob","bobby@gmail.com", "crabcake"));
