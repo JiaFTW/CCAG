@@ -6,48 +6,19 @@ require_once('rabbitMQLib.inc');
 require_once('../Database/mysqlconnect.php');
 require_once('../DMZ/edamamProcessor.php');
 
-// function to store a recipe in the database
-function storeRecipe($recipeData)
-{
-	// get the recipe data
-	$name = $recipeData['name'];
-	$image = $recipeData['image'];
-	$numIngredients = $recipeData['num_ingredients'];
-	$ingredients = $recipeData['ingredients'];
-	$calories = $recipeData['calories'];
-	$servings = $recipeData['servings'];
-	$labels = $recipeData['labels'];
-	
-	// calling the addRecipe function to insert the recipe into the database
-	$success = addRecipe($name, $image, $numIngredients, $ingredients, $calories, $servings, $labels);
-	
-	if ($success)
-	{
-		return [
-			'status' => 'success',
-			'message' => 'Recipe stored successfully',
-		];
-	}
-	else
-	{
-		return [
-			'status' => 'error',
-			'message' => 'Failed to store the recipe',
-		];
-	}
 
-}
-
-function getRecipe($query)
+function searchRecipe($query)
 {
-	//fetching data
+	// getting data from Edamam API
 	$recipes = fetchEdamamData($query);
-	if (!empty($recipes)) 
+
+	// checks if recipes were fetched successfully
+	if (!empty($recipes))
 	{
 		return [
 			'status' => 'success',
-            		'message' => 'Recipes fetched successfully',
-            		'recipes' => $recipes,
+			'message' => 'Recipes fetched successfully',
+            		'recipes' => $recipes, // returns the filtered recipes
 	       	];
 	}
 	else
@@ -74,21 +45,9 @@ function requestProcessor($request)
 
 	switch ($request['type']) 
 	{
-	case 'storeRecipe':
-		foreach ($request['recipes'] as $recipe)
-		{
-			$result = storeRecipe($recipe);
-			if ($result['status'] === 'error') 
-			{
-				return $result;
-			}
-		}
-		return[
-			'status' => 'success',
-			'message' => 'All recipes stored successfully',
-		];
-	case 'getRecipe':
-		// Handle fetching recipes from Edamam API
+	case 'searchRecipe':
+
+		// handle fetching recipes from Edamam API
 		if (!isset($request['query'])) 
 		{
                 	return [
@@ -96,7 +55,7 @@ function requestProcessor($request)
 			       	'message' => 'Query parameter is missing',
 			];
 		}
-	       	return getRecipe($request['query']);
+		return searchRecipe($request['query']);
 
 	default:
 		return [
