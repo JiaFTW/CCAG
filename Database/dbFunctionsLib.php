@@ -85,7 +85,7 @@ function getUserBookmarks(string $username, mysqli $db) {
     $uid = getUIDbyUsername($username, $db);
     $query = "SELECT recipes.* FROM bookmarks 
     INNER JOIN recipes ON recipes.rid 
-    WHERE bookmark.uid = ".$uid.""; 
+    WHERE bookmarks.uid = ".$uid.""; 
 
     $response = handleQuery($query, $db, "Query Status: Get User Pref Query Succesful");
     $user_bm_arr = $response->fetch_all(MYSQLI_ASSOC);
