@@ -1,5 +1,4 @@
 <?php
-require_once('sessionValidate.php');
 require_once('../rabbitmq/testRabbitMQClient.php');
 
 $favoriteRequest = array (
