@@ -11,15 +11,6 @@ $favoriteData = array (
 
 
 $response = sendMessage($favoriteData);
-
-
-if ($response['status'] === 'Success') {
-    echo "Success";
-
-}
-else {
-    echo "Error";
-}
-
-
+    header("Location: homepage.php");
+    die();
 ?>

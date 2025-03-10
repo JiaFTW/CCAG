@@ -278,7 +278,7 @@ class mysqlConnect {
 	foreach ($array as $key => $value) {
 		echo "Key: $key; Value: $value\n";
 	}
-} 
+} */
 
 $testObj = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
 
@@ -376,9 +376,9 @@ $chickenRecipes = [
     ]
 ];
 
-//$testObj->populateRecipe($chickenRecipes);
+$testObj->populateRecipe($chickenRecipes);
 
-$test_labels = ['high-protein'];
+/*$test_labels = ['high-protein'];
 print_r($testObj->checkRecipe('Chicken', $test_labels));
 print_r($testObj->checkRecipe('Caesar Salad'));
 
