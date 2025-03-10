@@ -170,11 +170,26 @@ function getRecipe($rid) {
 
 }
 
+function getReviewsByUser(string $username, mysqli $db) {
+    $uid = getUIDbyUsername($username, $db);
+    $query = "SELECT reviews.* FROM reviews 
+    INNER JOIN recipes ON recipes.rid = reviews.rid
+    WHERE reviews.uid = ".$uid.";";
+
+    $response = handleQuery($query, $db, "Query Status: Get User Reviews Query Succesful");
+    $arr = $response->fetch_all(MYSQLI_ASSOC);
+    if(!$arr) {
+        return null;
+    }
+
+    return $arr;
+}
+
 function getReviewsByRID($rid) {
     
 }
 
-//Bookmark Functions
+
 
 
 ?>

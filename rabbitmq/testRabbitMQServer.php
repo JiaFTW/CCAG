@@ -64,6 +64,24 @@ function doGetFavorites($username) {
   return $connect->getUserFavorites($username);
 }
 
+function doAddReview($username, $rid, $rate, $text) {
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+  return $connect->addReview($username, $rid, $rate, $text);
+}
+
+function doRemoveReview($rate_id) {
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+  return $connect->removeReview($rate_id);
+}
+
+function doGetUserReviews($username) {
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+  return $connect->getUserReviews($username);
+}
+
 function doRecipe($keyword, $username) //perform search check
 {
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
@@ -134,6 +152,12 @@ function requestProcessor($request)
       return doRemoveFavorite($request['username'], $request['rid']);
     case "getFavorites":
       return doGetFavorites($request['username']);
+    case "addReview":
+      return doAddReview($request['username'], $request['rid'], $request['rating'], $request['review']);
+    case "removeReview":
+      return doRemoveReview($request['rate_id']);
+    case "getUserReviews":
+      return doGetUserReviews($request['username']);
     default:
       return "type fail".PHP_EOL;
   }

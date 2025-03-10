@@ -124,6 +124,10 @@ class mysqlConnect {
 	public function getUserFavorites(string $username) { //wrapper funciton for getUserBookmarks()
 		return getUserBookmarks($username, $this->mydb);
 	}
+
+	public function getUserReviews(string $username) { //wrapper function for getReviewsByUser()
+		return getReviewsByUser($username, $this->mydb);
+	}	
  
 	//recipes
 	public function checkRecipe($keywords, $labels = '') {
@@ -251,7 +255,7 @@ class mysqlConnect {
 		}
 
 		$query = "DELETE FROM bookmarks WHERE uid = ".$uid." AND rid = ".$rid.";";
-		$response = handleQuery($query, $this->mydb, "Query Status: Add Favorite Successfull");
+		$response = handleQuery($query, $this->mydb, "Query Status: Remove Favorite Successfull");
 		
 		return array('status' => $response ? 'Success' : 'Error');
 	}
@@ -268,7 +272,21 @@ class mysqlConnect {
 		}
 
 		$query = "INSERT INTO reviews (uid, rid, rating, description) 
-		VALUES ();";
+		VALUES (".$uid.", ".$rid.", ".$rate.", '".$text."');";
+		$response = handleQuery($query, $this->mydb, "Query Status: Add Review Successfull");
+
+		return array('status' => $response ? 'Success' : 'Error');
+	}
+
+	public function removeReview($rate_id) {
+		if($rate_id == null || !is_int($rid)) {
+			return array('status' => 'Error');
+		}
+
+		$query = "DELETE FROM reviews WHERE rate_id = ".$rate_id.";";
+		$response = handleQuery($query, $this->mydb, "Query Status: Remove Favorite Successfull");
+		
+		return array('status' => $response ? 'Success' : 'Error');
 	}
 }
 
