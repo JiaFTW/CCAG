@@ -60,6 +60,9 @@ switch ($request['type'])
       break;
     case "getFavorites":
       $request['username'] = $info['username'];
+      break;
+    case "getDiet":
+      $request['username'] = $info['username'];
     default:
       return $request['type'].PHP_EOL;
   }
