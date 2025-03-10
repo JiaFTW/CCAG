@@ -102,10 +102,10 @@ function isChecked($match, $selectedRestrictions) {
 
 <?php
 
+$restrictions = [];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    $restrictions = [];
 
     $restriction_keys = [
         'dairy-free', 'egg-free', 'peanut-free', 'tree-nut-free','wheat-free',
