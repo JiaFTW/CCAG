@@ -87,9 +87,13 @@ function doRecipe($keyword, $username) //perform search check
     $request['type'] = "searchRecipe";
     $request['query'] = $keyword; 
     $dmz_response = $client->send_request($request);
-
-    if($connect->populateRecipe($dmz_response) === false) {  //populate db with response
-      "Recipe Search: Database Populating Issue | Returning DB_ERROR".PHP_EOL;
+    //print_r($dmz_response);
+    if($dmz_response['status'] != 'success') {
+      echo $dmz_response['message'];
+      return array('status' => 'DMZ_Error');
+    }
+    if($connect->populateRecipe($dmz_response['recipes']) === false) {  //populate db with response
+      echo "Recipe Search: Database Populating Issue | Returning DB_ERROR".PHP_EOL;
       return array('status' => 'DB_Error');
     }
 

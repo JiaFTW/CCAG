@@ -108,7 +108,7 @@ function getUserMealPlans($uid) {
 
 }
 
-function getUserPref(string $username, mysqli $db) { //returns numbric array
+function getUserPref(string $username, mysqli $db) { //returns array of labels assoicated with uid
     $uid = getUIDbyUsername($username, $db);
     $query = "SELECT labels.label_name FROM labels
     JOIN user_pref ON user_pref.label_id = labels.label_id
@@ -121,9 +121,6 @@ function getUserPref(string $username, mysqli $db) { //returns numbric array
     return $flatten_arr;
 }
 
-function getReview($rate_id) {
-    
-}
 
 //Sessions Functions
 
@@ -173,13 +170,11 @@ function getRecipe($rid) {
 
 }
 
+function getReviewsByRID($rid) {
+    
+}
+
 //Bookmark Functions
 
-function removeBookmark($uid, $rid) {
-    $query = "";
-    $response = handleQuery($query, $db, "Query Status: Remove Bookmark Successfull");
-
-    return $response;
-}
 
 ?>

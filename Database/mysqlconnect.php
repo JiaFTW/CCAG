@@ -246,7 +246,7 @@ class mysqlConnect {
 
 	public function removeFavorite($username, $rid) {
 		$uid = getUIDbyUsername($username, $this->mydb);
-		if($uid === null || !is_int($rid)) {
+		if($uid == null || !is_int($rid)) {
 			return array('status' => 'Error');
 		}
 
@@ -258,7 +258,7 @@ class mysqlConnect {
 
 
 	//review functions
-	public function makeReview($username, $rid, $rate, $text) {
+	public function addReview($username, $rid, $rate, $text) {
 		$uid = getUIDbyUsername($username, $this->mydb);
 		if($uid === null || !is_int($rid)) {
 			return array('status' => 'Error');
@@ -266,6 +266,9 @@ class mysqlConnect {
 		if(isTwoDuplicatesFound($uid, $rid, 'uid', 'rid', 'reviews', $this->mydb)) {
 			return array('status' => 'Error_Duplicate');
 		}
+
+		$query = "INSERT INTO reviews (uid, rid, rating, description) 
+		VALUES ();";
 	}
 }
 
@@ -274,7 +277,7 @@ class mysqlConnect {
 
 //For Testing  and debugging
 
-function showAr ($array) {
+/*function showAr ($array) {
 	foreach ($array as $key => $value) {
 		echo "Key: $key; Value: $value\n";
 	}
