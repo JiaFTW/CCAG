@@ -63,6 +63,7 @@ switch ($request['type'])
       break;
     case "getDiet":
       $request['username'] = $info['username'];
+      break;
     default:
       return $request['type'].PHP_EOL;
   }

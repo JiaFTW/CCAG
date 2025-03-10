@@ -6,6 +6,21 @@ if (!isset($_COOKIE['session_token'])) {
     die();
 }
 
+$getDiet = array (
+    'type' => 'getDiet',
+    'username' => $_COOKIE['username'],
+);
+
+print_r($getDiet);
+$response = sendMessage($getDiet);
+
+foreach ($response as $diet) {
+    echo $diet . "<br>";
+    echo "hello";
+}
+
+print_r($response);
+
 ?>
 
 
