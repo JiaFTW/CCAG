@@ -5,12 +5,17 @@ $reviewRequest = array (
     'type' => 'editRecipe',
     'username' => $_COOKIE['username'],
     'rid' => intval($_POST['recipe_id']),
-    'name' => $_POST['newRecipeName'],
+    'newname' => $_POST['newRecipeName'],
     'ingredients' => $_POST['newIngredients'],
 );
 
-print_r($reviewRequest);
-//$response = sendMessage($reviewRequest);
+echo strcasecmp($_POST['newRecipeName'],$_POST['name']) . PHP_EOL;
+if (!strcmp($_POST['newRecipeName'],$_POST['name'])) {
+    $reviewRequest['newname'] = $_COOKIE['username'] . "'s " . $_POST['name'];
+}
 
-//header("Location: favoritepage.php")
+
+$response = sendMessage($reviewRequest);
+
+header("Location: favoritepage.php")
 ?>

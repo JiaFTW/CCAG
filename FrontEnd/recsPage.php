@@ -98,3 +98,4 @@ require_once('favoriteCheck.php');
     </script>
 </body>
 </html>
+

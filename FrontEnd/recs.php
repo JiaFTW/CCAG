@@ -2,18 +2,18 @@
 require_once('../rabbitmq/testRabbitMQClient.php');
 
 if (!isset($_COOKIE['username'])) {
-    $favoriteRids = [];
+    $recRids = [];
     return;
 }
 
-$favoriteRequest = array (
+$recRequest = array (
     'type' => 'getRecs',
     'username' => $_COOKIE['username'],
   );
   
-$response = sendMessage($favoriteRequest);
+$response = sendMessage($recRequest);
 
-$favoriteRids = array_map(function($recipe) {
+$recRids = array_map(function($recipe) {
     return $recipe['rid'];
 }, $response);
 
