@@ -31,7 +31,7 @@ $response = sendMessage($favoriteRequest);
             echo '<input type="submit" value="Rate & Review">';
             echo  '</form>';
             echo '<form action="removefavorite.php" method="POST">';
-            echo '<input type="hidden" name="rid" value="' . htmlspecialchars($recipe['rid']) . '">';
+            echo '<input type="hidden" name="recipe_id" value="' . htmlspecialchars($recipe['rid']) . '">';
             echo '<input type="submit" value="Remove Favorite"> ';
             echo '</form>';
             echo '</div>';
