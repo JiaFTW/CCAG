@@ -54,7 +54,7 @@ require_once('favoriteCheck.php');
                 recipes.forEach(recipe => {
                     let isFavorited = favoriteRids.includes(recipe.rid);
                     let buttonAction = isFavorited ? "removefavorite.php" : "favorite.php";
-                    let buttonText = isFavorited ? "&#x1F5A4; Remove Favorite" : "&#x2764;&#xfe0f; Favorite";
+                    let buttonText = isFavorited ? "💔 Remove Favorite" : "❤️ Favorite";
 
                     let recipeCard = `
                         <div class="recipe-card">
@@ -82,11 +82,11 @@ require_once('favoriteCheck.php');
 
                     $.post(action, { recipe_id: rid }, function(response) {
                         if (action === "favorite.php") {
-                            button.text("&#x1F5A4; Remove Favorite");
+                            button.text("💔 Remove Favorite");
                             button.data("action", "removefavorite.php");
                             favoriteRids.push(rid);
                         } else {
-                            button.text("&#x2764;&#xfe0f; Favorite");
+                            button.text("❤️ Favorite");
                             button.data("action","favorite.php");
                             favoriteRids = favoriteRids.filter(id => id !== rid);
                         }
