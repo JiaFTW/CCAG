@@ -16,6 +16,6 @@ if (!isset($_COOKIE['session_token'])) {
     <body>
     <?php include('header.php'); ?>
     <?php include('headerprofile.php'); ?>
-        
+
     </body>
 </html>
