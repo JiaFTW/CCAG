@@ -5,6 +5,12 @@ if (!isset($_COOKIE['session_token'])) {
     die();
 }
 
+$favoriteRequest = array (
+    'type' => 'getFavorites',
+    'username' => $_COOKIE['username'],
+  );
+  
+
 
 ?>
 <html>

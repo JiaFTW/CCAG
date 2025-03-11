@@ -4,12 +4,16 @@ require_once('../rabbitmq/testRabbitMQClient.php');
 
 $favoriteRequest = array (
     'type' => 'getFavorites',
-    'username' => $_POST['rid'],
+    'username' => $_COOKIE['username'],
   );
   
-  $response = sendMessage($favoriteRequest);
+$response = sendMessage($favoriteRequest);
 
-  print_r($response);
+foreach ($response as $recipe) {
+    echo htmlspecialchars($recipe['rid']);
+}
+
+
 
 ?>
 
