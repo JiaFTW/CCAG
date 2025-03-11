@@ -5,6 +5,7 @@ if (!isset($_COOKIE['session_token'])) {
     die();
 }
 
+require_once('favoriteCheck.php');
 ?>
 <html>
 <head>
@@ -26,6 +27,8 @@ if (!isset($_COOKIE['session_token'])) {
 
     <script>
         $(document).ready(function () {
+            let favoriteRids = <?php echo json_encode($favoriteRids); ?>;
+
             $("#search-form").submit(function (e) {
                 e.preventDefault(); 
 
@@ -49,6 +52,10 @@ if (!isset($_COOKIE['session_token'])) {
                 }
 
                 recipes.forEach(recipe => {
+                    let isFavorited = favoriteRids.includes(recipe.rid);
+                    let buttonAction = isFavorited ? "removefavorite.php" : "favorite.php";
+                    let buttonText = isFavorited ? "Remove Favorite" : "Favorite";
+
                     let recipeCard = `
                         <div class="recipe-card">
                             <h3>${recipe.name}</h3>
@@ -59,15 +66,31 @@ if (!isset($_COOKIE['session_token'])) {
                             <p><strong>Ingredients: </strong> ${recipe.ingredients}</p>
                             <p><strong>Labels: </strong> ${recipe.labels_str}</p>
                             <p><strong>RID: </strong> ${recipe.rid}</p>
-                            <button class="favorite-button" data-rid="${recipe.rid}">Favorite</button>
+                            <button class="favorite-button" data-rid="${recipe.rid}" data-action="${buttonAction}">${buttonText}</button>
                         </div>
                     `;
                     resultsContainer.append(recipeCard);
                 });
 
                 $(".favorite-button").click(function() {
-                    let rid = $(this).data("rid");
-                    $.post("favorite.php", { recipe_id: rid });
+                    let button = $(this)
+                    let rid = button.data("rid");
+                    let action = button.data("action");
+
+
+
+
+                    $.post(action, { recipe_id: rid }, function(response) {
+                        if (action === "favorite.php") {
+                            button.text("Remove Favorite");
+                            button.data("action", "removefavorite.php");
+                            favoriteRids.push(rid);
+                        } else {
+                            button.text("Favorite");
+                            button.data("action","favorite.php");
+                            favoriteRids = favoriteRids.filter(id => id !== rid);
+                        }
+                    });
                 });
 
             }

@@ -2,7 +2,7 @@
 <?php
 require_once('../rabbitmq/testRabbitMQClient.php');
 
-$recipeID = intval(filter_input(INPUT_POST, 'rid'));
+$recipeID = intval(filter_input(INPUT_POST, 'recipe_id'));
 
 
 
