@@ -21,6 +21,11 @@ $response = sendMessage($favoriteRequest);
         let form = document.getElementById("reviewForm" + recipeId);
         form.style.display = form.style.display === "none" ? "block" : "none";
       }
+
+      function toggleChangeRecipeForm(recipeId) {
+        let form = document.getElementById("changeRecipeForm" + recipeId);
+        form.style.display = form.style.display === "none" ? "block" : "none";
+      }
     </script>
     </head>
 
@@ -51,6 +56,15 @@ $response = sendMessage($favoriteRequest);
             echo '<textarea name="review" required></textarea><br>';
             echo '<input type="submit" value="Submit">';
             echo  '</form>';
+
+
+            //change recipe
+            echo '<button type="button" onclick="toggleChangeRecipeForm(' . htmlspecialchars($recipe['rid']) . ')">Change Ingredients</button>';
+            echo '<form id="changeRecipeForm' . htmlspecialchars($recipe['rid']) . '"action="addChange.php" method="POST" style="display:none;">';
+            echo '<textarea name="newIngredients" required>' .htmlspecialchars($recipe['ingredients']) .'</textarea><br>';
+            echo '<input type="submit" value="Save">';
+            echo '</form>';
+
 
             //remove favorite button
             echo '<form action="removefavorite.php" method="POST">';
