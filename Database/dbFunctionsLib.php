@@ -4,8 +4,19 @@
 
 
 function handleQuery($q, mysqli $db, $msg = 'Query Status: Successful') {
+    try {
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        $response = $db->execute_query($q);
 
-    $response = $db->execute_query($q);
+        echo $msg.PHP_EOL;
+        return $response;
+
+    } catch (mysqli_sql_exception $e) {
+        echo "failed to execute query:".PHP_EOL;
+        echo __FILE__.':'.__LINE__.":error: ".$e->getMessage().PHP_EOL;
+        return false;
+    }
+    /*$response = $db->execute_query($q);
     if ($db->errno != 0) {
         echo "failed to execute query:".PHP_EOL;
         echo __FILE__.':'.__LINE__.":error: ".$db->error.PHP_EOL;
@@ -14,7 +25,7 @@ function handleQuery($q, mysqli $db, $msg = 'Query Status: Successful') {
     else {
         echo $msg.PHP_EOL;
         return $response;
-    }
+    } */
 }
 
 function isDuplicateFound($attribute, $col_name, $table_name, mysqli $db) {  //returns boolean if a duplicate is found
@@ -34,6 +45,22 @@ function isDuplicateFound($attribute, $col_name, $table_name, mysqli $db) {  //r
     }
 }
 
+function isTwoDuplicatesFound($attribute1, $attribute2, $col_name1, $col_name2, $table_name, mysqli $db) {  //returns boolean if duplicates are found
+    $query = "SELECT COUNT(*) 
+    FROM ".$table_name." 
+    WHERE ".$col_name1." = '".$attribute1."' AND ".$col_name2." = '".$attribute2."';";
+    $response = handleQuery($query, $db, 'Query Status: twoduplicateFound Successful');
+
+    $n = $response->fetch_row();
+    if ($n[0] > 0) {
+        echo "MYSQL: ".$n[0]." duplicates found".PHP_EOL;
+        return true;
+    }
+    else {
+        echo "MYSQL: No duplicates found".PHP_EOL;
+        return false;
+    }
+}
 
 
 function getUIDbyUsername(string $username, mysqli $db) {
@@ -52,35 +79,48 @@ function getUIDbyUsername(string $username, mysqli $db) {
 }
 
 
-
 //Account Functions
 
-function addAccount($username, $email ,$password, mysqli $db) {
+function addAccount(string $username, $email , $password, mysqli $db) {
     $query = "INSERT INTO accounts
     (username, email, password) 
     VALUES ('".$username."', '".$email."', '".$password."');";
 
     $response = handleQuery($query, $db, "Query Status: Added Account Query Succesful");
-
+    
     return $response;
     
 }
 
-function getBookmarks($uid) {
+function getUserBookmarks(string $username, mysqli $db) {
+    $uid = getUIDbyUsername($username, $db);
+    $query = "SELECT recipes.* FROM bookmarks 
+    INNER JOIN recipes ON recipes.rid = bookmarks.rid
+    WHERE bookmarks.uid = ".$uid.";";
+
+    $response = handleQuery($query, $db, "Query Status: Get User Bookmarks Query Succesful");
+    $arr = $response->fetch_all(MYSQLI_ASSOC);
+
+    return $arr;
+}
+
+function getUserMealPlans($uid) {
 
 }
 
-function getMealPlan($uid) {
+function getUserPref(string $username, mysqli $db) { //returns array of labels assoicated with uid
+    $uid = getUIDbyUsername($username, $db);
+    $query = "SELECT labels.label_name FROM labels
+    JOIN user_pref ON user_pref.label_id = labels.label_id
+    WHERE user_pref.uid = '".$uid."';";
 
+    $response = handleQuery($query, $db, "Query Status: Get User Pref Query Succesful");
+    $user_pref_arr = $response->fetch_all(MYSQLI_NUM);
+    $flatten_arr = array_column($user_pref_arr, 0);
+
+    return $flatten_arr;
 }
 
-function getUserPreference($uid) {
-
-}
-
-function getReview($rate_id) {
-    
-}
 
 //Sessions Functions
 
@@ -102,47 +142,54 @@ function generateSession(string $username, int $time_sec, mysqli $db) {
 
 //Recipe Funcitons
 
-function addRecipe($name, $image, $num_ingredients, $ingredients, $calories, $servings, $labels, mysqli $db) {
+function addRecipe(string $name, $image, $num_ingredients, $ingredients, $calories, $servings, string $labels, mysqli $db) {
 
-$labels_arr = array_map('trim', explode(',', $labels));
-$formatted_labels = "'" . implode("','", $labels_arr) . "'";
-//echo $formatted_labels;
+    $labels_arr = array_map('trim', explode(',', $labels));
+    $formatted_labels = "'" . implode("','", $labels_arr) . "'";
+    //echo $formatted_labels;
 
-$first_query = 
-"INSERT INTO recipes (name, image, num_ingredients, ingredients, calories, servings) 
-VALUES ('".$name."', '".$image."', ".$num_ingredients.", '".$ingredients."', ".$calories.", ".$servings.");";
+    $first_query = 
+    "INSERT INTO recipes (name, image, num_ingredients, ingredients, calories, servings) 
+    VALUES ('".$name."', '".$image."', ".$num_ingredients.", '".$ingredients."', ".$calories.", ".$servings.");";
 
-$second_query = 
-"INSERT INTO recipe_labels (rid, label_id)
-SELECT LAST_INSERT_ID(), label_id
-FROM labels WHERE label_name IN (".$formatted_labels.");";
+    $second_query = 
+    "INSERT INTO recipe_labels (rid, label_id)
+    SELECT LAST_INSERT_ID(), label_id
+    FROM labels WHERE label_name IN (".$formatted_labels.");";
 
-$response = handleQuery($first_query, $db, "Query Status: Add Recipe Successfull");
-if (!$response) {
+    $response = handleQuery($first_query, $db, "Query Status: Add Recipe Successfull");
+    if (!$response) {
+        return $response;
+    }
+    $response = handleQuery($second_query, $db, "Query Status: Add Recipe Labels Successfull");
+
     return $response;
-}
-$response = handleQuery($second_query, $db, "Query Status: Add Recipe Labels Successfull");
-
-return $response;
 }
 
 function getRecipe($rid) {
 
 }
 
-//Bookmark Functions
-function addBookmark($uid, $rid, mysqli $db) {
-    $query = "";
-    $response = handleQuery($query, $db, "Query Status: Add Bookmark Successfull");
+function getReviewsByUser(string $username, mysqli $db) {
+    $uid = getUIDbyUsername($username, $db);
+    $query = "SELECT reviews.* FROM reviews 
+    INNER JOIN recipes ON recipes.rid = reviews.rid
+    WHERE reviews.uid = ".$uid.";";
 
-    return $response;
+    $response = handleQuery($query, $db, "Query Status: Get User Reviews Query Succesful");
+    $arr = $response->fetch_all(MYSQLI_ASSOC);
+    if(!$arr) {
+        return null;
+    }
+
+    return $arr;
 }
 
-function removeBookmark($uid, $rid) {
-    $query = "";
-    $response = handleQuery($query, $db, "Query Status: Remove Bookmark Successfull");
-
-    return $response;
+function getReviewsByRID($rid) {
+    
 }
+
+
+
 
 ?>

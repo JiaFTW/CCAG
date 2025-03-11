@@ -6,6 +6,7 @@
             <a href="homepage.php">Homepage</a>
             <a href="searchPage.php">Recipes</a>
         <?php if (isset($_COOKIE['session_token'])) { ?>
+            <a href="mppage.php">Make a Meal Plan</a>
             <a href="profilePage.php">Profile</a>
         <?php } ?>
         </div>

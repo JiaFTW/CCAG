@@ -47,7 +47,38 @@ switch ($request['type'])
       $request['email'] = $info['email'];
       break;
     case "getRecipe":
-      //put whatever data we need to search the database or dmz here
+      $request['username'] = $info['username'];
+      $request['keyword'] = $info['keyword'];
+      break;
+    case "diet":
+      $request['username'] = $info['username'];
+      $request['restrictions'] = $info['restrictions'];
+      break;
+    case "addFavorite":
+      $request['username'] = $info['username'];
+      $request['rid'] = $info['rid'];
+      break;
+    case "getFavorites":
+      $request['username'] = $info['username'];
+      break;
+    case "getDiet":
+      $request['username'] = $info['username'];
+      break;
+    case "removeFavorite":
+      $request['username'] = $info['username'];
+      $request['rid'] = $info['rid'];
+      break;
+    case "addReview":
+      $request['username'] = $info['username'];
+      $request['rid'] = $info['rid'];
+      $request['rating'] = $info['rating'];
+      $request['review'] = $info['review'];
+      break;
+    case "getUserReviews":
+      $request['username'] = $info['username'];
+      break;
+    case "removeReview":
+      $request['rate_id'] = $info['rate_id'];
       break;
     default:
       return $request['type'].PHP_EOL;

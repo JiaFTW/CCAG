@@ -1,10 +1,5 @@
 <?php
-//require_once('sessionValidate.php')
-if (!isset($_COOKIE['session_token'])) {
-  header("Location: loginPage.php");
-  die();
-}
-
+require_once('../rabbitmq/testRabbitMQClient.php');
 ?>
 
 
@@ -15,7 +10,6 @@ if (!isset($_COOKIE['session_token'])) {
   </head>
     <body>
     <?php include('header.php'); ?>
-    <?php include('headerprofile.php'); ?>
-
+        
     </body>
 </html>

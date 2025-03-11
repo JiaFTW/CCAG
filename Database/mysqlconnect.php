@@ -116,27 +116,42 @@ class mysqlConnect {
 		return array('status' => $response ? 'Success' : 'Error');
 	}
 	
+	//wrappers
+	public function getUserDiet(string $username) { //wrapper function for getUserPref()
+		return getUserPref($username, $this->mydb);
+	}
+
+	public function getUserFavorites(string $username) { //wrapper funciton for getUserBookmarks()
+		return getUserBookmarks($username, $this->mydb);
+	}
+
+	public function getUserReviews(string $username) { //wrapper function for getReviewsByUser()
+		return getReviewsByUser($username, $this->mydb);
+	}	
+ 
 	//recipes
 	public function checkRecipe($keywords, $labels = '') {
 		
-		$formatted_labels = '';
+		$formatted_labels = ''; //Declaring Strings
 		$formatted_search = '';
+		$label_query = '';
 
 		$serch_arr = array_filter(array_map('trim', explode(' ', $keywords)));
-		$formatted_search = array_map(function($keyword) {return '+' . $keyword . '*'; }, $serch_arr);
+		$formatted_search = array_map(function($keyword) {return '+' . $keyword . '*'; }, $serch_arr); //Reformating to be compatible with query
 
-		if ($labels !== '') {
-			$label_arr = array_map('trim', explode(',', $labels));
-			$formatted_labels = array_map(function($label) { return "'" . $label . "'";}, $label_arr);
-		}
-
-		$label_query = ($labels === '') ? '' : "INNER JOIN (
-            SELECT recipe_labels.rid 
-            FROM recipe_labels 
-            INNER JOIN labels ON recipe_labels.label_id = labels.label_id
-            WHERE labels.label_name IN (" . implode(',', $formatted_labels) . ")
-            GROUP BY recipe_labels.rid
-          ) AS filtered_rids ON recipes.rid = filtered_rids.rid";
+		
+    	if ($labels != '' && $labels != null) {
+			echo "Check Recipe: Label Filter Enabled".PHP_EOL;
+			$formatted_labels = array_map(function($label) { return "'" . $label . "'"; }, $labels);
+ 
+        	$label_query = "INNER JOIN (
+            SELECT rl.rid 
+            FROM recipe_labels rl
+            INNER JOIN labels l ON rl.label_id = l.label_id
+            WHERE l.label_name IN (" . implode(',', $formatted_labels) . ")
+            GROUP BY rl.rid
+            HAVING COUNT(DISTINCT l.label_name) = " . count($labels) . ") AS filtered_rids ON recipes.rid = filtered_rids.rid";
+    	}
 
 		$query = "SELECT recipes.rid, recipes.name, recipes.image, recipes.num_ingredients, recipes.ingredients, recipes.calories, recipes.servings, GROUP_CONCAT(DISTINCT labels.label_name SEPARATOR ', ') AS labels_str
 		FROM recipes INNER JOIN recipe_labels  ON recipes.rid = recipe_labels.rid INNER JOIN labels ON recipe_labels.label_id = labels.label_id
@@ -145,11 +160,19 @@ class mysqlConnect {
 
 		$response = handleQuery($query, $this->mydb, "Query Status: Check Recipe Successfull");
 		if ($response === false) {
-			echo "ERROR";
-			return $response;
+			echo "Check Recipe Status: ERROR!! | Returning String: false".PHP_EOL;
+			return 'false';
 		}
-		$response_arr = $response->fetch_all();
 
+		$response_arr = $response->fetch_all(MYSQLI_ASSOC); 
+
+		if ($response_arr == null) {
+			echo "Check Recipe Status: NULL | Returning NULL";
+			return null;
+		}
+
+		echo "Check Recipe Status: Success| Returning Results";
+		//print_r($response_arr);
 		return $response_arr;
 	}
 
@@ -180,8 +203,90 @@ class mysqlConnect {
 
 	}
 
-	public function addFavorite($uid, $rid) {
+	//user funcitons
+	public function changeUserPref(string $username, $pref_array) {
+		$uid = getUIDbyUsername($username, $this->mydb);
+		if($uid === null) {
+			return array('status' => 'Error');
+		}
+		$formatted_labels = "'" . implode("','", $pref_array) . "'";
+
+		$checkNumQuery = "SELECT COUNT(uid) AS total FROM user_pref WHERE uid = ".$uid.";" ;
+		$response = handleQuery($checkNumQuery, $this->mydb, "Query Status: User Pref Count Successfull");
+		$sum_arr = $response->fetch_assoc();
+		if ($sum_arr['total'] > 0) {
+			$delete_query = "DELETE FROM user_pref WHERE uid = ".$uid.";" ;
+			$response = handleQuery($delete_query, $this->mydb, "Query Status: User Pref Delete Successfull");
+			if ($response === false) {
+				return array('status' => 'Error');
+			}
+		}
+
+		$query = "INSERT INTO user_pref (uid, label_id)
+		SELECT ".$uid.", label_id
+		FROM labels WHERE label_name IN (".$formatted_labels.");";
+		$response = handleQuery($query, $this->mydb, "Query Status: Add User: ".$username." Prefs Successfull");
+
+		//$debug = getUserPref($username, $this->mydb);
+		//print_r($debug);
+		//return array('status' => $response ? 'Success' : 'Error');
+		return getUserPref($username, $this->mydb);
+	}
+
+	public function addFavorite($username, $rid) {
+		$uid = getUIDbyUsername($username, $this->mydb);
+		if($uid === null || !is_int($rid)) {
+			return array('status' => 'Error');
+		}
+		if(isTwoDuplicatesFound($uid, $rid, 'uid', 'rid', 'bookmarks', $this->mydb)) {
+			return array('status' => 'Error_Duplicate');
+		}
+
+		$query = "INSERT INTO bookmarks VALUES (".$uid.", ".$rid.");";
+		$response = handleQuery($query, $this->mydb, "Query Status: Add Favorite Successfull");
 		
+		return array('status' => $response ? 'Success' : 'Error');
+	}
+
+	public function removeFavorite($username, $rid) {
+		$uid = getUIDbyUsername($username, $this->mydb);
+		if($uid == null || !is_int($rid)) {
+			return array('status' => 'Error');
+		}
+
+		$query = "DELETE FROM bookmarks WHERE uid = ".$uid." AND rid = ".$rid.";";
+		$response = handleQuery($query, $this->mydb, "Query Status: Remove Favorite Successfull");
+		
+		return array('status' => $response ? 'Success' : 'Error');
+	}
+
+
+	//review functions
+	public function addReview($username, $rid, $rate, $text) {
+		$uid = getUIDbyUsername($username, $this->mydb);
+		if($uid === null || !is_int($rid)) {
+			return array('status' => 'Error');
+		}
+		if(isTwoDuplicatesFound($uid, $rid, 'uid', 'rid', 'reviews', $this->mydb)) {
+			return array('status' => 'Error_Duplicate');
+		}
+
+		$query = "INSERT INTO reviews (uid, rid, rating, description) 
+		VALUES (".$uid.", ".$rid.", ".$rate.", '".$text."');";
+		$response = handleQuery($query, $this->mydb, "Query Status: Add Review Successfull");
+
+		return array('status' => $response ? 'Success' : 'Error');
+	}
+
+	public function removeReview($rate_id) {
+		if($rate_id == null || !is_int($rate_id)) {
+			return array('status' => 'Error');
+		}
+
+		$query = "DELETE FROM reviews WHERE rate_id = ".$rate_id.";";
+		$response = handleQuery($query, $this->mydb, "Query Status: Remove Favorite Successfull");
+		
+		return array('status' => $response ? 'Success' : 'Error');
 	}
 }
 
@@ -189,20 +294,12 @@ class mysqlConnect {
 
 
 //For Testing  and debugging
-/*
-function showAr ($array) {
+
+/*function showAr ($array) {
 	foreach ($array as $key => $value) {
 		echo "Key: $key; Value: $value\n";
 	}
 } 
-
-function showTwoAR ($array) {
-	foreach($array as $row) {
-		showAr($row);
-		echo "\n";
-	}
-}
-
 
 $testObj = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
 
@@ -302,8 +399,23 @@ $chickenRecipes = [
 
 //$testObj->populateRecipe($chickenRecipes);
 
-showTwoAr($testObj->checkRecipe('Chicken', 'keto-friendly'));
-showTwoAr($testObj->checkRecipe('Caesar Salad'));
+$test_labels = ['high-protein'];
+//print_r($testObj->checkRecipe('Chicken', $test_labels));
+print_r($testObj->checkRecipe('Caesar Salad'));
+
+$test_prefs = ['dairy-free', 'gluten-free', 'high-protein', 'Kosher'];
+//print_r($testObj->changeUserPref('Bob', $test_prefs));
+print_r($testObj->addFavorite('Bob', 60));
+print_r($testObj->removeFavorite('Bob', 60));
+
+print_r($testObj->getUserDiet('Bob'));
+print_r($testObj->getUserFavorites('Bob'));
+
+print_r($testObj->addReview('Bob', 56, 4, "Very Good!"));
+print_r($testObj->getUserReviews('Bob'));
+//print_r($testObj->removeReview(2));
+
+//print_r($testObj->changeUserPref('Bob', $test_labels));
 
 /*showAr($testObj->registerAccount("Bob","bobby@gmail.com", "crabcake"));
 showAr($testObj->registerAccount("dummyuser","dummy@email.com", "dummypass"));
@@ -311,6 +423,9 @@ showAr($testObj->registerAccount("Larry2","Larry6@email.com", "snail"));
 
 showAr($testObj->loginAccount("dummyuser", "dummypass"));    //TODO test validSession function
 showAr($testObj->registerAccount("dummyuser","dummy@email.com", "dummypass"));  */
+
+
+
 
 
 
