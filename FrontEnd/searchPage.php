@@ -26,6 +26,14 @@ if (!isset($_COOKIE['session_token'])) {
 
     <script>
         $(document).ready(function () {
+
+            let userFavorites = [];
+            
+            $.get("favoriteCheck.php", function (response) {
+                userFavorites = JSON.parse(response);
+            });
+            
+
             $("#search-form").submit(function (e) {
                 e.preventDefault(); 
 
@@ -49,6 +57,8 @@ if (!isset($_COOKIE['session_token'])) {
                 }
 
                 recipes.forEach(recipe => {
+                    let isFavorited = userFavorites.includes(recipe.rid) ? "Favorited" : "Favorite";
+
                     let recipeCard = `
                         <div class="recipe-card">
                             <h3>${recipe.name}</h3>
@@ -67,7 +77,13 @@ if (!isset($_COOKIE['session_token'])) {
 
                 $(".favorite-button").click(function() {
                     let rid = $(this).data("rid");
-                    $.post("favorite.php", { recipe_id: rid });
+
+                    if(button.text() === "Favorited") return;
+
+                    $.post("favorite.php", { recipe_id: rid }, function() {
+                        button.text("Favorited");
+                        userFavorites.push(rid);
+                    });
                 });
 
             }

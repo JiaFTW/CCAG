@@ -11,6 +11,5 @@ $favoriteData = array (
     'rid' => $recipeID,
 );
 
-print_r($favoriteData);
 $response = sendMessage($favoriteData);
 ?>
