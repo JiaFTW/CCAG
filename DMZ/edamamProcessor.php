@@ -19,7 +19,7 @@ function fetchEdamamData($query)
     	$encodedQuery = urlencode($query);
 
     	// initialize cURL to make an HTTP request to the Edamam API
-	$url = "https://api.edamam.com/search?q=" . $encodedQuery . "&app_id=" . $app_id . "&app_key=" . $app_key . "&to=50";
+	$url = "https://api.edamam.com/search?q=" . $encodedQuery . "&app_id=" . $app_id . "&app_key=" . $app_key . "&to=10";
     	$ch = curl_init();
     	curl_setopt($ch, CURLOPT_URL, $url);
     	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
