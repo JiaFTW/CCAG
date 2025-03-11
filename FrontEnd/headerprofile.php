@@ -3,6 +3,6 @@
         <a href="dietpage.php">Diet</a>
         <a href="favoritepage.php">Favorites</a>
         <a href="reviewpage.php">My Reviews</a>
-        <a href="mppage.php">Meal Plans</a>
+        <a href="">Meal Plans</a>
     </div>
 </header>

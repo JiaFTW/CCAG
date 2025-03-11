@@ -12,10 +12,19 @@ $response = sendMessage($favoriteRequest);
 
 
 <html>
+
     <head>
     <title>CCAG Profile</title>
     <link rel="stylesheet" href="./styles/styles.css">
-  </head>
+    <script>
+      function toggleReviewForm(recipeId) {
+        let form = document.getElementById("reviewForm" + recipeId);
+        form.style.display = form.style.display === "none" ? "block" : "none";
+      }
+    </script>
+    </head>
+
+
     <body>
     <?php include('header.php'); ?>
     <?php include('headerprofile.php'); ?>
@@ -27,9 +36,22 @@ $response = sendMessage($favoriteRequest);
             echo '<div class="recipe-card">';
             echo '<h3>' . htmlspecialchars($recipe['name']) . '</h3>';
             echo '<img src="' . htmlspecialchars($recipe['image']) . '"alt="' . htmlspecialchars($recipe['name']) . '"class="recipe-img">';
-            echo '<form>';
-            echo '<input type="submit" value="Rate & Review">';
+
+            //rate and review 
+            echo '<button type="button" onclick="toggleReviewForm(' . htmlspecialchars($recipe['rid']) . ')">Rate & Review</button>';
+            echo '<form id="reviewForm' . htmlspecialchars($recipe['rid']) . '" action="addReview.php" method="POST" style="display:none;">';
+            echo '<input type="hidden" name="recipe_id" value="' . htmlspecialchars($recipe['rid']) . '">';
+            echo '<select name ="rating" required>';
+            for ($i = 1; $i <= 5; $i++) {
+              echo '<option value="' . $i . '">' .$i . ' Stars</option>';
+            }
+            echo '</select><br>';
+            echo '<label>Review:</label>';
+            echo '<textarea name="review" required></textarea><br>';
+            echo '<input type="submit" value="Submit">';
             echo  '</form>';
+
+            //remove favorite button
             echo '<form action="removefavorite.php" method="POST">';
             echo '<input type="hidden" name="recipe_id" value="' . htmlspecialchars($recipe['rid']) . '">';
             echo '<input type="submit" value="Remove Favorite"> ';

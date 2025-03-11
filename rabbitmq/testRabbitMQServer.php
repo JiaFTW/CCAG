@@ -64,6 +64,24 @@ function doGetFavorites($username) {
   return $connect->getUserFavorites($username);
 }
 
+function doAddReview($username, $rid, $rate, $text) {
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+  return $connect->addReview($username, $rid, $rate, $text);
+}
+
+function doRemoveReview($rate_id) {
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+  return $connect->removeReview($rate_id);
+}
+
+function doGetUserReviews($username) {
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+  return $connect->getUserReviews($username);
+}
+
 function doRecipe($keyword, $username) //perform search check
 {
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
@@ -87,9 +105,13 @@ function doRecipe($keyword, $username) //perform search check
     $request['type'] = "searchRecipe";
     $request['query'] = $keyword; 
     $dmz_response = $client->send_request($request);
-
-    if($connect->populateRecipe($dmz_response) === false) {  //populate db with response
-      "Recipe Search: Database Populating Issue | Returning DB_ERROR".PHP_EOL;
+    //print_r($dmz_response);
+    if($dmz_response['status'] != 'success') {
+      echo $dmz_response['message'];
+      return array('status' => 'DMZ_Error');
+    }
+    if($connect->populateRecipe($dmz_response['recipes']) === false) {  //populate db with response
+      echo "Recipe Search: Database Populating Issue | Returning DB_ERROR".PHP_EOL;
       return array('status' => 'DB_Error');
     }
 
@@ -130,6 +152,12 @@ function requestProcessor($request)
       return doRemoveFavorite($request['username'], $request['rid']);
     case "getFavorites":
       return doGetFavorites($request['username']);
+    case "addReview":
+      return doAddReview($request['username'], $request['rid'], $request['rating'], $request['review']);
+    case "removeReview":
+      return doRemoveReview($request['rate_id']);
+    case "getUserReviews":
+      return doGetUserReviews($request['username']);
     default:
       return "type fail".PHP_EOL;
   }
@@ -143,5 +171,6 @@ $server->process_requests('requestProcessor');
 echo "testRabbitMQServer END".PHP_EOL;
 exit();
 ?>
+
 
 

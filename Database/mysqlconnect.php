@@ -124,6 +124,10 @@ class mysqlConnect {
 	public function getUserFavorites(string $username) { //wrapper funciton for getUserBookmarks()
 		return getUserBookmarks($username, $this->mydb);
 	}
+
+	public function getUserReviews(string $username) { //wrapper function for getReviewsByUser()
+		return getReviewsByUser($username, $this->mydb);
+	}	
  
 	//recipes
 	public function checkRecipe($keywords, $labels = '') {
@@ -246,19 +250,19 @@ class mysqlConnect {
 
 	public function removeFavorite($username, $rid) {
 		$uid = getUIDbyUsername($username, $this->mydb);
-		if($uid === null || !is_int($rid)) {
+		if($uid == null || !is_int($rid)) {
 			return array('status' => 'Error');
 		}
 
 		$query = "DELETE FROM bookmarks WHERE uid = ".$uid." AND rid = ".$rid.";";
-		$response = handleQuery($query, $this->mydb, "Query Status: Add Favorite Successfull");
+		$response = handleQuery($query, $this->mydb, "Query Status: Remove Favorite Successfull");
 		
 		return array('status' => $response ? 'Success' : 'Error');
 	}
 
 
 	//review functions
-	public function makeReview($username, $rid, $rate, $text) {
+	public function addReview($username, $rid, $rate, $text) {
 		$uid = getUIDbyUsername($username, $this->mydb);
 		if($uid === null || !is_int($rid)) {
 			return array('status' => 'Error');
@@ -266,6 +270,23 @@ class mysqlConnect {
 		if(isTwoDuplicatesFound($uid, $rid, 'uid', 'rid', 'reviews', $this->mydb)) {
 			return array('status' => 'Error_Duplicate');
 		}
+
+		$query = "INSERT INTO reviews (uid, rid, rating, description) 
+		VALUES (".$uid.", ".$rid.", ".$rate.", '".$text."');";
+		$response = handleQuery($query, $this->mydb, "Query Status: Add Review Successfull");
+
+		return array('status' => $response ? 'Success' : 'Error');
+	}
+
+	public function removeReview($rate_id) {
+		if($rate_id == null || !is_int($rate_id)) {
+			return array('status' => 'Error');
+		}
+
+		$query = "DELETE FROM reviews WHERE rate_id = ".$rate_id.";";
+		$response = handleQuery($query, $this->mydb, "Query Status: Remove Favorite Successfull");
+		
+		return array('status' => $response ? 'Success' : 'Error');
 	}
 }
 
@@ -278,12 +299,12 @@ class mysqlConnect {
 	foreach ($array as $key => $value) {
 		echo "Key: $key; Value: $value\n";
 	}
-} */
+} 
 
-//$testObj = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+$testObj = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
 
 //Test Two Dim array recipes
-/*$chickenRecipes = [
+$chickenRecipes = [
     [
         'name' => 'Lemon Herb Grilled Chicken',
         'image' => 'http://example.com/chicken1.jpg',
@@ -376,16 +397,25 @@ class mysqlConnect {
     ]
 ];
 
-$testObj->populateRecipe($chickenRecipes);
+//$testObj->populateRecipe($chickenRecipes);
 
-/*$test_labels = ['high-protein'];
-print_r($testObj->checkRecipe('Chicken', $test_labels));
+$test_labels = ['high-protein'];
+//print_r($testObj->checkRecipe('Chicken', $test_labels));
 print_r($testObj->checkRecipe('Caesar Salad'));
 
 $test_prefs = ['dairy-free', 'gluten-free', 'high-protein', 'Kosher'];
-print_r($testObj->changeUserPref('Bob', $test_prefs));
+//print_r($testObj->changeUserPref('Bob', $test_prefs));
 print_r($testObj->addFavorite('Bob', 60));
+print_r($testObj->removeFavorite('Bob', 60));
 
+print_r($testObj->getUserDiet('Bob'));
+print_r($testObj->getUserFavorites('Bob'));
+
+print_r($testObj->addReview('Bob', 56, 4, "Very Good!"));
+print_r($testObj->getUserReviews('Bob'));
+//print_r($testObj->removeReview(2));
+
+//print_r($testObj->changeUserPref('Bob', $test_labels));
 
 /*showAr($testObj->registerAccount("Bob","bobby@gmail.com", "crabcake"));
 showAr($testObj->registerAccount("dummyuser","dummy@email.com", "dummypass"));

@@ -68,6 +68,15 @@ switch ($request['type'])
       $request['username'] = $info['username'];
       $request['rid'] = $info['rid'];
       break;
+    case "addReview":
+      $request['username'] = $info['username'];
+      $request['rid'] = $info['rid'];
+      $request['rating'] = $info['rating'];
+      $request['review'] = $info['review'];
+      break;
+    case "getUserReviews":
+      $request['username'] = $info['username'];
+      break;
     default:
       return $request['type'].PHP_EOL;
   }
