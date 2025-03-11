@@ -55,7 +55,7 @@ $response = sendMessage($favoriteRequest);
             //remove favorite button
             echo '<form action="removefavorite.php" method="POST">';
             echo '<input type="hidden" name="recipe_id" value="' . htmlspecialchars($recipe['rid']) . '">';
-            echo '<input type="submit" value="Remove Favorite"> ';
+            echo '<input type="submit" value="💔 Remove Favorite"> ';
             echo '</form>';
             echo '</div>';
           }
