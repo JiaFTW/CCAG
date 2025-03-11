@@ -31,7 +31,7 @@ $response = sendMessage($getReview);
             echo '<div class="recipe-card">';
             echo '<h3>' . htmlspecialchars($recipe['name']) . '</h3>';
             echo '<img src="' . htmlspecialchars($recipe['image']) . '"alt="' . htmlspecialchars($recipe['name']) . '"class="recipe-img">';
-            echo '<p><strong>Rating: </strong></p>' . htmlspecialchars($recipe['rating']);
+            echo '<p><strong>Rating: </strong></p>' . htmlspecialchars($recipe['rating']) . '/5 Stars';
             echo '<p><strong>Review: </strong></p>' . htmlspecialchars($recipe['description']);
             //print_r($recipe);
 

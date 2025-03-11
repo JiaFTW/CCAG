@@ -54,7 +54,7 @@ require_once('favoriteCheck.php');
                 recipes.forEach(recipe => {
                     let isFavorited = favoriteRids.includes(recipe.rid);
                     let buttonAction = isFavorited ? "removefavorite.php" : "favorite.php";
-                    let buttonText = isFavorited ? "Remove Favorite" : "Favorite";
+                    let buttonText = isFavorited ? "&#x1F5A4; Remove Favorite" : "&#x2764;&#xfe0f; Favorite";
 
                     let recipeCard = `
                         <div class="recipe-card">

@@ -41,6 +41,7 @@ $response = sendMessage($favoriteRequest);
             echo '<button type="button" onclick="toggleReviewForm(' . htmlspecialchars($recipe['rid']) . ')">Rate & Review</button>';
             echo '<form id="reviewForm' . htmlspecialchars($recipe['rid']) . '" action="addReview.php" method="POST" style="display:none;">';
             echo '<input type="hidden" name="recipe_id" value="' . htmlspecialchars($recipe['rid']) . '">';
+            echo '<label>Rating:</label>';
             echo '<select name ="rating" required>';
             for ($i = 1; $i <= 5; $i++) {
               echo '<option value="' . $i . '">' .$i . ' Stars</option>';
