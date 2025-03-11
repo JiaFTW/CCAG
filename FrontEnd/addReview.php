@@ -9,7 +9,8 @@ $reviewRequest = array (
     'review' => $_POST['review'],
 );
 
-print_r($reviewRequest);
+
 $response = sendMessage($reviewRequest);
 
+header("Location: favoritepage.php")
 ?>

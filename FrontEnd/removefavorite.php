@@ -16,4 +16,5 @@ $response = sendMessage($favoriteData);
 
 header("Location: favoritepage.php");
 die();
+
 ?>

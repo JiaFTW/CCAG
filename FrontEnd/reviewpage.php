@@ -31,9 +31,15 @@ $response = sendMessage($getReview);
             echo '<div class="recipe-card">';
             echo '<h3>' . htmlspecialchars($recipe['name']) . '</h3>';
             echo '<img src="' . htmlspecialchars($recipe['image']) . '"alt="' . htmlspecialchars($recipe['name']) . '"class="recipe-img">';
-            echo '<p><strong>Rating: </strong></p>' . htmlspecialchars($recipe['rating']);
+            echo '<p><strong>Rati: </strong></p>' . htmlspecialchars($recipe['rating']);
             echo '<p><strong>Review: </strong></p>' . htmlspecialchars($recipe['description']);
             //print_r($recipe);
+
+            //remove review
+            echo '<form action="removereview.php" method="POST">';
+            echo '<input type="hidden" name="rate_id" value="' . htmlspecialchars($recipe['rate_id']) . '">';
+            echo '<button type="submit">Remove Review</button>';
+            echo '</form>';
             echo '</div>';
           }
         } else {

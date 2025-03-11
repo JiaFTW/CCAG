@@ -77,6 +77,9 @@ switch ($request['type'])
     case "getUserReviews":
       $request['username'] = $info['username'];
       break;
+    case "removeReview":
+      $request['rate_id'] = $info['rate_id'];
+      break;
     default:
       return $request['type'].PHP_EOL;
   }
