@@ -4,7 +4,7 @@ require_once('../rabbitmq/testRabbitMQClient.php');
 
 $favoriteRequest = array (
     'type' => 'getFavorites',
-    'username' => $_COOKIE['username'],
+    'username' => $_POST['rid'],
   );
   
   $response = sendMessage($favoriteRequest);
