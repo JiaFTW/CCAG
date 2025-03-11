@@ -31,7 +31,7 @@ $response = sendMessage($favoriteRequest);
      
     <div id="results-container">
       <?php
-        if (!empty($response)) {
+        if (is_array($response) && count($response) > 0) {
           foreach ($response as $recipe) {
             echo '<div class="recipe-card">';
             echo '<h3>' . htmlspecialchars($recipe['name']) . '</h3>';
@@ -46,7 +46,7 @@ $response = sendMessage($favoriteRequest);
               echo '<option value="' . $i . '">' .$i . ' Stars</option>';
             }
             echo '</select><br>';
-            echo '<label>Review:</label>';
+            echo '<label>Review:</label><br>';
             echo '<textarea name="review" required></textarea><br>';
             echo '<input type="submit" value="Submit">';
             echo  '</form>';

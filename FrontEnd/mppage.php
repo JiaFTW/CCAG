@@ -10,7 +10,6 @@ require_once('../rabbitmq/testRabbitMQClient.php');
   </head>
     <body>
     <?php include('header.php'); ?>
-    <?php include('headerprofile.php'); ?>
         
     </body>
 </html>

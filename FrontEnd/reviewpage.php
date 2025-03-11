@@ -26,12 +26,12 @@ $response = sendMessage($getReview);
      
     <div id="results-container">
       <?php
-        if (!empty($response)) {
+        if (is_array($response) && count($response) > 0) {
           foreach ($response as $recipe) {
             echo '<div class="recipe-card">';
             echo '<h3>' . htmlspecialchars($recipe['name']) . '</h3>';
             echo '<img src="' . htmlspecialchars($recipe['image']) . '"alt="' . htmlspecialchars($recipe['name']) . '"class="recipe-img">';
-            echo '<p><strong>Rati: </strong></p>' . htmlspecialchars($recipe['rating']);
+            echo '<p><strong>Rating: </strong></p>' . htmlspecialchars($recipe['rating']);
             echo '<p><strong>Review: </strong></p>' . htmlspecialchars($recipe['description']);
             //print_r($recipe);
 
