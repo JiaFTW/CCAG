@@ -140,7 +140,7 @@ class mysqlConnect {
 		$formatted_search = array_map(function($keyword) {return '+' . $keyword . '*'; }, $serch_arr); //Reformating to be compatible with query
 
 		
-    	if ($labels !== '') {
+    	if ($labels != '' && $labels != null) {
 			echo "Check Recipe: Label Filter Enabled".PHP_EOL;
 			$formatted_labels = array_map(function($label) { return "'" . $label . "'"; }, $labels);
  

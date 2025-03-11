@@ -115,7 +115,7 @@ function doRecipe($keyword, $username) //perform search check
       return array('status' => 'DB_Error');
     }
 
-    $response = $connect->checkRecipe($keyword, $lables); //perform search check agian */
+    $response = $connect->checkRecipe($keyword, $labels); //perform search check agian */
   }
 
   echo "Recipe Search: Results Found in Database  | Returning Array".PHP_EOL;
