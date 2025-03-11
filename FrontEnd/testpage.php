@@ -10,7 +10,7 @@ $favoriteRequest = array (
 $response = sendMessage($favoriteRequest);
 
 foreach ($response as $recipe) {
-    echo htmlspecialchars($recipe['rid']);
+    
 }
 
 

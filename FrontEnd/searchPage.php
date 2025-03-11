@@ -5,21 +5,6 @@ if (!isset($_COOKIE['session_token'])) {
     die();
 }
 
-$favoriteRequest = array (
-    'type' => 'getFavorites',
-    'username' => $_COOKIE['username'],
-  );
-  
-  $response = sendMessage($favoriteRequest);
-  
-  $favoriterids = [];
-  
-  foreach ($response as $recipe) {
-    $favoriterids[] = $recipe['rid'];
-  }
-  
-
-
 ?>
 <html>
 <head>
