@@ -1,7 +1,4 @@
 <?php
-//THIS SHOULD HOPEFULLY WORK!
-//Reference favoriteCheck.php on how to work/use it.
-
 if (!isset($_COOKIE['session_token'])) {
     header("Location: loginPage.php");
     die();
@@ -18,22 +15,21 @@ require_once('favoriteCheck.php');
 <body>
     <?php include('header.php'); ?>
 
-    <div class="recipeContainer">
-        <button id="getRecipesButton" class="getRecipesButton">Get Recipes</button>
-    </div>
-
     <div id="resultsContainer"></div> 
 
     <script>
         $(document).ready(function () {
             let favoriteRids = <?php echo json_encode($favoriteRids); ?>;
 
-            $("#getRecipesButton").click(function () {
+            // Automatically fetch recipes when the page loads
+            fetchRecipes();
+
+            function fetchRecipes() {
                 $.post("search.php", {}, function (response) {
                     let recipes = JSON.parse(response);
                     displayResults(recipes);
                 });
-            });
+            }
 
             function displayResults(recipes) {
                 let resultsContainer = $("#resultsContainer");
@@ -87,3 +83,4 @@ require_once('favoriteCheck.php');
     </script>
 </body>
 </html>
+
