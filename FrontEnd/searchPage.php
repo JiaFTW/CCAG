@@ -82,11 +82,11 @@ require_once('favoriteCheck.php');
 
                     $.post(action, { recipe_id: rid }, function(response) {
                         if (action === "favorite.php") {
-                            button.text("Remove Favorite");
+                            button.text("&#x1F5A4; Remove Favorite");
                             button.data("action", "removefavorite.php");
                             favoriteRids.push(rid);
                         } else {
-                            button.text("Favorite");
+                            button.text("&#x2764;&#xfe0f; Favorite");
                             button.data("action","favorite.php");
                             favoriteRids = favoriteRids.filter(id => id !== rid);
                         }
