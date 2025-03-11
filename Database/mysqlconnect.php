@@ -279,7 +279,7 @@ class mysqlConnect {
 	}
 
 	public function removeReview($rate_id) {
-		if($rate_id == null || !is_int($rid)) {
+		if($rate_id == null || !is_int($rate_id)) {
 			return array('status' => 'Error');
 		}
 
@@ -400,16 +400,20 @@ $chickenRecipes = [
 //$testObj->populateRecipe($chickenRecipes);
 
 $test_labels = ['high-protein'];
-print_r($testObj->checkRecipe('Chicken', $test_labels));
+//print_r($testObj->checkRecipe('Chicken', $test_labels));
 print_r($testObj->checkRecipe('Caesar Salad'));
 
 $test_prefs = ['dairy-free', 'gluten-free', 'high-protein', 'Kosher'];
 //print_r($testObj->changeUserPref('Bob', $test_prefs));
 print_r($testObj->addFavorite('Bob', 60));
-print_r($testObj->addFavorite('Bob', 64));
+print_r($testObj->removeFavorite('Bob', 60));
 
 print_r($testObj->getUserDiet('Bob'));
 print_r($testObj->getUserFavorites('Bob'));
+
+print_r($testObj->addReview('Bob', 56, 4, "Very Good!"));
+print_r($testObj->getUserReviews('Bob'));
+//print_r($testObj->removeReview(2));
 
 //print_r($testObj->changeUserPref('Bob', $test_labels));
 
