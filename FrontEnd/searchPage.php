@@ -10,6 +10,14 @@ $favoriteRequest = array (
     'username' => $_COOKIE['username'],
   );
   
+  $response = sendMessage($favoriteRequest);
+  
+  $favoriterids = [];
+  
+  foreach ($response as $recipe) {
+    $favoriterids[] = $recipe['rid'];
+  }
+  
 
 
 ?>
