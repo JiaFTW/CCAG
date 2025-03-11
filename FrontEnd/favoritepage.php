@@ -61,6 +61,9 @@ $response = sendMessage($favoriteRequest);
             //change recipe
             echo '<button type="button" onclick="toggleChangeRecipeForm(' . htmlspecialchars($recipe['rid']) . ')">Change Ingredients</button>';
             echo '<form id="changeRecipeForm' . htmlspecialchars($recipe['rid']) . '"action="addChange.php" method="POST" style="display:none;">';
+            echo '<label>New Name</label>';
+            echo '<input type="hidden" name="recipe_id" value="' . htmlspecialchars($recipe['rid']) . '">';
+            echo '<input type="text" name="newRecipeName" value="' . $_COOKIE['username'] . "'s " . htmlspecialchars($recipe['name']) . '" required></input>';
             echo '<textarea name="newIngredients" required>' .htmlspecialchars($recipe['ingredients']) .'</textarea><br>';
             echo '<input type="submit" value="Save">';
             echo '</form>';
