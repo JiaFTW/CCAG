@@ -1,7 +1,9 @@
 <?php 
 require_once('../rabbitmq/testRabbitMQClient.php');
 
-$recipeID = filter_input(INPUT_POST, 'recipe_id');
+$recipeID = intval(filter_input(INPUT_POST, 'recipe_id'));
+
+
 
 $favoriteData = array (
     'type' => 'addFavorite',
@@ -9,8 +11,6 @@ $favoriteData = array (
     'rid' => $recipeID,
 );
 
-
+print_r($favoriteData);
 $response = sendMessage($favoriteData);
-    header("Location: homepage.php");
-    die();
 ?>

@@ -4,8 +4,19 @@
 
 
 function handleQuery($q, mysqli $db, $msg = 'Query Status: Successful') {
+    try {
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        $response = $db->execute_query($q);
 
-    $response = $db->execute_query($q);
+        echo $msg.PHP_EOL;
+        return $response;
+
+    } catch (mysqli_sql_exception $e) {
+        echo "failed to execute query:".PHP_EOL;
+        echo __FILE__.':'.__LINE__.":error: ".$e->getMessage().PHP_EOL;
+        return false;
+    }
+    /*$response = $db->execute_query($q);
     if ($db->errno != 0) {
         echo "failed to execute query:".PHP_EOL;
         echo __FILE__.':'.__LINE__.":error: ".$db->error.PHP_EOL;
@@ -14,7 +25,7 @@ function handleQuery($q, mysqli $db, $msg = 'Query Status: Successful') {
     else {
         echo $msg.PHP_EOL;
         return $response;
-    }
+    } */
 }
 
 function isDuplicateFound($attribute, $col_name, $table_name, mysqli $db) {  //returns boolean if a duplicate is found
@@ -84,20 +95,20 @@ function addAccount(string $username, $email , $password, mysqli $db) {
 function getUserBookmarks(string $username, mysqli $db) {
     $uid = getUIDbyUsername($username, $db);
     $query = "SELECT recipes.* FROM bookmarks 
-    INNER JOIN recipes ON recipes.rid 
-    WHERE bookmarks.uid = ".$uid.""; 
+    INNER JOIN recipes ON recipes.rid = bookmarks.rid
+    WHERE bookmarks.uid = ".$uid.";";
 
-    $response = handleQuery($query, $db, "Query Status: Get User Pref Query Succesful");
-    $user_bm_arr = $response->fetch_all(MYSQLI_ASSOC);
+    $response = handleQuery($query, $db, "Query Status: Get User Bookmarks Query Succesful");
+    $arr = $response->fetch_all(MYSQLI_ASSOC);
 
-    return $user_bm_arr;
+    return $arr;
 }
 
 function getUserMealPlans($uid) {
 
 }
 
-function getUserPref(string $username, mysqli $db) { //returns numbric array
+function getUserPref(string $username, mysqli $db) { //returns array of labels assoicated with uid
     $uid = getUIDbyUsername($username, $db);
     $query = "SELECT labels.label_name FROM labels
     JOIN user_pref ON user_pref.label_id = labels.label_id
@@ -110,9 +121,6 @@ function getUserPref(string $username, mysqli $db) { //returns numbric array
     return $flatten_arr;
 }
 
-function getReview($rate_id) {
-    
-}
 
 //Sessions Functions
 
@@ -162,13 +170,26 @@ function getRecipe($rid) {
 
 }
 
-//Bookmark Functions
+function getReviewsByUser(string $username, mysqli $db) {
+    $uid = getUIDbyUsername($username, $db);
+    $query = "SELECT reviews.* FROM reviews 
+    INNER JOIN recipes ON recipes.rid = reviews.rid
+    WHERE reviews.uid = ".$uid.";";
 
-function removeBookmark($uid, $rid) {
-    $query = "";
-    $response = handleQuery($query, $db, "Query Status: Remove Bookmark Successfull");
+    $response = handleQuery($query, $db, "Query Status: Get User Reviews Query Succesful");
+    $arr = $response->fetch_all(MYSQLI_ASSOC);
+    if(!$arr) {
+        return null;
+    }
 
-    return $response;
+    return $arr;
 }
+
+function getReviewsByRID($rid) {
+    
+}
+
+
+
 
 ?>

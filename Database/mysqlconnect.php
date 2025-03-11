@@ -280,10 +280,10 @@ class mysqlConnect {
 	}
 } */
 
-$testObj = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+//$testObj = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
 
 //Test Two Dim array recipes
-$chickenRecipes = [
+/*$chickenRecipes = [
     [
         'name' => 'Lemon Herb Grilled Chicken',
         'image' => 'http://example.com/chicken1.jpg',

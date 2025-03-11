@@ -59,10 +59,16 @@ if (!isset($_COOKIE['session_token'])) {
                             <p><strong># of Ingredients: </strong> ${recipe.num_ingredients}</p>
                             <p><strong>Ingredients: </strong> ${recipe.ingredients}</p>
                             <p><strong>Labels: </strong> ${recipe.labels_str}</p>
-                             <p><strong>RID: </strong> ${recipe.rid}</p>
+                            <p><strong>RID: </strong> ${recipe.rid}</p>
+                            <button class="favorite-button" data-rid="${recipe.rid}">Favorite</button>
                         </div>
                     `;
                     resultsContainer.append(recipeCard);
+                });
+
+                $(".favorite-button").click(function() {
+                    let rid = $(this).data("rid");
+                    $.post("favorite.php", { recipe_id: rid });
                 });
 
             }
