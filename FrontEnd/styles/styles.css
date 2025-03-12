@@ -153,3 +153,29 @@ main {
 .recipe-card a:hover {
     background-color: #3d8555;
 }
+
+/* this is where my edit begins from
+disdn't do anything much added some padding, added border around each day section*/ 
+.day {
+    margin-bottom: 20px; 
+    padding: 15px; 
+    border: 1px solid #ccc; 
+    border-radius: 10px; 
+}
+
+.meal-time {
+    margin-bottom: 10px; 
+}
+
+.dropdown {
+    display: none; 
+    margin-top: 10px; 
+}
+
+.saved-meal {
+    margin-top: 10px; 
+    font-weight: bold; 
+    color: #333; 
+}
+/*this is where my edit ends*/
+

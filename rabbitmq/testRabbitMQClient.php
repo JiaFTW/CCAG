@@ -80,6 +80,19 @@ switch ($request['type'])
     case "removeReview":
       $request['rate_id'] = $info['rate_id'];
       break;
+    //my edits begins here -al 
+   //adds message type getMealPlans
+    case "getMealPlans":
+    $request['username'] = $info['username'];
+    // for saveMealPlan
+    case "saveMealPlan":
+    $request['username'] = $info['username'];
+    $request['day'] = $info['day'];
+    $request['mealTime'] = $info['mealTime'];
+    $request['recipeId'] = $info['recipeId'];
+    break;
+
+    break;
     default:
       return $request['type'].PHP_EOL;
   }

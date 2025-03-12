@@ -288,6 +288,52 @@ class mysqlConnect {
 		
 		return array('status' => $response ? 'Success' : 'Error');
 	}
+
+//my edit begins here -al
+	public function getUserMealPlans($username) 
+	{
+	$uid = getUIDbyUsername($username, $this->mydb);
+	if ($uid === null) {
+		        return array('status' => 'Error', 'message' => 'User not found');
+	    }
+
+	    $query = "SELECT day, meal_time, recipe_id FROM meal_plans WHERE username = '".$username."';";
+	    $response: = handleQuery($query, $this->mydb, "Query Status: Get User Meal Plans Successful");
+	    if ($response === false) {
+        		return array('status' => 'Error', 'message' => 'Failed to fetch meal plans');
+	    }
+
+    	    $mealPlans = $response->fetch_all(MYSQLI_ASSOC);
+    	    return array('status' => 'Success', 'mealPlans' => $mealPlans);
+	}
+
+	public function addMealPlan($username, $day, $mealTime, $recipeId) {
+	$uid = getUIDbyUsername($username, $this->mydb);
+	if ($uid === null) {
+        	return array('status' => 'Error', 'message' => 'User not found');
+    	    }
+
+        // clear existing meal plan for the day and meal time
+        $query = "DELETE FROM meal_plans WHERE username = '".$username."' AND day = '".$day."' AND meal_time = '".$mealTime."';";
+        $response = handleQuery($query, $this->mydb, "Query Status: Clear Existing Meal Plan Successful");
+
+        if ($response === false) {
+        	return array('status' => 'Error', 'message' => 'Failed to clear existing meal plan');
+             }
+
+        // insert new meal plan
+        $query = "INSERT INTO meal_plans (username, day, meal_time, recipe_id) 
+              VALUES ('".$username."', '".$day."', '".$mealTime."', ".$recipeId.");";
+        $response = handleQuery($query, $this->mydb, "Query Status: Add Meal Plan Successful");
+
+        if ($response === false) {
+        	return array('status' => 'Error', 'message' => 'Failed to save meal plan');
+             }
+
+        return array('status' => 'Success', 'message' => 'Meal plan saved successfully');
+	}
+//my edits end here -al
+
 }
 
 	

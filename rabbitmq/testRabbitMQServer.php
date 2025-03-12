@@ -81,6 +81,19 @@ function doGetUserReviews($username) {
 
   return $connect->getUserReviews($username);
 }
+//my edits begins here -al
+//get meal plans and save mealplans
+function doGetMealPlans($username) {
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+  return $connect->getUserMealPlans($username);
+}
+
+function doSaveMealPlan($username, $day, $mealTime, $recipeId) {
+    $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+    return $connect->addMealPlan($username, $day, $mealTime, $recipeId);
+}
+//my edits ends here -al
+
 
 function doRecipe($keyword, $username) //perform search check
 {
@@ -158,6 +171,13 @@ function requestProcessor($request)
       return doRemoveReview($request['rate_id']);
     case "getUserReviews":
       return doGetUserReviews($request['username']);
+//my edits begins here -al
+//doGetMealPlans case
+    case "getMealPlans":
+    return doGetMealPlans($request['username']);
+    case "saveMealPlan":
+    return doSaveMealPlan($request['username'], $request['day'], $request['mealTime'], $request['recipeId']);
+//my edits ends here -al
     default:
       return "type fail".PHP_EOL;
   }
