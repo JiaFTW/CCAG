@@ -312,6 +312,11 @@ class mysqlConnect {
 		
 		return array('status' => $response ? 'Success' : 'Error');
 	}
+
+	//mealplan functions
+	public function addMealPlan($array) {
+
+	}
 }
 
 	
@@ -319,7 +324,7 @@ class mysqlConnect {
 
 //For Testing  and debugging
 
-/*function showAr ($array) {
+function showAr ($array) {
 	foreach ($array as $key => $value) {
 		echo "Key: $key; Value: $value\n";
 	}
@@ -421,7 +426,7 @@ $chickenRecipes = [
     ]
 ];
 
-//$testObj->populateRecipe($chickenRecipes);
+$testObj->populateRecipe($chickenRecipes);
 
 $test_labels = ['high-protein'];
 //print_r($testObj->checkRecipe('Chicken', $test_labels));
@@ -435,7 +440,7 @@ print_r($testObj->removeFavorite('Bob', 60));
 print_r($testObj->getUserDiet('Bob'));
 print_r($testObj->getUserFavorites('Bob'));
 
-print_r($testObj->addReview('Bob', 56, 4, "Very Good!"));
+//print_r($testObj->addReview('Bob', 56, 4, "Very Good!"));
 print_r($testObj->getUserReviews('Bob'));
 //print_r($testObj->removeReview(2));
 
