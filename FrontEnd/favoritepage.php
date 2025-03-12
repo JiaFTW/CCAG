@@ -49,13 +49,13 @@ $response = sendMessage($favoriteRequest);
             echo '<p><strong>RID: </strong>' . $recipe['rid'] . '</p>';
 
             //rate and review 
-            echo '<button type="button" onclick="toggleReviewForm(' . $recipe['rid'] . ')">Rate & Review</button>';
+            echo '<button type="button" class="smol-button" onclick="toggleReviewForm(' . $recipe['rid'] . ')">Rate & Review</button>';
             echo '<form id="reviewForm' . $recipe['rid'] . '" action="addReview.php" method="POST" style="display:none;">';
             echo '<input type="hidden" name="recipe_id" value="' . $recipe['rid'] . '">';
             echo '<label>Rating:</label>';
             echo '<select name ="rating" required>';
             for ($i = 1; $i <= 5; $i++) {
-              echo '<option value="' . $i . '">' .$i . ' Stars</option>';
+              echo '<option value="' . $i . '">' .$i . ' Stars</opticlass="smol-button"on>';
             }
             echo '</select><br>';
             echo '<label>Review:</label><br>';
@@ -65,7 +65,7 @@ $response = sendMessage($favoriteRequest);
 
 
             //change recipe
-            echo '<button type="button" onclick="toggleChangeRecipeForm(' . $recipe['rid'] . ')">Change Ingredients</button>';
+            echo '<button type="button" class="smol-button" onclick="toggleChangeRecipeForm(' . $recipe['rid'] . ')">Change Ingredients</button>';
             echo '<form id="changeRecipeForm' . $recipe['rid'] . '"action="addChange.php" method="POST" style="display:none;">';
             echo '<label>New Name</label>';
             echo '<input type="hidden" name="recipe_id" value="' . $recipe['rid'] . '">';
@@ -79,7 +79,7 @@ $response = sendMessage($favoriteRequest);
             //remove favorite button
             echo '<form action="removefavorite.php" method="POST">';
             echo '<input type="hidden" name="recipe_id" value="' . $recipe['rid'] . '">';
-            echo '<input type="submit" value="💔 Remove Favorite"> ';
+            echo '<input type="submit" class="smol-button" value="💔 Remove Favorite"> ';
             echo '</form>';
             echo '</div>';
           }

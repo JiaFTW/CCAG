@@ -22,7 +22,7 @@ $response = sendMessage($favoriteRequest);
     <body>
     <?php include('header.php'); ?>
     <?php include('headerprofile.php'); ?>
-     
+
     <div id="results-container">
       <?php
         if (is_array($response) && count($response) > 0) {
@@ -36,11 +36,14 @@ $response = sendMessage($favoriteRequest);
             echo '<p><strong>Ingredients: </strong>' . $recipe['ingredients'] . '</p>';
             echo '<p><strong>Labels: </strong>' . $recipe['labels_str'] . '</p>';
             echo '<p><strong>RID: </strong>' . $recipe['rid'] . '</p>';
+            echo '</div>';
           }
         } else {
           echo "<p>No favorite recipes found.</p>";
         }
       ?>
     </div>
+
+
     </body>
 </html>

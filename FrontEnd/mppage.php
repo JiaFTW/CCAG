@@ -45,7 +45,7 @@ $response = sendMessage($favoriteRequest);
           echo "<td>";
 
           echo "<select name='$mealId' id='$mealId' required>";
-          //echo "<option value='' disabled selected>Select a recipe...</option>";
+          echo "<option value='' disabled selected>Select a recipe...</option>";
           foreach ($response as $recipe) {
             echo "<option value='{$recipe['rid']}'>{$recipe['name']}</option>";
           }

@@ -104,6 +104,35 @@ textarea {
     background-color: #3d8555;
 }
 
+.smol-button {
+    padding: 10px 15px;
+    font-size: 15px;
+    border: none;
+    border-radius: 10px;
+    background-color: #65d189;
+    color: white;
+    margin-left: 10px;
+}
+
+.smol-button:hover {
+    background-color: #3d8555;
+}
+
+.favorite-button {
+    padding: 10px 15px;
+    font-size: 15px;
+    border: none;
+    border-radius: 10px;
+    background-color: #65d189;
+    color: white;
+    margin-left: 10px;
+}
+
+.favorite-button:hover {
+    background-color: #3d8555;
+}
+
+
 .save-button {
     padding: 15px 25px;
     font-size: 24px;
@@ -130,9 +159,10 @@ textarea {
 .recipe-card {
     background-color: white;
     width: 280px;
-    border-radius: 10px;
+    border-radius: 30px;
+    border-color: #3d8555;
     padding: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 10px #3d8555;
     text-align: center;
     transition: transform 0.2s;
 }
@@ -168,4 +198,14 @@ textarea {
     justify-content: center;
     align-items:center;
     font-size: 1.5em;
+    border-radius: 20px;
 }
+
+th, td {
+    border: 1px solid #333;
+    padding: 15px;
+    text-align: center;
+    font-size: 15px;
+    font-style: bold;
+}
+

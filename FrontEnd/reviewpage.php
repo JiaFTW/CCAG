@@ -31,7 +31,7 @@ $response = sendMessage($getReview);
             echo '<div class="recipe-card">';
             echo '<h3>' . $recipe['name'] . '</h3>';
             echo '<img src="' . $recipe['image'] . '"alt="' . $recipe['name'] . '"class="recipe-img">';
-            echo '<p><strong>Rating: </strong></p>' . $recipe['rating'] . '/5 Stars';
+            echo '<p><strong>Rating: </strong></p>' . $recipe['rating'] . '/5 ⭐';
             echo '<p><strong>Review: </strong></p>' . $recipe['description'];
 
             echo '<h3>' . $recipe['name'] . '</h3>';
@@ -46,7 +46,7 @@ $response = sendMessage($getReview);
             //remove review
             echo '<form action="removereview.php" method="POST">';
             echo '<input type="hidden" name="rate_id" value="' . $recipe['rate_id'] . '">';
-            echo '<button type="submit">Remove Review</button>';
+            echo '<button type="submit" class="smol-button">Remove Review</button>';
             echo '</form>';
             echo '</div>';
           }

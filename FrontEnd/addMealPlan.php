@@ -34,7 +34,7 @@ die();*/
     'username' => ,
 
     //Monday
-    'MON1' => [RECIPE RID] ,
+    'MON1' => [RECIPE RIDs] ,
     'MON2' => ,
     'MON3' => ,
 
