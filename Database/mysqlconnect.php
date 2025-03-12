@@ -324,7 +324,7 @@ class mysqlConnect {
 
 //For Testing  and debugging
 
-function showAr ($array) {
+/*function showAr ($array) {
 	foreach ($array as $key => $value) {
 		echo "Key: $key; Value: $value\n";
 	}
