@@ -1,7 +1,14 @@
 <?php
 require_once('../rabbitmq/testRabbitMQClient.php');
 
-$addMealPlan = array (
+$favoriteRequest = array (
+    'type' => 'getFavorites',
+    'username' => $_COOKIE['username'],
+  );
+  
+$response = sendMessage($favoriteRequest);
+
+/*$addMealPlan = array (
     'type' => ,
     'username' => ,
     'rid' => ,
@@ -41,11 +48,11 @@ $addMealPlan = array (
     'SUN1' => ,
     'SUN2' => ,
     'SUN3' => ,
-);
+);*/
 
 
 $response = sendMessage($addMealPlan);
 
-header("Location: mppage.php")
+header("Location: mppage.php");
 die();
 ?>
