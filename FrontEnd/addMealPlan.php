@@ -6,6 +6,7 @@ $favoriteRequest = array (
     'username' => $_COOKIE['username'],
   );
   
+  
 $response = sendMessage($favoriteRequest);
 
 /*$addMealPlan = array (
