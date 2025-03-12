@@ -1,22 +1,40 @@
 <?php
 require_once('../rabbitmq/testRabbitMQClient.php');
 
-$favoriteRequest = array (
-    'type' => 'getFavorites',
-    'username' => $_COOKIE['username'],
-  );
-  
-  
-$response = sendMessage($favoriteRequest);
+$days = ["Monday", "Tuesday", "Wednesday","Thursday","Friday","Saturday","Sunday"];
+$meals = ["Breakfast","Lunch","Dinner"];
+
+$addMealPlan = array (
+  'type' => 'addMealPlan',
+  'username' => $_COOKIE['username'],
+
+);
+
+
+for ($i=0; $i < 7; $i++) {
+  $day = strtoupper(substr($days[$i], 0, 3));
+  for ($j=0;$j<3;$j++) {
+    $mealId = $day . ($j + 1);
+    $addMealPlan[$mealId] = $_POST[$mealId];
+  }
+
+}
+
+print_r($addMealPlan);
+
+
+/*$response = sendMessage($addMealPlan);
+
+header("Location: mppage.php");
+die();*/
+
 
 /*$addMealPlan = array (
     'type' => ,
     'username' => ,
-    'rid' => ,
-
 
     //Monday
-    'MON1' => ,
+    'MON1' => [RECIPE RID] ,
     'MON2' => ,
     'MON3' => ,
 
@@ -52,8 +70,4 @@ $response = sendMessage($favoriteRequest);
 );*/
 
 
-$response = sendMessage($addMealPlan);
-
-header("Location: mppage.php");
-die();
 ?>

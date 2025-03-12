@@ -157,3 +157,15 @@ textarea {
 .recipe-card a:hover {
     background-color: #3d8555;
 }
+
+.mealPlanForm {
+    display: flex;
+    flex-direction: column;
+    padding: 50px;
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+    justify-content: center;
+    align-items:center;
+    font-size: 1.5em;
+}

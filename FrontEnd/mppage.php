@@ -16,18 +16,13 @@ $response = sendMessage($favoriteRequest);
     <head>
     <title>Add Weekly Meal Plan</title>
     <link rel="stylesheet" href="./styles/styles.css">
-    <script>
-      function validateForm() {
-        
-      }
-    </script>
-
-
 
   </head>
     <body>
-    
-    <form method="POST" onsubmit="return validateForm()">
+    <?php include('header.php'); ?>
+
+  <main>
+    <form method="POST" class="mealPlanForm" action="addMealPlan.php">
     <table>
       <tr>
         <th>Day</th>
@@ -35,7 +30,6 @@ $response = sendMessage($favoriteRequest);
         <th>Lunch</th>
         <th>Dinner</th>
       </tr>
-      <?php include('header.php'); ?>
         <?php
         $days = ["Monday", "Tuesday", "Wednesday","Thursday","Friday","Saturday","Sunday"];
         $meals = ["Breakfast","Lunch","Dinner"];
@@ -49,9 +43,9 @@ $response = sendMessage($favoriteRequest);
         for ($j=0;$j<count($meals);$j++) {
           $mealId= $day . ($j+1);
           echo "<td>";
-          echo "<label for='$mealId'> {$meals[$j]}: </label>";
+
           echo "<select name='$mealId' id='$mealId' required>";
-          
+          //echo "<option value='' disabled selected>Select a recipe...</option>";
           foreach ($response as $recipe) {
             echo "<option value='{$recipe['rid']}'>{$recipe['name']}</option>";
           }
@@ -66,16 +60,6 @@ $response = sendMessage($favoriteRequest);
         <br>
       <input type="submit" class="save-button" name="submit" value="Save">
     </form>
-
-
-
-
-
-
-
-
-
-
-
+  </main>
     </body>
 </html>
