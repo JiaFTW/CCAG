@@ -142,15 +142,18 @@ function generateSession(string $username, int $time_sec, mysqli $db) {
 
 //Recipe Funcitons
 
-function addRecipe(string $name, $image, $num_ingredients, $ingredients, $calories, $servings, string $labels, mysqli $db) {
+function addRecipe(string $name, $image, $num_ingredients, $ingredients, $calories, $servings, string $labels, mysqli $db, $is_custom = FALSE, $custom_author = NULL) {
 
     $labels_arr = array_map('trim', explode(',', $labels));
     $formatted_labels = "'" . implode("','", $labels_arr) . "'";
     //echo $formatted_labels;
+    if($custom_author != NULL) {
+        $author = "'".$custom_author."'"; 
+    }
 
     $first_query = 
-    "INSERT INTO recipes (name, image, num_ingredients, ingredients, calories, servings) 
-    VALUES ('".$name."', '".$image."', ".$num_ingredients.", '".$ingredients."', ".$calories.", ".$servings.");";
+    "INSERT INTO recipes (name, image, num_ingredients, ingredients, calories, servings, is_custom, custom_author) 
+    VALUES ('".$name."', '".$image."', ".$num_ingredients.", '".$ingredients."', ".$calories.", ".$servings.", ".$is_custom.", ".$author.");";
 
     $second_query = 
     "INSERT INTO recipe_labels (rid, label_id)
@@ -166,8 +169,23 @@ function addRecipe(string $name, $image, $num_ingredients, $ingredients, $calori
     return $response;
 }
 
-function getRecipe($rid) {
+function getRecipeLabels($rid, mysqli $db) {
+    $query = "SELECT labels.label_name FROM labels
+    JOIN recipe_labels ON recipe_labels.label_id = labels.label_id
+    WHERE recipe_labels.rid = ".$rid.";";
 
+    $response = handleQuery($query, $db, "Query Status: Get Recipe Labels Query Succesful");
+    $labels_arr = $response->fetch_all(MYSQLI_NUM);
+    $flatten_arr = array_column($user_pref_arr, 0);
+
+    return $flatten_arr;
+}
+
+function getRecipeByRID($rid, mysqli $db) {
+    $query = "SELECT * FROM recipes WHERE rid = ".$rid.";";
+    $response = handleQuery($query, $db, "Query Status: Get Recipe By RID Successful");
+
+    return $response->fetch_assoc();
 }
 
 function getReviewsByUser(string $username, mysqli $db) {

@@ -203,6 +203,30 @@ class mysqlConnect {
 
 	}
 
+	public function editRecipe($rid, $ingredients, $name, $username) {
+		$recipe_array = getRecipeByRID($rid, $this->mydb);
+		if (!$recipe_array|| $recipe_array == NULL) {
+			return array('status' => 'Error');
+		}
+		if (!$recipe_array['is_custom'] && $recipe_array['custom_author'] != $username) {
+			echo "Creating New Custom Recipe".PHP_EOL;
+			$formatted_labels =  implode(", ", getRecipeLabels($rid, $this->mydb));
+			addRecipe($name, $recipe_array['image'], $recipe_array['num_ingredients'], $ingredients, 
+			$recipe_array['calories'], $recipe_array['servings'], $this->mydb, TRUE, $username);
+
+			return array('status' => $response ? 'Success' : 'Error');
+		}
+		else {
+			echo "Updating Custom Recipe".PHP_EOL;
+			$updateQuery = "UPDATE recipes SET name = '".$name."', ingredients = '".$ingredients."', 
+			custom_author = '".$username."' WHERE rid = ".$rid.";";
+
+			$response = handleQuery($updateQuery, $this->mydb, "Query Status: Update Custom Recipe Successful");
+			return array('status' => $response ? 'Success' : 'Error');
+		}
+
+	}
+
 	//user funcitons
 	public function changeUserPref(string $username, $pref_array) {
 		$uid = getUIDbyUsername($username, $this->mydb);

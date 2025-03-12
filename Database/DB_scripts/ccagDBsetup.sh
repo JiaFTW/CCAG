@@ -31,7 +31,7 @@ sql_query=$(cat <<EOF
         cookie_token VARCHAR(255) NOT NULL,
         start_time INT NOT NULL,
         end_time INT NOT NULL,
-        FOREIGN KEY (uid) REFERENCES accounts(uid)
+        FOREIGN KEY (uid) REFERENCES accounts(uid) ON DELETE CASCADE
     );
 
 
@@ -42,7 +42,9 @@ sql_query=$(cat <<EOF
         num_ingredients INT,
         ingredients TEXT,
         calories INT,
-        servings INT
+        servings INT,
+        is_custom BOOL,
+        custom_author VARCHAR(32)
     );
     
     CREATE TABLE IF NOT EXISTS labels (
@@ -81,8 +83,8 @@ sql_query=$(cat <<EOF
         rid INT NOT NULL,
         rating TINYINT NOT NULL,
         description TEXT,
-        FOREIGN KEY (uid) REFERENCES accounts(uid),
-        FOREIGN KEY (rid) REFERENCES recipes(rid)
+        FOREIGN KEY (uid) REFERENCES accounts(uid) ON DELETE CASCADE,
+        FOREIGN KEY (rid) REFERENCES recipes(rid) ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS mealplans (

@@ -64,6 +64,11 @@ function doGetFavorites($username) {
   return $connect->getUserFavorites($username);
 }
 
+function doEditRecipe($rid, $ingredients, $name, $username) {
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+  return $connect->editRecipe($rid, $ingredients, $name, $username);
+}
 function doAddReview($username, $rid, $rate, $text) {
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
 
@@ -142,6 +147,8 @@ function requestProcessor($request)
       return doRegistration($request['username'],$request['password'],$request['email']);
     case "getRecipe":
       return doRecipe($request['keyword'], $request['username']);
+    case "editRecipe":
+      return doEditRecipe($request['rid'], $request['ingredients'], $request['name'], $request['username']);
     case "diet":
       return doDiet($request['username'], $request['restrictions']);
     case "getDiet":
