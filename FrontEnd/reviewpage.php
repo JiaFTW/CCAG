@@ -29,15 +29,23 @@ $response = sendMessage($getReview);
         if (is_array($response) && count($response) > 0) {
           foreach ($response as $recipe) {
             echo '<div class="recipe-card">';
-            echo '<h3>' . htmlspecialchars($recipe['name']) . '</h3>';
-            echo '<img src="' . htmlspecialchars($recipe['image']) . '"alt="' . htmlspecialchars($recipe['name']) . '"class="recipe-img">';
-            echo '<p><strong>Rating: </strong></p>' . htmlspecialchars($recipe['rating']) . '/5 Stars';
-            echo '<p><strong>Review: </strong></p>' . htmlspecialchars($recipe['description']);
+            echo '<h3>' . $recipe['name'] . '</h3>';
+            echo '<img src="' . $recipe['image'] . '"alt="' . $recipe['name'] . '"class="recipe-img">';
+            echo '<p><strong>Rating: </strong></p>' . $recipe['rating'] . '/5 Stars';
+            echo '<p><strong>Review: </strong></p>' . $recipe['description'];
+
+            echo '<h3>' . $recipe['name'] . '</h3>';
+            echo '<p><strong>Calories: </strong>' . $recipe['calories'] . 'kcal</p>';
+            echo '<p><strong>Servings: </strong>' . $recipe['servings'] . '</p>';
+            echo '<p><strong># of Ingredients: </strong>' . $recipe['num_ingredients'] . '</p>';
+            echo '<p><strong>Ingredients: </strong>' . $recipe['ingredients'] . '</p>';
+            echo '<p><strong>Labels: </strong>' . $recipe['labels_str'] . '</p>';
+            echo '<p><strong>RID: </strong>' . $recipe['rid'] . '</p>';
             //print_r($recipe);
 
             //remove review
             echo '<form action="removereview.php" method="POST">';
-            echo '<input type="hidden" name="rate_id" value="' . htmlspecialchars($recipe['rate_id']) . '">';
+            echo '<input type="hidden" name="rate_id" value="' . $recipe['rate_id'] . '">';
             echo '<button type="submit">Remove Review</button>';
             echo '</form>';
             echo '</div>';
