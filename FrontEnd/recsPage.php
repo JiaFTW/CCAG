@@ -29,18 +29,15 @@ require_once('favoriteCheck.php');
         $(document).ready(function () {
             let favoriteRids = <?php echo json_encode($favoriteRids); ?>;
 
-            $("#search-form").submit(function (e) {
-                e.preventDefault(); 
+            // Automatically fetch recipes when the page loads
+            fetchRecipes();
 
-                let keyword = $("#search").val();
-                
-                $.post("search.php", { search: keyword }, function (response) {
+            function fetchRecipes() {
+                $.post("search.php", {}, function (response) {
                     let recipes = JSON.parse(response);
                     displayResults(recipes);
                 });
-
-                $("#search").val("");
-            });
+            }
 
             function displayResults(recipes) {
                 let resultsContainer = $("#results-container");
