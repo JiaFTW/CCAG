@@ -65,7 +65,7 @@ function doGetFavorites($username) {
 }
 
 function doEditRecipe($rid, $ingredients, $name, $username) {
-  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+  $connect = new mysqlConnect('p:127.0.0.1','ccagUser','12345','ccagDB');
 
   return $connect->editRecipe($rid, $ingredients, $name, $username);
 }
@@ -102,7 +102,7 @@ function doRecipe($keyword, $username) //perform search check
 
   print_r($labels);
  
-  $response = $connect->checkRecipe($keyword, $labels); 
+  $response = $connect->checkRecipe($keyword); //TODO search by label
 
   if($response == 'false') { //return if mysql error
     echo "Recipe Search: Database ERROR | Returning DB_ERROR".PHP_EOL;
@@ -127,10 +127,12 @@ function doRecipe($keyword, $username) //perform search check
       return array('status' => 'DB_Error');
     }
 
-    $response = $connect->checkRecipe($keyword, $labels); //perform search check agian */
+    $response = $connect->checkRecipe($keyword); //perform search check agian */
   }
 
   echo "Recipe Search: Results Found in Database  | Returning Array".PHP_EOL;
+
+  print_r($response);
   return $response;
 }
 

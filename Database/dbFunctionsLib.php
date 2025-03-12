@@ -2,6 +2,11 @@
 
 //Universal Functions
 
+function showAr ($array) {
+	foreach ($array as $key => $value) {
+		echo "Key: $key; Value: $value\n";
+	}
+} 
 
 function handleQuery($q, mysqli $db, $msg = 'Query Status: Successful') {
     try {
@@ -159,17 +164,20 @@ function addRecipe(string $name, $image, $num_ingredients, $ingredients, $calori
     "INSERT INTO recipes (name, image, num_ingredients, ingredients, calories, servings, is_custom, custom_author) 
     VALUES ('".$name."', '".$image."', ".$num_ingredients.", '".$ingredients."', ".$calories.", ".$servings.", ".$queryBool.", ".$author.");";
 
+
     $second_query = 
     "INSERT INTO recipe_labels (rid, label_id)
     SELECT LAST_INSERT_ID(), label_id
     FROM labels WHERE label_name IN (".$formatted_labels.");";
 
     echo "Adding this recipe".PHP_EOL;
+  
     $response = handleQuery($first_query, $db, "Query Status: Add Recipe Successfull");
     if (!$response) {
         return $response;
     }
     $response = handleQuery($second_query, $db, "Query Status: Add Recipe Labels Successfull");
+
 
     return $response;
 }

@@ -203,29 +203,6 @@ class mysqlConnect {
 
 	}
 
-	public function editRecipe($rid, $ingredients, $name, $username) {
-		$recipe_array = getRecipeByRID($rid, $this->mydb);
-		if (!$recipe_array|| $recipe_array == NULL) {
-			return array('status' => 'Error');
-		}
-		if (!$recipe_array['is_custom'] && $recipe_array['custom_author'] != $username) {
-			echo "Creating New Custom Recipe".PHP_EOL;
-			$formatted_labels =  implode(", ", getRecipeLabels($rid, $this->mydb));
-			addRecipe($name, $recipe_array['image'], $recipe_array['num_ingredients'], $ingredients, 
-			$recipe_array['calories'], $recipe_array['servings'], $this->mydb, TRUE, $username);
-
-			return array('status' => $response ? 'Success' : 'Error');
-		}
-		else {
-			echo "Updating Custom Recipe".PHP_EOL;
-			$updateQuery = "UPDATE recipes SET name = '".$name."', ingredients = '".$ingredients."', 
-			custom_author = '".$username."' WHERE rid = ".$rid.";";
-
-			$response = handleQuery($updateQuery, $this->mydb, "Query Status: Update Custom Recipe Successful");
-			return array('status' => $response ? 'Success' : 'Error');
-		}
-
-	}
 
 	//user funcitons
 	public function changeUserPref(string $username, $pref_array) {
@@ -283,7 +260,41 @@ class mysqlConnect {
 		
 		return array('status' => $response ? 'Success' : 'Error');
 	}
+	public function editRecipe($rid, $ingredients, $name, $username) {
+		$esc_name = $this->mydb->real_escape_string($name);
+		$recipe_array = getRecipeByRID($rid, $this->mydb);
+		$response = '';
+		if (!$recipe_array|| $recipe_array == NULL) {
+			return array('status' => 'Error');
+		}
+		if (!$recipe_array['is_custom'] && $recipe_array['custom_author'] != $username) {
+			echo "Creating New Custom Recipe".PHP_EOL;
+			$formatted_labels =  implode(", ", getRecipeLabels($rid, $this->mydb));
+			addRecipe($esc_name, $recipe_array['image'], $recipe_array['num_ingredients'], $ingredients, 
+			$recipe_array['calories'], $recipe_array['servings'], $formatted_labels, $this->mydb, TRUE, $username);
+			$status = $response ? 'Success' : 'Error';
+			if ($status = 'Success') {
+				$fetchQuery = "SELECT rid FROM recipes WHERE name = '".$esc_name."' AND custom_author = '".$username."' AND is_custom = 1";
+				$fetchResponse = handleQuery($fetchQuery, $this->mydb, "Grab New RID Success");
+				$newRID = $fetchResponse->fetch_assoc();
 
+				print_r($newRID['rid']);
+				print_r($this->addFavorite($username, $newRID['rid']));
+			}
+
+			return array('status' => $status);
+		}
+		else {
+			echo "Updating Custom Recipe".PHP_EOL;
+			$updateQuery = "UPDATE recipes SET name = '".$esc_name."', ingredients = '".$ingredients."', 
+			custom_author = '".$username."' WHERE rid = ".$rid.";";
+			$response = handleQuery($updateQuery, $this->mydb, "Query Status: Update Custom Recipe Successful");
+			$status = $response ? 'Success' : 'Error';
+			
+			return array('status' => $status);
+		}
+
+	}
 
 	//review functions
 	public function addReview($username, $rid, $rate, $text) {
@@ -315,7 +326,26 @@ class mysqlConnect {
 
 	//mealplan functions
 	public function addMealPlan($array) {
+		$uid = getUIDbyUsername($array['username'], $this->mydb);
+		$mp_array = $array;
+		unset($mp_array['type'], $mp_array['username']);
+		$cid = 0;
 
+		$mpNUM = 0;
+		$mpFindQuery = "SELECT COUNT(uid) FROM mealplans WHERE uid = ".$uid.";";
+		$mpNUM = handleQuery($mpFindQuery, $this->mydb, "Query Status: Find User in MP Success");
+
+		if($mpNUM > 0) {
+
+		}
+		}
+
+
+
+	public function getRex($username) {
+		$uid = getUIDbyUsername($username, $this->mydb);
+		$labels = getUserPref($username, $this->mydb);
+		$favorites = getUserBookmarks($username, $this->mydb);
 	}
 }
 
@@ -324,7 +354,7 @@ class mysqlConnect {
 
 //For Testing  and debugging
 
-function showAr ($array) {
+/*function showAr ($array) {
 	foreach ($array as $key => $value) {
 		echo "Key: $key; Value: $value\n";
 	}
@@ -426,22 +456,22 @@ $chickenRecipes = [
     ]
 ];
 
-$testObj->populateRecipe($chickenRecipes);
+//$testObj->populateRecipe($chickenRecipes);
 
 $test_labels = ['high-protein'];
 //print_r($testObj->checkRecipe('Chicken', $test_labels));
-print_r($testObj->checkRecipe('Caesar Salad'));
+//print_r($testObj->checkRecipe('Caesar Salad'));
 
 $test_prefs = ['dairy-free', 'gluten-free', 'high-protein', 'Kosher'];
 //print_r($testObj->changeUserPref('Bob', $test_prefs));
-print_r($testObj->addFavorite('Bob', 60));
-print_r($testObj->removeFavorite('Bob', 60));
+//print_r($testObj->addFavorite('Bob', 60));
+//print_r($testObj->removeFavorite('Bob', 60));
 
-print_r($testObj->getUserDiet('Bob'));
-print_r($testObj->getUserFavorites('Bob'));
+//print_r($testObj->getUserDiet('Bob'));
+//print_r($testObj->getUserFavorites('Bob'));
 
 //print_r($testObj->addReview('Bob', 56, 4, "Very Good!"));
-print_r($testObj->getUserReviews('Bob'));
+//print_r($testObj->getUserReviews('Bob'));
 //print_r($testObj->removeReview(2));
 
 //print_r($testObj->changeUserPref('Bob', $test_labels));
