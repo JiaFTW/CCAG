@@ -147,19 +147,24 @@ function addRecipe(string $name, $image, $num_ingredients, $ingredients, $calori
     $labels_arr = array_map('trim', explode(',', $labels));
     $formatted_labels = "'" . implode("','", $labels_arr) . "'";
     //echo $formatted_labels;
+    $author = "NULL";
+    $queryBool = 0;
     if($custom_author != NULL) {
         $author = "'".$custom_author."'"; 
     }
-
+    if($is_custom) {
+        $queryBool = 1;
+    }
     $first_query = 
     "INSERT INTO recipes (name, image, num_ingredients, ingredients, calories, servings, is_custom, custom_author) 
-    VALUES ('".$name."', '".$image."', ".$num_ingredients.", '".$ingredients."', ".$calories.", ".$servings.", ".$is_custom.", ".$author.");";
+    VALUES ('".$name."', '".$image."', ".$num_ingredients.", '".$ingredients."', ".$calories.", ".$servings.", ".$queryBool.", ".$author.");";
 
     $second_query = 
     "INSERT INTO recipe_labels (rid, label_id)
     SELECT LAST_INSERT_ID(), label_id
     FROM labels WHERE label_name IN (".$formatted_labels.");";
 
+    echo "Adding this recipe".PHP_EOL;
     $response = handleQuery($first_query, $db, "Query Status: Add Recipe Successfull");
     if (!$response) {
         return $response;
@@ -176,7 +181,7 @@ function getRecipeLabels($rid, mysqli $db) {
 
     $response = handleQuery($query, $db, "Query Status: Get Recipe Labels Query Succesful");
     $labels_arr = $response->fetch_all(MYSQLI_NUM);
-    $flatten_arr = array_column($user_pref_arr, 0);
+    $flatten_arr = array_column($labels_arr, 0);
 
     return $flatten_arr;
 }
@@ -207,7 +212,12 @@ function getReviewsByRID($rid) {
     
 }
 
+function addMealPlanEntry($cid, $rid, $day,$meal_type, mysqli $db) {
+    $query = "INSERT INTO meal_entries (".$cid.", ".$rid.", '".$day."', '".$meal_type."')";
+    $response = handleQuery($query, $db, "Query Status: Add Meal Plan Query Successful");
 
+    return $response
+;}
 
 
 ?>
