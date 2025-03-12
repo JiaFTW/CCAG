@@ -1,6 +1,11 @@
 <?php
 require_once('../rabbitmq/testRabbitMQClient.php');
 
+if (!isset($_COOKIE['session_token'])) {
+  header("Location: loginPage.php");
+  die();
+}
+
 $getReview = array (
   'type' => 'getUserReviews',
   'username' => $_COOKIE['username'],

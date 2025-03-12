@@ -8,6 +8,11 @@ $favoriteRequest = array (
 
 $response = sendMessage($favoriteRequest);
 
+if (!isset($_COOKIE['session_token'])) {
+  header("Location: loginPage.php");
+  die();
+}
+
 ?>
 
 

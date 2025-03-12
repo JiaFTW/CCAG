@@ -1,6 +1,10 @@
 <?php 
 require_once('../rabbitmq/testRabbitMQClient.php');
 
+if (!isset($_COOKIE['session_token'])) {
+    header("Location: loginPage.php");
+    die();
+  }
 
 $getDiet = array (
     'type' => 'getDiet',

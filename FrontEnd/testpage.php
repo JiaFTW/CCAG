@@ -2,16 +2,19 @@
 require_once('../rabbitmq/testRabbitMQClient.php');
 
 
-$favoriteRequest = array (
-    'type' => 'getFavorites',
-    'username' => $_COOKIE['username'],
-  );
-  
-$response = sendMessage($favoriteRequest);
+$reviewRequest = array (
+  'type' => 'editRecipe',
+  'username' => $_COOKIE['username'],
+  'rid' => intval($_POST['recipe_id']),
+  'name' => $_POST['newRecipeName'],
+  'ingredients' => $_POST['newIngredients'],
+);
 
-foreach ($response as $recipe) {
-  echo $recipe['name'];
+if (!strcmp($_POST['newRecipeName'],$_POST['name'])) {
+  $reviewRequest['name'] = $_COOKIE['username'] . "'s " . $_POST['name'];
 }
+
+print_r($reviewRequest);
 
 
 
