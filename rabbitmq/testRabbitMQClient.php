@@ -1,4 +1,3 @@
-
 <?php
 require_once('path.inc');
 require_once('get_host_info.inc');
@@ -104,9 +103,18 @@ switch ($request['type'])
       $request['THU1'] = $info['THU1'];
       $request['THU1'] = $info['THU1'];
       $request['FRI1'] = $info['FRI1'];
-      
-      
+      $request['FRI2'] = $info['FRI2'];
+      $request['FRI2'] = $info['FRI2'];
+      $request['FRI3'] = $info['FRI3'];
+      $request['SAT1'] = $info['SAT1'];
+      $request['SAT2'] = $info['SAT2'];
+      $request['SAT3'] = $info['SAT3'];
+      $request['SUN1'] = $info['SUN1'];
+      $request['SUN2'] = $info['SUN2'];
+      $request['SUN3'] = $info['SUN3'];
       break;
+     case "getUserMealPlans":
+      $request['username'] = $info['username']; 
     default:
       return $request['type'].PHP_EOL;
   }
@@ -122,3 +130,4 @@ echo $argv[0]." END".PHP_EOL;
 }
 
 ?>
+
