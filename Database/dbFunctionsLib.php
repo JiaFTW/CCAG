@@ -111,7 +111,7 @@ function getUserBookmarks(string $username, mysqli $db) {
 
 function getUserMP(string $username, mysqli $db) {
     $uid = getUIDbyUsername($username, $db);
-    $query = "SELECT mealplan_entries.* recipes.name AS recipe_name FROM mealplan_entries
+    $query = "SELECT mealplan_entries.* , recipes.name AS recipe_name FROM mealplan_entries
     INNER JOIN recipes ON recipes.rid = mealplan_entries.rid WHERE uid = ".$uid.";";
 
     $response = handleQuery($query, $db, "Query Status: Get User Mealplans Query Succesful");

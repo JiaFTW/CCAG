@@ -1,11 +1,11 @@
 <?php
 require_once('../rabbitmq/testRabbitMQClient.php');
 
-/*$favoriteRequest = array (
+$mpRequest = array (
   'type' => 'getUserMealPlans',
   'username' => $_COOKIE['username'],
-);*/
-//$response = sendMessage($favoriteRequest);
+);
+$response = sendMessage($mpRequest);
 
 if (!isset($_COOKIE['session_token'])) {
   header("Location: loginPage.php");
@@ -44,12 +44,12 @@ if (!isset($_COOKIE['session_token'])) {
         for ($j=0;$j<count($meals);$j++) {
           $mealId= $day . ($j+1);
           echo "<td>";
-            echo "$mealId";
-          /*foreach ($response as $recipe) {
-
             
+          foreach ($response as $recipe) {
 
-          }*/
+            echo $recipe[$mealId];
+
+          }
 
           echo "</td>";
         }

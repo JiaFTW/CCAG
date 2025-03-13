@@ -115,6 +115,7 @@ switch ($request['type'])
       break;
      case "getUserMealPlans":
       $request['username'] = $info['username']; 
+      break;
     default:
       return $request['type'].PHP_EOL;
   }

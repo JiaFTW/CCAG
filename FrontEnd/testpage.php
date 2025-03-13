@@ -2,19 +2,18 @@
 require_once('../rabbitmq/testRabbitMQClient.php');
 
 
-$reviewRequest = array (
-  'type' => 'editRecipe',
+$mpRequest = array (
+  'type' => 'getUserMealPlans',
   'username' => $_COOKIE['username'],
-  'rid' => intval($_POST['recipe_id']),
-  'name' => $_POST['newRecipeName'],
-  'ingredients' => $_POST['newIngredients'],
 );
+$response = sendMessage($mpRequest);
 
-if (!strcmp($_POST['newRecipeName'],$_POST['name'])) {
-  $reviewRequest['name'] = $_COOKIE['username'] . "'s " . $_POST['name'];
+if (!isset($_COOKIE['session_token'])) {
+  header("Location: loginPage.php");
+  die();
 }
 
-print_r($reviewRequest);
+print_r($response);
 
 
 
