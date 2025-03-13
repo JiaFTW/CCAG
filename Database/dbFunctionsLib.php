@@ -109,8 +109,15 @@ function getUserBookmarks(string $username, mysqli $db) {
     return $arr;
 }
 
-function getUserMealPlans($uid) {
+function getUserMP(string $username, mysqli $db) {
+    $uid = getUIDbyUsername($username, $db);
+    $query = "SELECT mealplan_entries.* recipes.name AS recipe_name FROM mealplan_entries
+    INNER JOIN recipes ON recipes.rid = mealplan_entries.rid WHERE uid = ".$uid.";";
 
+    $response = handleQuery($query, $db, "Query Status: Get User Mealplans Query Succesful");
+    $arr = $response->fetch_all(MYSQLI_ASSOC);
+
+    return $arr;
 }
 
 function getUserPref(string $username, mysqli $db) { //returns array of labels assoicated with uid
@@ -221,10 +228,10 @@ function getReviewsByRID($rid) {
 }
 
 function addMealPlanEntry($cid, $rid, $day,$meal_type, mysqli $db) {
-    $query = "INSERT INTO meal_entries (".$cid.", ".$rid.", '".$day."', '".$meal_type."')";
+    $query = "INSERT INTO mealplan_entries (cid, rid, day, meal_type) VALUES (".$cid.", ".$rid.", '".$day."', '".$meal_type."');";
     $response = handleQuery($query, $db, "Query Status: Add Meal Plan Query Successful");
 
-    return $response
+    return $response;
 ;}
 
 

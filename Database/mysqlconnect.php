@@ -128,6 +128,10 @@ class mysqlConnect {
 	public function getUserReviews(string $username) { //wrapper function for getReviewsByUser()
 		return getReviewsByUser($username, $this->mydb);
 	}	
+
+	public function getUserMealPlans(string $username) { //wrapper fucntion for getUserMP()
+		return getUserMP($username, $this->mydb);
+	}
  
 	//recipes
 	public function checkRecipe($keywords, $labels = '') {
@@ -325,22 +329,49 @@ class mysqlConnect {
 	}
 
 	//mealplan functions
-	public function addMealPlan($array) {
+	public function addMealPlan($array) { //Can only work with one exisitng mealplan
 		$uid = getUIDbyUsername($array['username'], $this->mydb);
 		$mp_array = $array;
-		unset($mp_array['type'], $mp_array['username']);
-		$cid = 0;
-
-		$mpNUM = 0;
-		$mpFindQuery = "SELECT COUNT(uid) FROM mealplans WHERE uid = ".$uid.";";
-		$mpNUM = handleQuery($mpFindQuery, $this->mydb, "Query Status: Find User in MP Success");
-
-		if($mpNUM > 0) {
-
+		unset($mp_array['type'], $mp_array['username'], $mp_array['message']);
+		
+		$cid_query = "SELECT cid FROM mealplans WHERE uid = ".$uid.";";
+		$mpResponse = handleQuery($cid_query, $this->mydb, 'Query Status: addMealPlan| fetch cid sucessful');
+		$fetch_cid = $mpResponse->fetch_assoc();
+		print_r($fetch_cid);
+		if ($fetch_cid == NULL) {
+			echo "NULLLL".PHP_EOL;
+			$cid = null;
+		} else {
+		$cid = $fetch_cid['cid']; //grabs first row
 		}
+		if ($cid == null) { //create new mealplan if not exists
+			$mp_name = "My Weekly Meal Plan";
+			$esc_name = $this->mydb->real_escape_string($mp_name);
+			//print_r("INSERT INTO mealplans (uid, mp_name) VALUES(".$uid.", '".$esc_name."');");
+			$createMP_Response =  handleQuery("INSERT INTO mealplans (uid, mp_name) VALUES (".$uid.", '".$esc_name."');", $this->mydb, 'Query Status: addMealPlan| create MP successful');
+			if (!$createMP_Response) {
+				return array('status' => 'error');
+			}
+			$fetchResponse = handleQuery($cid_query, $this->mydb, "addMealPlan|createMP| fetch cid Successful");
+			$newCID = $fetchResponse->fetch_assoc();
+			$cid = $newCID['cid'];
 		}
-
-
+		else { //delete from exising mealplan
+			handleQuery("DELETE FROM mealplan_entries WHERE cid = ".$cid."", $this->mydb, "Query Status: addMealPlan| delete assoc cid entires successful");
+		}
+		$days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+		$meal_type = ['Breakfast', 'Lunch', 'Dinner'];
+		$num = 0;
+		foreach($mp_array as $key => $val) {
+			$rid = "NULL";
+			if($val != NULL) {
+				$rid = $val;
+			}
+			addMealPlanEntry($cid, $val, $days[$num % count($days)], $meal_type[$num % count($meal_type)], $this->mydb);
+			$num++;
+		}
+		return array('status' => 'success');
+	}
 
 	public function getRex($username) {
 		$uid = getUIDbyUsername($username, $this->mydb);

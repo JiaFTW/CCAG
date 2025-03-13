@@ -90,8 +90,14 @@ function doGetUserReviews($username) {
 function doAddMealPlan($array) {
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
 
-  return $connect->addMealPlan($username);
+  return $connect->addMealPlan($array);
 
+}
+
+function doGetUserMealPlans($username) {
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+  return $connect->getUserMealPlans($username);
 }
 
 function doRecipe($keyword, $username) //perform search check
@@ -176,6 +182,8 @@ function requestProcessor($request)
       return doGetUserReviews($request['username']);
     case "addMealPlan":
       return doAddMealPlan($request);
+    case "getUserMealPlans":
+      return doGetUserMealPlans($request['username']);
     default:
       return "type fail".PHP_EOL;
   }
