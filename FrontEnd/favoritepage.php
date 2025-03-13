@@ -72,10 +72,10 @@ if (!isset($_COOKIE['session_token'])) {
             //change recipe
             echo '<button type="button" class="smol-button" onclick="toggleChangeRecipeForm(' . $recipe['rid'] . ')">Change Ingredients</button>';
             echo '<form id="changeRecipeForm' . $recipe['rid'] . '"action="addChange.php" method="POST" style="display:none;">';
-            echo '<label>New Name</label>';
+            echo '<label>' . $_COOKIE['username'] . "'s " . $recipe['name'] . '</label>';
             echo '<input type="hidden" name="recipe_id" value="' . $recipe['rid'] . '">';
             echo '<input type="hidden" name="name" value="' . $recipe['name'] . '">';
-            echo '<input type="text" name="newRecipeName" value="' . $_COOKIE['username'] . "'s " . $recipe['name'] . '" required></input>';
+            echo '<input type="hidden" name="newRecipeName" value="' . $_COOKIE['username'] . "'s " . $recipe['name'] . '" required></input>';
             echo '<textarea name="newIngredients" required>' . $recipe['ingredients'] .'</textarea><br>';
             echo '<input type="submit" value="Save">';
             echo '</form>';
