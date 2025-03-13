@@ -7,7 +7,6 @@ $meals = ["Breakfast","Lunch","Dinner"];
 $addMealPlan = array (
   'type' => 'addMealPlan',
   'username' => $_COOKIE['username'],
-
 );
 
 
@@ -26,7 +25,7 @@ print_r($addMealPlan);
 /*$response = sendMessage($addMealPlan);
 
 header("Location: mppage.php");
-die();*/
+die();*.
 
 
 /*$addMealPlan = array (

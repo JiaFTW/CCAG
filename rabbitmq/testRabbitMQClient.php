@@ -89,6 +89,24 @@ switch ($request['type'])
       $request['name'] = $info['name'];
       $request['username'] = $info['username'];
       break;
+    case "addMealPlan":
+      $request['username'] = $info['username'];
+      $request['MON1'] = $info['MON1'];
+      $request['MON2'] = $info['MON2'];
+      $request['MON3'] = $info['MON3'];
+      $request['TUE1'] = $info['TUE1'];
+      $request['TUE2'] = $info['TUE2'];
+      $request['TUE3'] = $info['TUE3'];
+      $request['WED1'] = $info['WED1'];
+      $request['WED2'] = $info['WED2'];
+      $request['WED3'] = $info['WED3'];
+      $request['THU1'] = $info['THU1'];
+      $request['THU1'] = $info['THU1'];
+      $request['THU1'] = $info['THU1'];
+      $request['FRI1'] = $info['FRI1'];
+      
+      
+      break;
     default:
       return $request['type'].PHP_EOL;
   }
