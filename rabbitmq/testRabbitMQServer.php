@@ -100,6 +100,12 @@ function doGetUserMealPlans($username) {
   return $connect->getUserMealPlans($username);
 }
 
+function doGetRex($username) {
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+  return $connect->getRex($username);
+}
+
 function doRecipe($keyword, $username) //perform search check
 {
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
@@ -184,6 +190,8 @@ function requestProcessor($request)
       return doAddMealPlan($request);
     case "getUserMealPlans":
       return doGetUserMealPlans($request['username']);
+    case "getRex":
+      return doGetRex($request['username']);
     default:
       return "type fail".PHP_EOL;
   }

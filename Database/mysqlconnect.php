@@ -458,7 +458,7 @@ class mysqlConnect {
 
 
 
-$testObj = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+/*$testObj = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
 
 //Test Two Dim array recipes
 $chickenRecipes = [
@@ -556,8 +556,8 @@ $chickenRecipes = [
 
 //$testObj->populateRecipe($chickenRecipes);
 
-//$test_labels = ['high-protein'];
-//print_r($testObj->checkRecipe('Chicken', $test_labels));
+$test_labels = ['high-protein'];
+print_r($testObj->checkRecipe('Chicken', $test_labels));
 //print_r($testObj->checkRecipe('Caesar Salad'));
 
 //$test_prefs = ['dairy-free', 'gluten-free', 'high-protein', 'Kosher'];
@@ -569,6 +569,7 @@ $chickenRecipes = [
 //print_r($testObj->getUserFavorites('Bob'));
 
 //print_r($testObj->getRex('Bob'));
+//print_r($testObj->getUserMealPlans('Bob'));
 
 //print_r($testObj->addReview('Bob', 56, 4, "Very Good!"));
 //print_r($testObj->getUserReviews('Bob'));
