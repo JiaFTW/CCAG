@@ -6,6 +6,7 @@ $mpRequest = array (
   'type' => 'getUserMealPlans',
   'username' => $_COOKIE['username'],
 );
+
 $response = sendMessage($mpRequest);
 
 if (!isset($_COOKIE['session_token'])) {
