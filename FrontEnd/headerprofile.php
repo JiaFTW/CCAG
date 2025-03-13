@@ -4,5 +4,6 @@
         <a href="favoritepage.php">Favorites</a>
         <a href="reviewpage.php">My Reviews</a>
         <a href="">Meal Plans</a>
+        <a href="recsPage.php">Get Recommendations</a>
     </div>
 </header>

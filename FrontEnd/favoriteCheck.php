@@ -11,10 +11,14 @@ $favoriteRequest = array (
     'username' => $_COOKIE['username'],
   );
   
+
 $response = sendMessage($favoriteRequest);
+
 
 $favoriteRids = array_map(function($recipe) {
     return $recipe['rid'];
 }, $response);
+
+
 
 ?>

@@ -1,6 +1,10 @@
 <?php 
 require_once('../rabbitmq/testRabbitMQClient.php');
 
+if (!isset($_COOKIE['session_token'])) {
+    header("Location: loginPage.php");
+    die();
+  }
 
 $getDiet = array (
     'type' => 'getDiet',
@@ -60,10 +64,11 @@ function isChecked($restriction, $savedRestrictions) {
                     <label for="sesame-free">Sesame-Free</label>
                     <input type="checkbox" name="sesame-free" id="sesame-free" <?php echo isChecked('sesame-free', $savedRestrictions); ?>> <br>
 
-                    <h2><label>Diet Restrictions</label></h2> <br>
-
                     <label for="gluten-free">Gluten-Free</label>
                     <input type="checkbox" name="gluten-free" id="gluten-free" <?php echo isChecked('gluten-free', $savedRestrictions); ?>> <br>
+
+                    <h2><label>Diet Restrictions</label></h2> <br>
+
 
                     <label for="alcohol-free">Alcohol-Free</label>
                     <input type="checkbox" name="alcohol-free" id="alcohol-free" <?php echo isChecked('alcohol-free', $savedRestrictions); ?>> <br>
