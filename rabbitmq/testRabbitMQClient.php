@@ -1,4 +1,3 @@
-
 <?php
 require_once('path.inc');
 require_once('get_host_info.inc');
@@ -89,6 +88,33 @@ switch ($request['type'])
       $request['name'] = $info['name'];
       $request['username'] = $info['username'];
       break;
+    case "addMealPlan":
+      $request['username'] = $info['username'];
+      $request['MON1'] = $info['MON1'];
+      $request['MON2'] = $info['MON2'];
+      $request['MON3'] = $info['MON3'];
+      $request['TUE1'] = $info['TUE1'];
+      $request['TUE2'] = $info['TUE2'];
+      $request['TUE3'] = $info['TUE3'];
+      $request['WED1'] = $info['WED1'];
+      $request['WED2'] = $info['WED2'];
+      $request['WED3'] = $info['WED3'];
+      $request['THU1'] = $info['THU1'];
+      $request['THU1'] = $info['THU1'];
+      $request['THU1'] = $info['THU1'];
+      $request['FRI1'] = $info['FRI1'];
+      $request['FRI2'] = $info['FRI2'];
+      $request['FRI2'] = $info['FRI2'];
+      $request['FRI3'] = $info['FRI3'];
+      $request['SAT1'] = $info['SAT1'];
+      $request['SAT2'] = $info['SAT2'];
+      $request['SAT3'] = $info['SAT3'];
+      $request['SUN1'] = $info['SUN1'];
+      $request['SUN2'] = $info['SUN2'];
+      $request['SUN3'] = $info['SUN3'];
+      break;
+     case "getUserMealPlans":
+      $request['username'] = $info['username']; 
     default:
       return $request['type'].PHP_EOL;
   }
@@ -104,3 +130,4 @@ echo $argv[0]." END".PHP_EOL;
 }
 
 ?>
+
