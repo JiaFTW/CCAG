@@ -376,7 +376,25 @@ class mysqlConnect {
 	public function getRex($username) {
 		$uid = getUIDbyUsername($username, $this->mydb);
 		$labels = getUserPref($username, $this->mydb);
-		$favorites = getUserBookmarks($username, $this->mydb);
+
+		$top_labels_query = "SELECT labels.label_name AS label, COUNT(*) AS score
+		FROM bookmarks JOIN recipe_labels ON bookmarks.rid = recipe_labels.rid
+		JOIN labels ON recipe_labels.label_id = labels.label_id WHERE bookmarks.uid = ".$uid."
+		GROUP BY labels.label_name ORDER BY COUNT(*) DESC LIMIT 5";
+		$topResponse = handleQuery($top_labels_query, $this->mydb, "Query Status: Top 5 Labels Successful");
+		$top_five = $topResponse->fetch_all(MYSQLI_ASSOC);
+
+		//print_r($top_five);
+		foreach ($top_five as $row) {
+			$label = $row['label'];
+			//echo "old score: ".$row['score'].PHP_EOL;
+			if (in_array($label, $labels)) {
+				
+				$row['score'] *= 2;
+				//echo "new score: ".$row['score'].PHP_EOL;
+			}
+		}
+		return;
 	}
 }
 
@@ -385,11 +403,7 @@ class mysqlConnect {
 
 //For Testing  and debugging
 
-/*function showAr ($array) {
-	foreach ($array as $key => $value) {
-		echo "Key: $key; Value: $value\n";
-	}
-} 
+
 
 $testObj = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
 
@@ -500,6 +514,8 @@ $test_prefs = ['dairy-free', 'gluten-free', 'high-protein', 'Kosher'];
 
 //print_r($testObj->getUserDiet('Bob'));
 //print_r($testObj->getUserFavorites('Bob'));
+
+$testObj->getRex('Bob');
 
 //print_r($testObj->addReview('Bob', 56, 4, "Very Good!"));
 //print_r($testObj->getUserReviews('Bob'));
