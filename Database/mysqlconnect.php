@@ -180,6 +180,50 @@ class mysqlConnect {
 		return $response_arr;
 	}
 
+	public function checkRecipeByLabel(string $labels_str = '', int $limit = 5) {
+		$labels = array_filter(array_map('trim', explode(',', $labels_str)));
+		$label_query = '';
+	
+		if (!empty($labels)) {
+			$formatted_labels = array_map(function($label) { return "'" . $label . "'";}, $labels);
+	
+			$label_query = "INNER JOIN (
+				SELECT rl.rid 
+				FROM recipe_labels rl
+				INNER JOIN labels l ON rl.label_id = l.label_id
+				WHERE l.label_name IN (" . implode(',', $formatted_labels) . ")
+				GROUP BY rl.rid
+				HAVING COUNT(DISTINCT l.label_name) = " . count($labels) . "
+			) AS filtered_rids ON recipes.rid = filtered_rids.rid";
+		}
+	
+		$query = "SELECT recipes.rid, recipes.name, recipes.image, 
+						 recipes.num_ingredients, recipes.ingredients, 
+						 recipes.calories, recipes.servings,
+						 GROUP_CONCAT(DISTINCT labels.label_name SEPARATOR ', ') AS labels_str
+				  FROM recipes
+				  INNER JOIN recipe_labels ON recipes.rid = recipe_labels.rid
+				  INNER JOIN labels ON recipe_labels.label_id = labels.label_id
+				  $label_query
+				  GROUP BY recipes.rid
+				  LIMIT $limit";
+	
+		$response = handleQuery($query, $this->mydb, "Query Status: Check Recipe By Label Successfull");
+		if ($response === false) {
+			echo "Check Recipe Status: ERROR!! | Returning false".PHP_EOL;
+			return false;
+		}
+		$response_arr = $response->fetch_all(MYSQLI_ASSOC);
+
+		if ($response_arr == null) {
+			echo "Check Recipe Status: NULL | Returning NULL";
+			return null;
+		}
+		echo "Check Recipe Status: Success| Returning Results";
+		//print_r($response_arr);
+		return $response_arr;
+	}
+
 	public function populateRecipe($array) {
 		$fail_counter = 0;
 		$total = count($array);
@@ -388,13 +432,22 @@ class mysqlConnect {
 		foreach ($top_five as $row) {
 			$label = $row['label'];
 			//echo "old score: ".$row['score'].PHP_EOL;
-			if (in_array($label, $labels)) {
-				
+			if (in_array($label, $labels)) {	
 				$row['score'] *= 2;
 				//echo "new score: ".$row['score'].PHP_EOL;
 			}
 		}
-		return;
+		usort($top_five, function ($a, $b) { return $b['score'] <=> $a['score']; });
+		$rex_results = array();
+		$rex1 = $this->checkRecipeByLabel($top_five[0]['label'], 15);
+		$rex2 = $this->checkRecipeByLabel($top_five[1]['label'], 10);
+		$rex3 = $this->checkRecipeByLabel($top_five[2]['label']);
+
+		$rex_results[] = $rex1;
+		$rex_results[] = $rex2;
+		$rex_results[] = $rex3;
+
+		return $rex_results;
 	}
 }
 
@@ -515,7 +568,7 @@ $test_prefs = ['dairy-free', 'gluten-free', 'high-protein', 'Kosher'];
 //print_r($testObj->getUserDiet('Bob'));
 //print_r($testObj->getUserFavorites('Bob'));
 
-$testObj->getRex('Bob');
+print_r($testObj->getRex('Bob'));
 
 //print_r($testObj->addReview('Bob', 56, 4, "Very Good!"));
 //print_r($testObj->getUserReviews('Bob'));
