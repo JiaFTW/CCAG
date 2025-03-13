@@ -19,13 +19,13 @@ for ($i=0; $i < 7; $i++) {
 
 }
 
-print_r($addMealPlan);
+//print_r($addMealPlan);
 
 
-/*$response = sendMessage($addMealPlan);
+$response = sendMessage($addMealPlan);
 
 header("Location: mppage.php");
-die();*.
+die();
 
 
 /*$addMealPlan = array (
