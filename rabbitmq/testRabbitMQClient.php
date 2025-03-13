@@ -113,9 +113,10 @@ switch ($request['type'])
       $request['SUN2'] = $info['SUN2'];
       $request['SUN3'] = $info['SUN3'];
       break;
-     case "getUserMealPlans":
+    case "getUserMealPlans":
       $request['username'] = $info['username']; 
-      case "GetRex":
+      break;
+    case "getRex":
         $request['username'] = $info['username'];
       break;
     default:

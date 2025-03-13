@@ -6,7 +6,7 @@ $umpRequest = array (
   'username' => $_COOKIE['username'],
 );
 
-$response = sendMessage($ump);
+$response = sendMessage($umpRequest);
 
 if (!isset($_COOKIE['session_token'])) {
   header("Location: loginPage.php");
@@ -41,6 +41,8 @@ if (!isset($_COOKIE['session_token'])) {
             echo '<p><strong>Ingredients: </strong>' . $rec['ingredients'] . '</p>';
             echo '<p><strong>Labels: </strong>' . $rec['labels_str'] . '</p>';
             echo '<p><strong>RID: </strong>' . $rec['rid'] . '</p>';
+
+            
             echo '</div>';
             }
           }

@@ -14,9 +14,9 @@ if (!isset($_COOKIE['session_token'])) {
   die();
 }
 
-print_r($response);
-
-
+foreach ($response as $recipe){
+  echo $recipe['day'];
+}
 
 ?>
 
