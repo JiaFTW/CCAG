@@ -578,10 +578,11 @@ $chickenRecipes = [
 
 //$testObj->populateRecipe($chickenRecipes);
 
-$test_labels = ['high-protein'];
-print_r($testObj->checkRecipe('Chicken', $test_labels));
+//$test_labels = ['high-protein'];
+//print_r($testObj->checkRecipe('Chicken', $test_labels));
 //print_r($testObj->checkRecipe('Caesar Salad'));
 
+//$test_prefs = ['dairy-free', 'gluten-free', 'high-protein', 'Kosher'];
 //$test_prefs = ['dairy-free', 'gluten-free', 'high-protein', 'Kosher'];
 //print_r($testObj->changeUserPref('Bob', $test_prefs));
 //print_r($testObj->addFavorite('Bob', 60));
@@ -591,7 +592,6 @@ print_r($testObj->checkRecipe('Chicken', $test_labels));
 //print_r($testObj->getUserFavorites('Bob'));
 
 //print_r($testObj->getRex('Bob'));
-//print_r($testObj->getUserMealPlans('Bob'));
 
 //print_r($testObj->addReview('Bob', 56, 4, "Very Good!"));
 //print_r($testObj->getUserReviews('Bob'));
