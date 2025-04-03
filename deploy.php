@@ -1,5 +1,45 @@
 #! /usr/bin/php
 <?php
+    require_once('rabbitmq/path.inc');
+    require_once('rabbitmq/get_host_info.inc');
+    require_once('rabbitmq/rabbitMQLib.inc');
+    function send_bundle($bundleID, $folderType)
+    {
+        $fileName = $folderType . "_" . $bundleID . ".zip";
+        //$rootPath = rtrim($rootPath, '\\/');
+
+        // Get real path for our folder
+        $rootPath = realpath(__DIR__ . "/" . $folderType);
+
+        // Initialize archive object
+        $zip = new ZipArchive();
+        $zip->open($fileName, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+        // Create recursive directory iterator
+        /** @var SplFileInfo[] $files */
+        $files = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($rootPath),
+        RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        foreach ($files as $file)
+        {
+            // Skip directories (they would be added automatically)
+            if (!$file->isDir())
+            {
+                // Get real and relative path for current file
+                $filePath = $file->getRealPath();
+                $relativePath = substr($filePath, strlen($rootPath) + 1);
+
+                // Add current file to archive
+                $zip->addFile($filePath, $relativePath);
+            }
+        }
+
+        // Zip archive will be created only after closing object
+        $zip->close();
+    }
+
     $toSend = array();
     $toSend["db"] = false;
     $toSend["dmz"] = false;
@@ -111,10 +151,16 @@
 
     $id = rand();
     echo $id .PHP_EOL;
-    $filename;
 
-    /*if($toSend["db"])
-    {
-        $filename = ""
-    }*/
+    if($toSend["db"])
+        send_bundle($id, "Database");
+
+    if($toSend["dmz"])
+        send_bundle($id, "DMZ");
+
+    if($toSend["front"])
+        send_bundle($id,"FrontEnd");
+
+    if($toSend["rabbit"])
+        send_bundle($id, "rabbitmq");
 ?>
