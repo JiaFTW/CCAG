@@ -31,6 +31,8 @@ class mysqlConnect {
 		return $this->dbConnectionStatus;
 	}
 
+//BackEnd Functions
+
 	//Returns Array
 	public function registerAccount($username, $email, $password) {
 		$register_status;
@@ -449,9 +451,17 @@ class mysqlConnect {
 
 		return $rex_results;
 	}
-}
 
-	
+//Deployment Function
+
+	public function recordBundle() {
+
+	}
+
+	public function changeBundleStatus() {
+		
+	}
+}
 
 
 //For Testing  and debugging
