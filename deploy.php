@@ -38,6 +38,13 @@
 
         // Zip archive will be created only after closing object
         $zip->close();
+
+        //$session = ssh2_connect("192.168.193.78",22);
+        $filePath = __DIR__ . "/" . $fileName;
+        
+        exec("scp " . $filePath . "deploy@192.168.193.69:~/Bundles/yourfilename.txt", $output);
+
+        exec("rm " . $filePath, $killme);
     }
 
     $toSend = array();
@@ -150,7 +157,7 @@
     }
 
     $id = rand();
-    echo $id .PHP_EOL;
+    //echo $id .PHP_EOL;
 
     if($toSend["db"])
         send_bundle($id, "Database");
