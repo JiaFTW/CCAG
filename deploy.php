@@ -41,8 +41,8 @@
 
         //$session = ssh2_connect("192.168.193.78",22);
         $filePath = __DIR__ . "/" . $fileName;
-        
-        exec("scp " . $filePath . "deploy@192.168.193.69:~/Bundles/yourfilename.txt", $output);
+        echo $filePath.PHP_EOL;
+        exec("scp " . $filePath . " deploy@192.168.193.69:~/Bundles/".$fileName , $output);
 
         exec("rm " . $filePath, $killme);
     }
