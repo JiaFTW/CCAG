@@ -7,11 +7,19 @@ require_once('rabbitMQLib.inc');
 require_once('../Deployment/InFileProcessor.php');
 require_once('../Database/mysqlconnect.php');
 
+$workingDir = "home/deploy/Bundles";
 
-
-function doDeployVersion($version) 
+function doIncoming($file_name, $tempID) 
 {
+	$processor = new bundleProcessor ($workingDir);
+	echo  $processor.getBundlePath($file_name).PHP_EOL;
 
+	if ($processor.changeBundleName($file_name, "changedBundle.zip")) {
+		echo "Changed Named SuccessFul".PHP_EOL;
+	}
+	else {
+		echo "Changed Name Failed".PHP_EOL;
+	}
 }
 
 function requestProcessor($request)
@@ -29,8 +37,8 @@ function requestProcessor($request)
 
 	switch ($request['type']) 
 	{
-	case 'deployVersion':
-		return doDeployVersion($request['version']);
+	case 'incomingBundle':
+		return doIncoming($request['file_name'], $request['tempID']);
 
 	default:
 		return [
@@ -41,7 +49,7 @@ function requestProcessor($request)
 }
 
 
-$server = new rabbitMQServer("testRabbitMQ.ini","DeploymentServer");
+$server = new rabbitMQServer("testRabbitMQ.ini","DMZSever");
 
 echo "Deployment Server BEGIN".PHP_EOL;
 $server->process_requests('requestProcessor');

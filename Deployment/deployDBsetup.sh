@@ -21,9 +21,9 @@ sql_query=$(cat <<EOF
     CREATE TABLE IF NOT EXISTS bundles (
         id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR NOT NULL,
-        version INT NOT NULL,
-        status VARCHAR NOT NULl,
-        container VARCHAR NOT NULL,
+        version INT,
+        status VARCHAR,
+        machine VARCHAR,
         path VARCHAR NOT NULL
     );
 
