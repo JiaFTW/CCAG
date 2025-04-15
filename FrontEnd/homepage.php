@@ -9,7 +9,7 @@
   <?php if (isset($_COOKIE['session_token'])) { 
     include('header.php'); ?>
     <h2>WELCOME TO THE THE CCAG RECIPE DATABASE</h2> <br>
-                <p> Find your new favorite recipe here!</p> <br>
+                <p>Find your new favorite recipe here!</p> <br>
                 <p>Login to use all relevant features!</p> <br>
                 <p>Once you see a recipe you like, favorite it!</p> <br>
                 <p>Go to your profile page to set your diet restrictions, rate & review your favorite recipes, manage your reviews, and even make changes to your favorite recipes!</p> <br>
@@ -32,7 +32,7 @@
   </header>
 
             <h2>WELCOME TO THE THE CCAG RECIPE DATABASE</h2> <br>
-                <p> Find your new favorite recipe here!</p> <br>
+                <p>Find your new favorite recipe here!</p> <br>
                 <p>Login to use all relevant features!</p> <br>
                 <p>Once you see a recipe you like, favorite it!</p> <br>
                 <p>Go to your profile page to set your diet restrictions, rate & review your favorite recipes, manage your reviews, and even make changes to your favorite recipes!</p> <br>

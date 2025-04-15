@@ -6,7 +6,6 @@ function writelog($message,$username){
 $filename =  __DIR__ . "/" . $username . '_log.txt';
 echo $filename;
 
-
 $datetime = date('Y-m-d H:i:s');
 $logMessage = "[$datetime] $username $message\n";
 
