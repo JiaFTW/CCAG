@@ -17,10 +17,10 @@ class bundleProcessor {
                 return $file->getPathname();
             }
         }
-        echo "Could Not Find File".PHP_EOL;
+        echo "Could Not Find Bundle".PHP_EOL;
     }
 
-    public function changeBundleName($oldBundleName, $newName) {
+    public function changeBundleName($oldBundleName, $newName) { //returns boolean
         foreach ($iterator as $file) {
             if ($file-> isFile() && $file.getFilename() == $oldbundleName) {
                 $oldPathName = $file.getRealPath();
@@ -28,7 +28,8 @@ class bundleProcessor {
                 return rename($oldPathName, $newPathName);
             }
         }
-        echo "Could Not Find File".PHP_EOL;
+        echo "Could Not Find Old Bundle".PHP_EOL;
+        return false;
     }
 
 
