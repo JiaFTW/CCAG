@@ -41,10 +41,10 @@ class mysqlConnect {
 			$register_status = 'Invalid';
 			return array('status' => $register_status, 'invalid_type' => $invalid_status);
 		}
-		//TODO: Validate Email and user format
 		//TODO: Hash Password before query
+		$hashedPassword = password_hash($password);
 
-		$register_status = addAccount($username, $email, $password, $this->mydb) ? 'Success' : 'Error';
+		$register_status = addAccount($username, $email, $hashedPassword, $this->mydb) ? 'Success' : 'Error';
 
 
 		return array('status' => $register_status, 'invalid_type' => null);
@@ -52,7 +52,6 @@ class mysqlConnect {
 
 	//Returns Array
 	public function loginAccount($username, $password) {
-		echo 'sdioj';
 		$query = "SELECT username, password FROM accounts 
 		WHERE username = '".$username."';";
 		$status;
@@ -67,8 +66,9 @@ class mysqlConnect {
 
 		$ac = $response->fetch_assoc();
 
-		if ($ac == null || $password != $ac['password']) { //TODO: change != to password_verify() or bycrypt_vertify() for hashed
+		if ($ac == null || $password != password_verify($password, $ac['password'])) { //TODO: change != to password_verify() or bycrypt_vertify() for hashed
 			$status = 'Invalid';
+			
 		} 
 		else {
 			$status = 'Success';
