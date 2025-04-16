@@ -19,11 +19,11 @@ sql_query=$(cat <<EOF
     USE \`${db_name}\`;
 
     CREATE TABLE IF NOT EXISTS bundles (
-        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR NOT NULL,
         version INT,
         status VARCHAR,
         machine VARCHAR,
+        cluster VARCHAR,
         path VARCHAR NOT NULL
     );
 

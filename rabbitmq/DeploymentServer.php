@@ -49,7 +49,7 @@ function requestProcessor($request)
 }
 
 
-$server = new rabbitMQServer("testRabbitMQ.ini","DMZSever");
+$server = new rabbitMQServer("testRabbitMQ.ini","DMZServer");
 
 echo "Deployment Server BEGIN".PHP_EOL;
 $server->process_requests('requestProcessor');
