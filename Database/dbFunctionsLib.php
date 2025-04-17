@@ -11,8 +11,7 @@ function showAr ($array) {
 function handleQuery($q, mysqli $db, $msg = 'Query Status: Successful') {
     try {
         mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-        $response = $db->execute_query($q);
-
+	$response = $db->query($q); 
         echo $msg.PHP_EOL;
         return $response;
 

@@ -8,11 +8,10 @@ require_once 'dbFunctionsLib.php';
 class mysqlConnect {
 	protected $dbConnectionStatus = false; 
 	protected $mydb;
-
 	public function __construct($address, $db_user, $db_pass, $db_name) {
-		//use 127.0.0.1 to connect to your local mysql server.
-		$this->mydb = new mysqli($address,$db_user ,$db_pass, $db_name);
-		$this->connectDB();
+	    	mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+	    	$this->mydb = new mysqli($address,$db_user ,$db_pass, $db_name);
+	        $this->connectDB();
 	}
 
 	protected function connectDB() {
@@ -419,13 +418,31 @@ class mysqlConnect {
 
 	public function getRex($username) {
 		$uid = getUIDbyUsername($username, $this->mydb);
+    		if ($uid === null) {
+        		echo "User $username not found";
+        		return []; // Return empty array instead of proceeding
+    		}
+	
 		$labels = getUserPref($username, $this->mydb);
-
 		$top_labels_query = "SELECT labels.label_name AS label, COUNT(*) AS score
-		FROM bookmarks JOIN recipe_labels ON bookmarks.rid = recipe_labels.rid
-		JOIN labels ON recipe_labels.label_id = labels.label_id WHERE bookmarks.uid = ".$uid."
-		GROUP BY labels.label_name ORDER BY COUNT(*) DESC LIMIT 5";
+			FROM bookmarks 
+			JOIN recipe_labels ON bookmarks.rid = recipe_labels.rid
+			JOIN labels ON recipe_labels.label_id = labels.label_id 
+			WHERE bookmarks.uid = ".$uid."
+			GROUP BY labels.label_name 
+			ORDER BY COUNT(*) DESC 
+			LIMIT 5";
 		$topResponse = handleQuery($top_labels_query, $this->mydb, "Query Status: Top 5 Labels Successful");
+		if (!$topResponse) {
+		    echo "Query failed";
+		    return [];
+		}
+
+		if ($topResponse->num_rows === 0) {
+		    echo "No results found";
+		    return [];
+		}
+
 		$top_five = $topResponse->fetch_all(MYSQLI_ASSOC);
 
 		//print_r($top_five);
