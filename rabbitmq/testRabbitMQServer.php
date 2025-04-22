@@ -14,12 +14,103 @@ function doLogin($username,$password)
     
 }
 
-function doRegistration($username,$password,$email)
+function doVerification($email, $code) {
+    try {
+        $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+        
+        // Validate inputs
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new Exception("invalid_email_format");
+        }
+        
+        // Escape inputs
+        $escEmail = $connect->mydb->real_escape_string($email);
+        $escCode = $connect->mydb->real_escape_string($code);
+        
+        // Get verification data
+        $query = "SELECT verification_code, code_expiry 
+                FROM accounts 
+                WHERE email = '$escEmail'";
+        
+        $result = $connect->mydb->query($query);
+        if (!$result) {
+            throw new Exception("database_query_error");
+        }
+        
+        if ($result->num_rows === 0) {
+            throw new Exception("email_not_found");
+        }
+        
+        $user = $result->fetch_assoc();
+        
+        // Validate code
+        if ($user['verification_code'] !== $escCode) {
+            throw new Exception("code_mismatch");
+        }
+        
+        // Check expiration
+        if (time() > $user['code_expiry']) {
+            throw new Exception("code_expired");
+        }
+        
+        // Update account
+        $update = "UPDATE accounts 
+                SET email_verified = TRUE, 
+                    verification_code = NULL, 
+                    code_expiry = NULL 
+                WHERE email = '$escEmail'";
+        
+        if (!$connect->mydb->query($update)) {
+            throw new Exception("update_failed");
+        }
+        
+        return ['status' => 'Success'];
+        
+    } catch (Exception $e) {
+        return [
+            'status' => 'Error',
+            'message' => $e->getMessage()
+        ];
+    }
+}
+
+
+function doRegistration($username, $password, $email) {
+    $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+    $result = $connect->registerAccount($username, $email, $password);
+    
+    if ($result['status'] === 'Success') {
+        // Add proper escaping
+        $code = bin2hex(random_bytes(16));
+        $expiry = time() + 3600;
+        
+        // Escape values
+        $escEmail = $connect->mydb->real_escape_string($email);
+        $escCode = $connect->mydb->real_escape_string($code);
+        
+        $updateQuery = "UPDATE accounts 
+                        SET verification_code = '$escCode', 
+                            code_expiry = $expiry 
+                        WHERE email = '$escEmail'";
+        
+        if ($connect->mydb->query($updateQuery)) {
+            require_once('../FrontEnd/emailConfig.php');
+            if (sendVerificationEmail($email, $code)) {
+                return $result;
+            }
+            return ['status' => 'Error', 'message' => 'Email send failed'];
+        }
+        return ['status' => 'Error', 'message' => 'Database update failed'];
+    }
+    return $result;
+}
+
+/*function doRegistration($username,$password,$email)
 {
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
 
   return $connect->registerAccount($username, $email, $password);
-}
+}*/
 function doValidate($token){
 
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
@@ -184,6 +275,8 @@ function requestProcessor($request)
       return doAddMealPlan($request);
     case "getUserMealPlans":
       return doGetUserMealPlans($request['username']);
+    case "verify_code":
+      return doVerification($request['email'], $request['code']);
     default:
       return "type fail".PHP_EOL;
   }

@@ -32,6 +32,8 @@ function handleQuery($q, mysqli $db, $msg = 'Query Status: Successful') {
     } */
 }
 
+
+
 function isDuplicateFound($attribute, $col_name, $table_name, mysqli $db) {  //returns boolean if a duplicate is found
     $query = "SELECT COUNT(".$col_name.") 
     FROM ".$table_name." 
@@ -84,8 +86,18 @@ function getUIDbyUsername(string $username, mysqli $db) {
 
 
 //Account Functions
+function addAccount($username, $email, $password, $connection) {
+    $esc_username = $connection->real_escape_string($username);
+    $esc_email = $connection->real_escape_string($email);
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    
+    $query = "INSERT INTO accounts (username, email, password) 
+              VALUES ('$esc_username', '$esc_email', '$hashed_password')";
+    
+    return $connection->query($query);
+}
 
-function addAccount(string $username, $email , $password, mysqli $db) {
+/*function addAccount(string $username, $email , $password, mysqli $db) {
     $query = "INSERT INTO accounts
     (username, email, password) 
     VALUES ('".$username."', '".$email."', '".$password."');";
@@ -94,7 +106,7 @@ function addAccount(string $username, $email , $password, mysqli $db) {
     
     return $response;
     
-}
+}*/
 
 function getUserBookmarks(string $username, mysqli $db) {
     $uid = getUIDbyUsername($username, $db);

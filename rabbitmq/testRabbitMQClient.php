@@ -88,6 +88,11 @@ switch ($request['type'])
       $request['name'] = $info['name'];
       $request['username'] = $info['username'];
       break;
+// added to the switch statement:
+    case "verify_code":
+      $request['email'] = $info['email'];
+      $request['code'] = $info['code'];
+    break;
     case "addMealPlan":
       $request['username'] = $info['username'];
       $request['MON1'] = $info['MON1'];
@@ -118,7 +123,9 @@ switch ($request['type'])
     default:
       return $request['type'].PHP_EOL;
   }
-$request['message'] = $info['message'];
+//$request['message'] = $info['message'];
+$request['message'] = $info['message'] ?? 'No message provided';
+
 $response = $client->send_request($request);
 //$response = $client->publish($request);
 return $response;

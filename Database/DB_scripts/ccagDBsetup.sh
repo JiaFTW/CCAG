@@ -19,11 +19,15 @@ sql_query=$(cat <<EOF
     USE \`${db_name}\`;
 
     CREATE TABLE IF NOT EXISTS accounts (
-        uid INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        username VARCHAR(32) UNIQUE NOT NULL,
-        email VARCHAR(320) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL
+    	uid INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    	username VARCHAR(32) UNIQUE NOT NULL,
+    	email VARCHAR(320) UNIQUE NOT NULL,
+    	password VARCHAR(255) NOT NULL,
+    	verification_code VARCHAR(64) DEFAULT NULL,
+    	code_expiry INT DEFAULT NULL,
+    	email_verified BOOLEAN DEFAULT FALSE
     );
+
 
     CREATE TABLE IF NOT EXISTS sessions (
         sid INT AUTO_INCREMENT PRIMARY KEY,

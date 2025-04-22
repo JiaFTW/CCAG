@@ -1,5 +1,6 @@
 <?php 
 require_once('../rabbitmq/testRabbitMQClient.php');
+require_once('emailConfig.php'); 
 
 $registerdata = array(
     'type' => 'register',
@@ -9,10 +10,15 @@ $registerdata = array(
     'message' => 'Registering user',
 );
 
-echo ($registerdata['username']);
-sendMessage($registerdata);
+$response = sendMessage($registerdata);
 
-header("Location: loginPage.php");
-exit();
-
+if ($response['status'] === 'Success') {
+    // Registration successful but not verified
+    header("Location: verifyEmail.php?email=".urlencode($registerdata['email']));
+    exit();
+} else {
+    echo "<script>alert('Registration error: ".$response['invalid_type']."');
+    window.location.href='registerPage.php';</script>";
+    die();
+}
 ?>

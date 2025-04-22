@@ -7,7 +7,7 @@ require_once 'dbFunctionsLib.php';
 
 class mysqlConnect {
 	protected $dbConnectionStatus = false; 
-	protected $mydb;
+	public $mydb;
 	public function __construct($address, $db_user, $db_pass, $db_name) {
 	    	mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 	    	$this->mydb = new mysqli($address,$db_user ,$db_pass, $db_name);
@@ -50,7 +50,7 @@ class mysqlConnect {
 	}
 
 	//Returns Array
-	public function loginAccount($username, $password) {
+/*	public function loginAccount($username, $password) {
 		echo 'sdioj';
 		$query = "SELECT username, password FROM accounts 
 		WHERE username = '".$username."';";
@@ -78,7 +78,39 @@ class mysqlConnect {
 		//showAr($arraytest);
 		return $arraytest; 
 	
+	}*/
+	public function loginAccount($username, $password) {
+	    $esc_username = $this->mydb->real_escape_string($username);
+    
+	    // Use prepared statements for security
+	    $stmt = $this->mydb->prepare("SELECT username, password FROM accounts WHERE username = ?");
+	    $stmt->bind_param("s", $esc_username);
+	    $stmt->execute();
+	    $result = $stmt->get_result();
+    
+	    if ($result->num_rows === 0) {
+	        return ['status' => 'Invalid'];
+	    }
+
+	    $user = $result->fetch_assoc();
+	    $stmt->close();
+
+	    // Debug output
+	    error_log("Stored hash: " . $user['password']);
+	    error_log("Input password: " . $password);
+    
+	    if (password_verify($password, $user['password'])) {
+	        return [
+	            'status' => 'Success',
+	            'cookie' => generateSession($username, 3600, $this->mydb),
+	            'username' => $username
+	        ];
+	    }
+
+	    return ['status' => 'Invalid'];
 	}
+
+
 
 
 	//Returns Array
