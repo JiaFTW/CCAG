@@ -1,5 +1,6 @@
 <?php 
 require_once('../rabbitmq/testRabbitMQClient.php');
+require_once('./logging/writelog.php');
 
 $registerdata = array(
     'type' => 'register',

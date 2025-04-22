@@ -1,6 +1,7 @@
 <?php
 
 require_once('../rabbitmq/testRabbitMQClient.php');
+require_once('./logging/writelog.php');
 
 $deletereview = array(
     'type' => 'removeReview',
@@ -9,7 +10,7 @@ $deletereview = array(
 
 
 $response = sendMessage($deletereview);
-
+writelog("removed review: " . $_POST['rate_id'], $_COOKIE['username']);
 header("location: reviewpage.php");
 die();
 

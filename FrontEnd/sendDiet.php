@@ -1,6 +1,7 @@
 <?php
 
 require_once('../rabbitmq/testRabbitMQClient.php');
+require_once('./logging/writelog.php');
 
 $restrictions =[];
 
@@ -93,6 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     );
 
     $response = sendMessage($dietdata);
+    writelog("made changes to their diet restrictions.", $_COOKIE['username']);
     header("Location: dietpage.php");
     die();
 

@@ -1,5 +1,6 @@
 <?php
 require_once('../rabbitmq/testRabbitMQClient.php');
+require_once('./logging/writelog.php');
 
 $reviewRequest = array (
     'type' => 'editRecipe',
@@ -13,8 +14,7 @@ if (!strcmp($_POST['newRecipeName'],$_POST['name'])) {
     $reviewRequest['name'] = $_COOKIE['username'] . "'s " . $_POST['name'];
 }
 
-
 $response = sendMessage($reviewRequest);
-
+writelog("made changes to the recipe: " . $_POST['recipe_id'], $_COOKIE['username']);
 header("Location: favoritepage.php")
 ?>
