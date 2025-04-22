@@ -1,23 +1,20 @@
 <?php
-require_once('../rabbitmq/testRabbitMQClient.php');
+require_once('./logging/writelog.php');
 
+if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
-$mpRequest = array (
-  'type' => 'getUserMealPlans',
-  'username' => $_COOKIE['username'],
-);
-
-$response = sendMessage($mpRequest);
-
-if (!isset($_COOKIE['session_token'])) {
-  header("Location: loginPage.php");
-  die();
-}
-
-foreach ($response as $recipe){
-  echo $recipe['day'];
+writelog("SAYS HI", "BOB"); 
 }
 
 ?>
 
 
+<!DOCTYPE html>
+<html>
+  <body>
+    <h2>Testing</h2>
+    <form method="POST"> 
+      <button type="submit">BOB</button>
+    </form>
+  </body>
+</html>
