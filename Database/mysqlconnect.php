@@ -454,13 +454,21 @@ class mysqlConnect {
 
 //Deployment Function
 
-	public function recordBundle() {
+	public function recordIncomingBundle($name, $version, $machine, $path) {
 
+		$query = "INSERT INTO bundles VALUES (".$name.", ".$version.", 'new', ".$machine.", ".$path.",);";
+		$response = handleQuery($query, $this->mydb, "Query Status: Record Incoming Bundle Successful");
+
+		return $response;
 	}
 
-	public function changeBundleStatus() {
-		
+	public function changeBundleStatus($name, $status) {
+		$query = "UPDATE bundles SET status = ".$status." 
+		WHERE name = ".$name.";";
+		$response = handleQuery($query, $this->mydb, "Query Status: Change Bundle  Status Successful");
 	}
+
+	public function getNumOfVersions($machine) {}
 }
 
 
