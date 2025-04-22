@@ -22,8 +22,7 @@ sql_query=$(cat <<EOF
         name VARCHAR NOT NULL,
         version INT,
         status VARCHAR,
-        machine VARCHAR,
-        cluster VARCHAR,
+        machine VARCHAR NOT NULL,
         path VARCHAR NOT NULL
     );
 

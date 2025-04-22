@@ -12,7 +12,9 @@ $workingDir = "home/deploy/Bundles";
 function doIncoming($file_name, $tempID) 
 {
 	$processor = new bundleProcessor ($workingDir);
-	echo  $processor.getBundlePath($file_name).PHP_EOL;
+	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+	$IncomingPath =  $processor.getBundlePath($file_name).PHP_EOL;
 
 	if ($processor.changeBundleName($file_name, "changedBundle.zip")) {
 		echo "Changed Named SuccessFul".PHP_EOL;
