@@ -27,7 +27,7 @@ class bundleProcessor {
                 return $file->getPathname();
             }
         }
-        echo "Error: Could Not Find Bundle Name".PHP_EOL;
+        echo "Error: Could Not Find Bundle by that Name".PHP_EOL;
         return null;
     }
 
@@ -39,7 +39,7 @@ class bundleProcessor {
                 return rename($oldPathName, $newPathName);
             }
         }
-        echo "Could Not Find Old Bundle".PHP_EOL;
+        echo "Error: Could Not Find Old Bundle by that Name".PHP_EOL;
         return false;
     }
 
