@@ -1,0 +1,41 @@
+<?php return array(
+    'root' => array(
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'type' => 'library',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'reference' => '3087e80eaa288ae9b0b424b07db72ca41e69937a',
+        'name' => '__root__',
+        'dev' => true,
+    ),
+    'versions' => array(
+        '__root__' => array(
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'reference' => '3087e80eaa288ae9b0b424b07db72ca41e69937a',
+            'dev_requirement' => false,
+        ),
+        'phpmailer/phpmailer' => array(
+            'pretty_version' => 'v6.9.3',
+            'version' => '6.9.3.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpmailer/phpmailer',
+            'aliases' => array(),
+            'reference' => '2f5c94fe7493efc213f643c23b1b1c249d40f47e',
+            'dev_requirement' => false,
+        ),
+        'videlalvaro/php-amqplib' => array(
+            'pretty_version' => 'v2.5.2',
+            'version' => '2.5.2.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../videlalvaro/php-amqplib',
+            'aliases' => array(),
+            'reference' => 'eb8f94d97c8e79900accf77343dbd7eca7f58506',
+            'dev_requirement' => false,
+        ),
+    ),
+);
