@@ -466,9 +466,13 @@ class mysqlConnect {
 		$query = "UPDATE bundles SET status = ".$status." 
 		WHERE name = ".$name.";";
 		$response = handleQuery($query, $this->mydb, "Query Status: Change Bundle  Status Successful");
+
+		return $response;
 	}
 
-	public function getNumOfVersions($machine) {}
+	public function getNextVerisonNum($machine) {
+		$query = "SELECT";
+	}
 }
 
 

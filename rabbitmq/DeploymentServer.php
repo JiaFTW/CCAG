@@ -7,21 +7,27 @@ require_once('rabbitMQLib.inc');
 require_once('../Deployment/bundleprocessor.php');
 require_once('../Database/mysqlconnect.php');
 
-$workingDir = "home/deploy/Bundles";
+$workingDir = "home/deploy/Bundles"; //TODO make it configable
 
-function doIncoming($file_name, $tempID) 
+function doIncoming($tempID) 
 {
 	$processor = new bundleProcessor ($workingDir);
 	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
 
-	$IncomingPath =  $processor.getBundlePath($file_name).PHP_EOL;
+	$bundles = $processor->getBundleArrayByID($tempID);
+	var_dump($bundles);
 
-	if ($processor.changeBundleName($file_name, "changedBundle.zip")) {
-		echo "Changed Named SuccessFul".PHP_EOL;
+	foreach ($bundles as $b) {
+
+		$path = $processor->getBundlePathByNameStr($bundles[$b]);
+		$machine = substr($bundles[$b], 0, strpos($bundles[$b], '_'));
+		$name = null;
+		$version = 0;
+		
+		$connect->recordIncomingBundle($name, $version, $machine, $path);
 	}
-	else {
-		echo "Changed Name Failed".PHP_EOL;
-	}
+
+	return ['status' => 'WIP'];
 }
 
 function requestProcessor($request)
@@ -40,7 +46,7 @@ function requestProcessor($request)
 	switch ($request['type']) 
 	{
 	case 'incomingBundle':
-		return doIncoming($request['file_name'], $request['tempID']);
+		return doIncoming($request['tempID']);
 
 	default:
 		return [
