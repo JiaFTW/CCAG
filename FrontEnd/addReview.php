@@ -1,6 +1,7 @@
 <?php
 require_once('../rabbitmq/testRabbitMQClient.php');
 require_once('./logging/writelog.php');
+require_once('./logging/sendlogs.php');
 
 $reviewRequest = array (
     'type' => 'addReview',
@@ -10,9 +11,9 @@ $reviewRequest = array (
     'review' => $_POST['review'],
 );
 
-
-$response = sendMessage($reviewRequest);
 writelog("added a review for recipe: " . $_POST['recipe_id'], $_COOKIE['username']);
+sendinglogs();
+$response = sendMessage($reviewRequest);
 
 header("Location: favoritepage.php")
 ?>

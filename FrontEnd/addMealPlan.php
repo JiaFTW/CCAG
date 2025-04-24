@@ -1,6 +1,7 @@
 <?php
 require_once('../rabbitmq/testRabbitMQClient.php');
 require_once('./logging/writelog.php');
+require_once('./logging/sendlogs.php');
 
 $days = ["Monday", "Tuesday", "Wednesday","Thursday","Friday","Saturday","Sunday"];
 $meals = ["Breakfast","Lunch","Dinner"];
@@ -22,9 +23,9 @@ for ($i=0; $i < 7; $i++) {
 
 //print_r($addMealPlan);
 
-
-$response = sendMessage($addMealPlan);
 writelog("added a meal plan", $_COOKIE['username']);
+sendinglogs();
+$response = sendMessage($addMealPlan);
 
 header("Location: mppage.php");
 die();

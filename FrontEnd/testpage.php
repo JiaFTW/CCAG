@@ -1,9 +1,12 @@
 <?php
 require_once('./logging/writelog.php');
 
+
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
-writelog("SAYS HI", "BOB"); 
+writelog("SAYS HI", "bob"); 
+
+
 }
 
 ?>

@@ -1,6 +1,7 @@
 <?php
 require_once('../rabbitmq/testRabbitMQClient.php');
 require_once('./logging/writelog.php');
+require_once('./logging/sendlogs.php');
 
 $umpRequest = array (
   'type' => 'getRex',
@@ -9,6 +10,7 @@ $umpRequest = array (
 
 $response = sendMessage($umpRequest);
 writelog("is looking at recommendation recipes", $_COOKIE['username']);
+sendinglogs();
 if (!isset($_COOKIE['session_token'])) {
   header("Location: loginPage.php");
   die();

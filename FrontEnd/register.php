@@ -1,6 +1,7 @@
 <?php 
 require_once('../rabbitmq/testRabbitMQClient.php');
 require_once('./logging/writelog.php');
+require_once('./logging/sendlogs.php');
 
 $registerdata = array(
     'type' => 'register',
@@ -10,8 +11,10 @@ $registerdata = array(
     'message' => 'Registering user',
 );
 
-echo ($registerdata['username']);
+writelog("successfully registered.", $logindata['username']);
+sendinglogs();
 sendMessage($registerdata);
+
 
 header("Location: loginPage.php");
 exit();

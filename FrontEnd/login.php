@@ -1,6 +1,7 @@
 <?php 
 require_once('../rabbitmq/testRabbitMQClient.php');
 require_once('./logging/writelog.php');
+require_once('./logging/sendlogs.php');
 
 $logindata = array (
     'type' => 'login',
@@ -18,6 +19,7 @@ if ($response['status'] == 'Success') {
     setcookie("username", $response['username'], time()+3600,"/");
     //$message = "has successfully logged in!";
     writelog("logged in.", $logindata['username']);
+    sendinglogs();
     header("Location: homepage.php");
     die();
 } else {
