@@ -111,6 +111,53 @@ function doRegistration($username, $password, $email) {
 
   return $connect->registerAccount($username, $email, $password);
 }*/
+
+
+//
+
+function doUpdate2FA($username, $status) {
+    try {
+        $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+        $esc_user = $connect->mydb->real_escape_string($username);
+        
+        $query = "UPDATE accounts SET twofa_enabled = ".(int)$status."
+                WHERE username = '$esc_user'";
+        
+        if ($connect->mydb->query($query)) {
+            return ['status' => 'Success'];
+        }
+        throw new Exception("Update failed: ".$connect->mydb->error);
+        
+    } catch (Exception $e) {
+        error_log($e->getMessage());
+        return ['status' => 'Error', 'message' => $e->getMessage()];
+    }
+}
+
+function doGet2FAStatus($username) {
+    try {
+        $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+        $esc_user = $connect->mydb->real_escape_string($username);
+        
+        $query = "SELECT twofa_enabled FROM accounts 
+                WHERE username = '$esc_user'";
+        $result = $connect->mydb->query($query);
+        
+        if (!$result || $result->num_rows === 0) {
+            throw new Exception("User not found");
+        }
+        
+        return [
+            'status' => 'Success',
+            'twofa_enabled' => (bool)$result->fetch_assoc()['twofa_enabled']
+        ];
+        
+    } catch (Exception $e) {
+        return ['status' => 'Error', 'message' => $e->getMessage()];
+    }
+}
+
+//
 function doValidate($token){
 
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
@@ -277,6 +324,11 @@ function requestProcessor($request)
       return doGetUserMealPlans($request['username']);
     case "verify_code":
       return doVerification($request['email'], $request['code']);
+    case "update_2fa":
+      return doUpdate2FA($request['username'], $request['twofa_enabled']);
+
+    case "get_2fa_status":
+      return doGet2FAStatus($request['username']);
     default:
       return "type fail".PHP_EOL;
   }
