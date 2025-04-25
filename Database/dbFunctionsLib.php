@@ -21,16 +21,7 @@ function handleQuery($q, mysqli $db, $msg = 'Query Status: Successful') {
         echo __FILE__.':'.__LINE__.":error: ".$e->getMessage().PHP_EOL;
         return false;
     }
-    /*$response = $db->execute_query($q);
-    if ($db->errno != 0) {
-        echo "failed to execute query:".PHP_EOL;
-        echo __FILE__.':'.__LINE__.":error: ".$db->error.PHP_EOL;
-        return $response;
-    }
-    else {
-        echo $msg.PHP_EOL;
-        return $response;
-    } */
+    
 }
 
 function isDuplicateFound($attribute, $col_name, $table_name, mysqli $db) {  //returns boolean if a duplicate is found

@@ -7,27 +7,33 @@ require_once('rabbitMQLib.inc');
 require_once('../Deployment/bundleprocessor.php');
 require_once('../Database/mysqlconnect.php');
 
-$workingDir = "home/deploy/Bundles"; //TODO make it configable
 
 function doIncoming($tempID) 
 {
+	$workingDir = "/home/".get_current_user()."/Bundles";
 	$processor = new bundleProcessor ($workingDir);
-	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDeploy');
 
 	$bundles = $processor->getBundleArrayByID($tempID);
-	var_dump($bundles);
+	//var_dump($bundles);
 
 	foreach ($bundles as $b) {
+		$machine = substr($b, 0, strpos($b, '_'));
+		$version = $connect->getTotalVersionsNum($machine) + 1;
+		$name = $machine."_V".$version;
+		$processor->changeBundleName($b, $name, $machine); //Moves file to appropiate subfolder and changes file name
+		$path = $processor->getBundlePathByNameStr($name).'.zip';
 
-		$path = $processor->getBundlePathByNameStr($bundles[$b]);
-		$machine = substr($bundles[$b], 0, strpos($bundles[$b], '_'));
-		$name = null;
-		$version = 0;
-		
+		echo "Identified Machine: ".$machine." | ";
+		echo "Identified Version Num: ".$version." | ";
+		echo "Name Created: ".$name." | ";
+		echo "Identified Path: ".$path.PHP_EOL;
+			
 		$connect->recordIncomingBundle($name, $version, $machine, $path);
+		
 	}
 
-	return ['status' => 'WIP'];
+	return ['status' => 'Processed'];
 }
 
 function requestProcessor($request)
@@ -57,7 +63,7 @@ function requestProcessor($request)
 }
 
 
-$server = new rabbitMQServer("testRabbitMQ.ini","DMZServer");
+$server = new rabbitMQServer("testRabbitMQ.ini","DeploymentServer");
 
 echo "Deployment Server BEGIN".PHP_EOL;
 $server->process_requests('requestProcessor');
