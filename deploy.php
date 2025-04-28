@@ -142,7 +142,7 @@
                 $ready = true;
                 break;
             case 2:
-                $location = "Pr0duction";
+                $location = "Production";
                 $ready = true;
                 break;
             case 3:
@@ -170,4 +170,12 @@
 
     if($toSend["rabbit"])
         send_bundle($id, "rabbitmq");
+
+    $client = new rabbitMQClient("testRabbitMQ.ini","DeploymentServer");
+    $request = array();
+    $request['type'] = "deploy";
+    $request['location'] = $location;
+    $request['id'] = $id;
+    $response = $client->send_request($request);
+    echo $response;
 ?>
