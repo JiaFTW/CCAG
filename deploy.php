@@ -173,7 +173,7 @@
 
     $client = new rabbitMQClient("testRabbitMQ.ini","DeploymentServer");
     $request = array();
-    $request['type'] = "deploy";
+    $request['type'] = "incomingBundle";
     $request['location'] = $location;
     $request['id'] = $id;
     $response = $client->send_request($request);
