@@ -60,6 +60,91 @@ function doVerification($email, $code) {
     try {
         $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
 
+        // Validate email format
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new Exception("invalid_email_format", 1001);
+        }
+
+        $escEmail = $connect->mydb->real_escape_string($email);
+        $escCode = $connect->mydb->real_escape_string($code);
+
+        // Get current verification state
+        $result = $connect->mydb->query(
+            "SELECT verification_code, code_expiry 
+             FROM accounts 
+             WHERE email = '$escEmail'"
+        );
+        
+        if ($result->num_rows === 0) {
+            throw new Exception("account_not_found", 1002);
+        }
+
+        $user = $result->fetch_assoc();
+
+        // Validate code match
+        if ($user['verification_code'] !== $escCode) {
+            throw new Exception("code_mismatch", 1003);
+        }
+
+        // Check expiration (server time vs stored expiry)
+        if (time() > $user['code_expiry']) {
+            throw new Exception("code_expired", 1004);
+        }
+
+        // Start transaction
+        $connect->mydb->begin_transaction();
+
+        try {
+            // Update verification status
+            $updateResult = $connect->mydb->query(
+                "UPDATE accounts SET 
+                verification_code = NULL,
+                code_expiry = NULL,
+                email_verified = 1 
+                WHERE email = '$escEmail'"
+            );
+
+            if ($connect->mydb->affected_rows === 0) {
+                throw new Exception("verification_update_failed", 1005);
+            }
+
+            // Generate session token
+            $token = bin2hex(random_bytes(32));
+            $start_time = time();
+            $end_time = $start_time + 3600;
+
+            // Insert session
+            $connect->mydb->query(
+                "INSERT INTO sessions (uid, cookie_token, start_time, end_time)
+                SELECT uid, '$token', $start_time, $end_time
+                FROM accounts WHERE email = '$escEmail'"
+            );
+
+            $connect->mydb->commit();
+        } catch (Exception $e) {
+            $connect->mydb->rollback();
+            throw $e;
+        }
+
+        return [
+            'status' => 'Success',
+            'cookie' => $token,
+            'username' => $user['username']
+        ];
+
+    } catch (Exception $e) {
+        error_log("Verification Error: " . $e->getMessage());
+        return [
+            'status' => 'Error',
+            'message' => $e->getMessage(),
+            'error_code' => $e->getCode()
+        ];
+    }
+}
+/*function doVerification($email, $code) {
+    try {
+        $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
         // Validate inputs
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new Exception("invalid_email_format");
@@ -131,7 +216,7 @@ function doVerification($email, $code) {
             'message' => $e->getMessage()
         ];
     }
-}
+}*/
 
 
 
