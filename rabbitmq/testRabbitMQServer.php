@@ -160,51 +160,77 @@ function doRegistration($username, $password, $email) {
 }*/
 
 
-//
-
 function doUpdate2FA($username, $status) {
     try {
+        error_log("=== START 2FA UPDATE ===");
         $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
-        $esc_user = $connect->mydb->real_escape_string($username);
         
-        $query = "UPDATE accounts SET twofa_enabled = ".(int)$status."
+        // Verify connection
+        if ($connect->mydb->connect_errno) {
+            throw new Exception("DB connection failed: ".$connect->mydb->connect_error);
+        }
+
+        // Debug user input
+        error_log("Username: $username, Status: $status");
+
+        // Execute query
+        $esc_user = $connect->mydb->real_escape_string($username);
+        $query = "UPDATE accounts SET tfa_enabled = ".(int)$status." 
                 WHERE username = '$esc_user'";
+        error_log("Executing: $query");
         
         if ($connect->mydb->query($query)) {
+            error_log("=== UPDATE SUCCESS ===");
             return ['status' => 'Success'];
         }
-        throw new Exception("Update failed: ".$connect->mydb->error);
         
+        throw new Exception("Query failed: ".$connect->mydb->error);
     } catch (Exception $e) {
-        error_log($e->getMessage());
+        error_log("!!! 2FA ERROR: ".$e->getMessage());
         return ['status' => 'Error', 'message' => $e->getMessage()];
     }
 }
 
 function doGet2FAStatus($username) {
     try {
+        error_log("Getting 2FA status for: $username");
         $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
-        $esc_user = $connect->mydb->real_escape_string($username);
         
-        $query = "SELECT twofa_enabled FROM accounts 
-                WHERE username = '$esc_user'";
+        $esc_user = $connect->mydb->real_escape_string($username);
+        $query = "SELECT tfa_enabled FROM accounts WHERE username = '$esc_user'";
+        
+        error_log("Executing query: $query");
         $result = $connect->mydb->query($query);
         
-        if (!$result || $result->num_rows === 0) {
+        if (!$result) {
+            throw new Exception("Query failed: ".$connect->mydb->error);
+        }
+        
+        if ($result->num_rows === 0) {
             throw new Exception("User not found");
         }
         
+        $row = $result->fetch_assoc();
+        error_log("Query result: ".print_r($row, true));
+        
         return [
             'status' => 'Success',
-            'twofa_enabled' => (bool)$result->fetch_assoc()['twofa_enabled']
+            'tfa_enabled' => (bool)$row['tfa_enabled']
         ];
         
     } catch (Exception $e) {
-        return ['status' => 'Error', 'message' => $e->getMessage()];
+        error_log("2FA Status Error: ".$e->getMessage());
+        return [
+            'status' => 'Error',
+            'message' => $e->getMessage()
+        ];
     }
 }
 
-//
+/*
+
+
+*/
 function doValidate($token){
 
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
@@ -329,11 +355,13 @@ function doRecipe($keyword, $username) //perform search check
 
 function requestProcessor($request)
 {
-  echo "received request".PHP_EOL;
-  var_dump($request);
+  error_log("Processing request type: ".$request['type']); 
+ // echo "received request".PHP_EOL;
+  // var_dump($request);
   if(!isset($request['type']))
   {
-    return "ERROR: unsupported message type";
+   // return "ERROR: unsupported message type";
+   return ["status" => "Error", "message" => "Unsupported message type"];
   }
   switch ($request['type'])
   {
@@ -371,11 +399,14 @@ function requestProcessor($request)
       return doGetUserMealPlans($request['username']);
     case "verify_code":
       return doVerification($request['email'], $request['code']);
-    case "update_2fa":
-      return doUpdate2FA($request['username'], $request['twofa_enabled']);
+//new cases
 
+    case "update_2fa":
+      return doUpdate2FA($request['username'], $request['tfa_enabled']);
     case "get_2fa_status":
       return doGet2FAStatus($request['username']);
+
+//
     default:
       return "type fail".PHP_EOL;
   }
@@ -384,9 +415,9 @@ function requestProcessor($request)
 
 $server = new rabbitMQServer("testRabbitMQ.ini","testServer");
 
-echo "testRabbitMQServer BEGIN".PHP_EOL;
+//echo "testRabbitMQServer BEGIN".PHP_EOL;
 $server->process_requests('requestProcessor');
-echo "testRabbitMQServer END".PHP_EOL;
+//echo "testRabbitMQServer END".PHP_EOL;
 exit();
 ?>
 

@@ -119,7 +119,24 @@ switch ($request['type'])
       $request['SUN3'] = $info['SUN3'];
       break;
      case "getUserMealPlans":
-      $request['username'] = $info['username']; 
+      $request['username'] = $info['username'];
+      break;
+    case "getRex":
+      $request['username'] = $info['username'];
+      break;
+//
+
+    case "update_2fa":
+      $request['username'] = $info['username'];
+      $request['tfa_enabled'] = (int)$info['tfa_enabled']; 
+      $request['message'] = 'Updating 2FA status';
+      break;
+    case "get_2fa_status":
+      $request['username'] = $info['username'];
+      $request['message'] = 'Get 2FA Status'; 
+      break;
+
+// 
     default:
       return $request['type'].PHP_EOL;
   }
@@ -136,5 +153,4 @@ echo "\n\n";
 echo $argv[0]." END".PHP_EOL;
 }
 
-?>
 
