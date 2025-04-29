@@ -36,6 +36,18 @@ function doIncoming($tempID)
 	return ['status' => 'Processed'];
 }
 
+function doChangeBundleStatus($name, $bundle_status) 
+{
+	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDeploy');
+	return $connect->changeBundleStatus($name, $bundle_status);
+}
+
+function doGetBundleList($machine)
+{
+	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDeploy');
+	return $connect->getBundleList($machine);
+}
+
 function requestProcessor($request)
 {
 	echo "received request".PHP_EOL;
@@ -52,8 +64,11 @@ function requestProcessor($request)
 	switch ($request['type']) 
 	{
 	case 'incomingBundle':
-		return doIncoming($request['tempID']);
-
+		return doIncoming($request['id']);
+	case 'changeBundleStatus':
+		return doChangeBundleStatus($request['name'], $request['bundle_status']);
+	case 'getBundleList':
+		return doGetBundleList($request['location']);
 	default:
 		return [
 			'status' => 'error',

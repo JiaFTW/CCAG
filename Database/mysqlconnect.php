@@ -17,11 +17,11 @@ class mysqlConnect {
 
 	protected function connectDB() {
 		if ($this->mydb->errno != 0) {
-			echo "failed to connect to database: ". $this->mydb->error . PHP_EOL;
+			echo __CLASS__." failed to connect to database: ". $this->mydb->error . PHP_EOL;
 			$dbConnectionStatus = false;
 		}
 		else {
-			echo "successfully connected to database".PHP_EOL;
+			echo __CLASS__." successfully connected to database".PHP_EOL;
 			$dbConnectionStatus = true;
 		}
 	}
@@ -467,7 +467,21 @@ class mysqlConnect {
 		WHERE name = '".$name."';";
 		$response = handleQuery($query, $this->mydb, "Query Status: Change Bundle Status Successful");
 
-		return $response;
+		return array('status' => $response ? 'Success' : 'Error');
+
+	}
+
+	public function getBundleList($machine) {
+		$query = "SELECT name, status FROM bundles 
+		WHERE machine = '".$machine."';";
+		
+		$response = handleQuery($query, $this->mydb, "Query Status: Get Bundle List Successful");
+		if (!$response) {
+			return array('status' => 'Error');
+		}
+		$response_arr = $response->fetch_all(MYSQLI_ASSOC);
+
+		return $response_arr;
 	}
 
 	public function getTotalVersionsNum($machine) {

@@ -23,7 +23,8 @@ sql_query=$(cat <<EOF
         version INT,
         status VARCHAR(16),
         machine VARCHAR(32) NOT NULL,
-        path VARCHAR(225) NOT NULL
+        path VARCHAR(225) NOT NULL,
+        isWorkingVersion BOOL,
     );
 
 
