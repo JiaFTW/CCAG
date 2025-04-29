@@ -3,17 +3,24 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-if (!isset($_COOKIE['session_token'])) {
+if (!isset($_COOKIE['session_token']) || !isset($_COOKIE['username'])) {
     header("Location: loginPage.php");
     exit();
 }
+/*if (!isset($_COOKIE['session_token'])) {
+    header("Location: loginPage.php");
+    exit();
+}*/
 
 require_once('../rabbitmq/testRabbitMQClient.php');
+
+$username = $_COOKIE['username'];
 
 try {
     $statusResponse = sendMessage([
         'type' => 'get_2fa_status',
-        'username' => $_COOKIE['username'],
+	'username' => $username,
+      //  'username' => $_COOKIE['username'],
         'message' => 'Status check'
     ]);
     

@@ -14,9 +14,10 @@
                     
         <div class="nav-right">    
 
-        <?php if (isset($_COOKIE['session_token'])) { ?>
-            <p class="navbar-text"><?php echo "Logged in: ", $_COOKIE['username'];?></p>
-            <a href="logout.php">Logout</a>
+        <?php if (isset($_COOKIE['session_token']) && isset($_COOKIE['username'])) {
+    	    $username = htmlspecialchars($_COOKIE['username']); ?>
+    	    <p class="navbar-text"><?= "Logged in: $username" ?></p>
+    	    <a href="logout.php">Logout</a>
         <?php } else {?>
             <a href="loginPage.php">Login</a>
             <a href="registerPage.php">Register</a>

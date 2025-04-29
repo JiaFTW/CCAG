@@ -7,7 +7,8 @@ ini_set('display_errors', 1);
 
 // Get POST data with validation
 $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-$code = filter_input(INPUT_POST, 'code', FILTER_SANITIZE_STRING);
+$code = filter_input(INPUT_POST, 'code', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+//$code = filter_input(INPUT_POST, 'code', FILTER_SANITIZE_STRING);
 
 if (!$email || !$code) {
     header("Location: verifyEmail.php?error=invalid_input");

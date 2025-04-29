@@ -15,12 +15,35 @@ $response = sendMessage([
     'code' => $code
 ]);
 
+# In FrontEnd/verify2FACode.php
 if ($response['status'] === 'Success') {
+    setcookie("session_token", $response['cookie'], [
+        'expires' => time() + 3600,
+        'path' => '/',
+        'secure' => true,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+    setcookie("username", $response['username'], [
+        'expires' => time() + 3600,
+        'path' => '/',
+        'secure' => true,
+        'samesite' => 'Lax'
+    ]);
+    header("Location: homepage.php");
+    exit();
+}else {
+header("Location: verify2FA.php?email=".urlencode($email)."&error=".urlencode($response['message'] ?? 'verification_failed')    );
+}
+
+/*if ($response['status'] === 'Success') {
     // Set cookies from the verification response
+    
     setcookie("session_token", $response['cookie'], time()+3600, "/");
     setcookie("username", $response['username'], time()+3600, "/");
     header("Location: homepage.php");
+
 } else {
     header("Location: verify2FA.php?email=".urlencode($email)."&error=".urlencode($response['message'] ?? 'verification_failed'));
-}
+}*/
 exit();
