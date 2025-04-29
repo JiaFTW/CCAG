@@ -19,100 +19,112 @@ function doLogin($username, $password) {
     $response = $connect->loginAccount($username, $password);
 
     if ($response['status'] === 'Success') {
-        // Get email verification status directly
-        $query = "SELECT email_verified, email FROM accounts 
-                 WHERE username = '".$connect->mydb->real_escape_string($username)."'";
-        $result = $connect->mydb->query($query);
-        $userData = $result->fetch_assoc();
-        
+        // Check email verification
+        $userData = $connect->mydb->query(
+            "SELECT email_verified, email, tfa_enabled 
+             FROM accounts WHERE username = '".
+             $connect->mydb->real_escape_string($username)."'"
+        )->fetch_assoc();
+
         if (!$userData['email_verified']) {
-            return [
-                'status' => 'EmailNotVerified',
-                'email' => $userData['email'] // Get email directly from query
-            ];
+            return ['status' => 'EmailNotVerified', 'email' => $userData['email']];
+        }
+
+        // NEW: Check 2FA status
+        if ($userData['tfa_enabled']) {
+            $code = bin2hex(random_bytes(16));
+            $expiry = time() + 3600; // 1 hour
+            
+            $connect->mydb->query(
+                "UPDATE accounts SET 
+                 verification_code = '".$connect->mydb->real_escape_string($code)."',
+                 code_expiry = $expiry 
+                 WHERE username = '".$connect->mydb->real_escape_string($username)."'"
+            );
+            
+            require_once('../FrontEnd/emailConfig.php');
+            if (sendVerificationEmail($userData['email'], $code)) {
+                return [
+                    'status' => '2FA_Required',
+                    'email' => $userData['email']
+                ];
+            }
+            return ['status' => 'Error', 'message' => 'Failed to send 2FA code'];
         }
     }
     
     return $response;
 }
 
-/*function doLogin($username, $password) {
-    error_log("Login attempt for: $username"); 
-    $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
-    $response = $connect->loginAccount($username, $password);
-
-    if ($response['status'] === 'Success') {
-	error_log("Login succeeded, checking verification"); 
-        // NEW: Check email verification status
-        $emailVerified = $connect->mydb->query(
-            "SELECT email_verified FROM accounts 
-             WHERE username = '".$connect->mydb->real_escape_string($username)."'"
-        )->fetch_column(0);
-
-        if (!$emailVerified) {
-		error_log("User $username not verified");
-            return [
-                'status' => 'EmailNotVerified',
-                'email' => getEmailForUser($username) // Implement this helper
-            ];
-        }
-    }
-    error_log("Final response: ".print_r($response,true));
-    return $response;
-}*/
-
 function doVerification($email, $code) {
     try {
         $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
-        
+
         // Validate inputs
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new Exception("invalid_email_format");
         }
-        
+
         // Escape inputs
         $escEmail = $connect->mydb->real_escape_string($email);
         $escCode = $connect->mydb->real_escape_string($code);
-        
+
         // Get verification data
-        $query = "SELECT verification_code, code_expiry 
+        $query = "SELECT verification_code, code_expiry, username 
                 FROM accounts 
                 WHERE email = '$escEmail'";
-        
+
         $result = $connect->mydb->query($query);
-        if (!$result) {
-            throw new Exception("database_query_error");
-        }
-        
-        if ($result->num_rows === 0) {
-            throw new Exception("email_not_found");
-        }
-        
+        if (!$result) throw new Exception("database_query_error");
+        if ($result->num_rows === 0) throw new Exception("email_not_found");
+
         $user = $result->fetch_assoc();
-        
+
         // Validate code
         if ($user['verification_code'] !== $escCode) {
             throw new Exception("code_mismatch");
         }
-        
+
         // Check expiration
         if (time() > $user['code_expiry']) {
             throw new Exception("code_expired");
         }
-        
-        // Update account
-        $update = "UPDATE accounts 
-                SET email_verified = TRUE, 
-                    verification_code = NULL, 
-                    code_expiry = NULL 
-                WHERE email = '$escEmail'";
-        
-        if (!$connect->mydb->query($update)) {
-            throw new Exception("update_failed");
+
+        // Generate new session
+        $token = bin2hex(random_bytes(32));
+        $start_time = time();
+        $end_time = $start_time + 3600;
+
+        // Update database
+        $connect->mydb->begin_transaction();
+        try {
+            // Clear verification code
+            $connect->mydb->query(
+                "UPDATE accounts SET 
+                verification_code = NULL,
+                code_expiry = NULL 
+                WHERE email = '$escEmail'"
+            );
+
+            // Create new session
+            $connect->mydb->query(
+                "INSERT INTO sessions (uid, cookie_token, start_time, end_time)
+                SELECT uid, '$token', $start_time, $end_time
+                FROM accounts WHERE email = '$escEmail'"
+            );
+
+            $connect->mydb->commit();
+        } catch (Exception $e) {
+            $connect->mydb->rollback();
+            throw $e;
         }
-        
-        return ['status' => 'Success'];
-        
+
+        return [
+            'status' => 'Success',
+            'cookie' => $token,
+            'username' => $user['username']
+        ];
+
     } catch (Exception $e) {
         return [
             'status' => 'Error',
@@ -120,6 +132,7 @@ function doVerification($email, $code) {
         ];
     }
 }
+
 
 
 function doRegistration($username, $password, $email) {
@@ -227,10 +240,8 @@ function doGet2FAStatus($username) {
     }
 }
 
-/*
 
 
-*/
 function doValidate($token){
 
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');

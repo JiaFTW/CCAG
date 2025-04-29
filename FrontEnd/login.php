@@ -21,6 +21,9 @@ if ($response['status'] == 'Success') {
 }elseif ($response['status'] === 'EmailNotVerified') {
     header("Location: verifyEmail.php?email=".urlencode($response['email']));
     die();
+}elseif ($response['status'] === '2FA_Required') {
+    header("Location: verify2FA.php?email=".urlencode($response['email']));
+    die();
 } else {
     echo "<script>alert('Invalid Credentials');
     window.location.href='loginPage.php';</script>";
