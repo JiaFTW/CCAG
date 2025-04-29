@@ -111,6 +111,26 @@ class mysqlConnect {
 	}
 
 
+//
+
+	public function getEmailForUser($username) {
+	    $stmt = $this->mydb->prepare("SELECT email FROM accounts WHERE username = ?");
+	    $stmt->bind_param("s", $username);
+	    $stmt->execute();
+	    return $stmt->get_result()->fetch_column(0);
+	}
+
+	public function getEmail($username) {
+	    $stmt = $this->mydb->prepare("SELECT email FROM accounts WHERE username = ?");
+	    $stmt->bind_param("s", $username);
+	    $stmt->execute();
+	    $result = $stmt->get_result();
+	    return $result->fetch_assoc()['email'];
+	}
+
+//
+
+
 
 
 	//Returns Array

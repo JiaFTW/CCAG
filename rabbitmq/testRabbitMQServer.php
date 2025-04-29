@@ -5,14 +5,61 @@ require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
 require_once('../Database/mysqlconnect.php');
 
-function doLogin($username,$password)
+/*function doLogin($username,$password)
 {
   
     $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
 
     return $connect->loginAccount($username, $password);
     
+}*/
+
+function doLogin($username, $password) {
+    $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+    $response = $connect->loginAccount($username, $password);
+
+    if ($response['status'] === 'Success') {
+        // Get email verification status directly
+        $query = "SELECT email_verified, email FROM accounts 
+                 WHERE username = '".$connect->mydb->real_escape_string($username)."'";
+        $result = $connect->mydb->query($query);
+        $userData = $result->fetch_assoc();
+        
+        if (!$userData['email_verified']) {
+            return [
+                'status' => 'EmailNotVerified',
+                'email' => $userData['email'] // Get email directly from query
+            ];
+        }
+    }
+    
+    return $response;
 }
+
+/*function doLogin($username, $password) {
+    error_log("Login attempt for: $username"); 
+    $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+    $response = $connect->loginAccount($username, $password);
+
+    if ($response['status'] === 'Success') {
+	error_log("Login succeeded, checking verification"); 
+        // NEW: Check email verification status
+        $emailVerified = $connect->mydb->query(
+            "SELECT email_verified FROM accounts 
+             WHERE username = '".$connect->mydb->real_escape_string($username)."'"
+        )->fetch_column(0);
+
+        if (!$emailVerified) {
+		error_log("User $username not verified");
+            return [
+                'status' => 'EmailNotVerified',
+                'email' => getEmailForUser($username) // Implement this helper
+            ];
+        }
+    }
+    error_log("Final response: ".print_r($response,true));
+    return $response;
+}*/
 
 function doVerification($email, $code) {
     try {

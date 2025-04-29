@@ -11,11 +11,15 @@ $logindata = array (
 
 //Sends the login request
 $response = sendMessage($logindata);
+error_log("Login response: ".print_r($response, true)); 
 
 if ($response['status'] == 'Success') {
     setcookie("session_token", $response['cookie'],time()+3600,"/");
     setcookie("username", $response['username'], time()+3600,"/");
     header("Location: homepage.php");
+    die();
+}elseif ($response['status'] === 'EmailNotVerified') {
+    header("Location: verifyEmail.php?email=".urlencode($response['email']));
     die();
 } else {
     echo "<script>alert('Invalid Credentials');

@@ -26,7 +26,7 @@ sql_query=$(cat <<EOF
     	verification_code VARCHAR(64) DEFAULT NULL,
     	code_expiry INT DEFAULT NULL,
     	email_verified BOOLEAN DEFAULT FALSE,
-	twofa_enabled BOOLEAN DEFAULT FALSE NOT NULL
+	tfa_enabled BOOLEAN DEFAULT FALSE
     );
 
 
