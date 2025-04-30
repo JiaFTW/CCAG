@@ -24,7 +24,8 @@ sql_query=$(cat <<EOF
         status VARCHAR(16),
         machine VARCHAR(32) NOT NULL,
         path VARCHAR(225) NOT NULL,
-        isWorkingVersion BOOL,
+        isCurrentVersion BOOL,
+        cluster VARCHAR(32)
     );
 
 

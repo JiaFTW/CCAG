@@ -454,9 +454,9 @@ class mysqlConnect {
 
 //Deployment Function
 
-	public function recordIncomingBundle($name, $version, $machine, $path) {
+	public function recordIncomingBundle($name, $version, $machine, $path, $cluster) {
 
-		$query = "INSERT INTO bundles VALUES ('".$name."', ".$version.", 'new', '".$machine."', '".$path."');";
+		$query = "INSERT INTO bundles VALUES ('".$name."', ".$version.", 'new', '".$machine."', '".$path."', 1, '".$cluster."');";
 		$response = handleQuery($query, $this->mydb, "Query Status: Record Incoming Bundle Successful");
 
 		return $response;
@@ -471,9 +471,34 @@ class mysqlConnect {
 
 	}
 
-	public function getBundleList($machine) {
+	public function changeCurrentVersion($name, $boolean) {
+		$c = $boolean ? 1 : 0;
+		$query = "UPDATE bundles SET isCurrentVersion = ".$c."
+		WHERE name = '".$name."';";
+		$response = handleQuery($query, $this->mydb, "Query Status: Change Current Version Successful");
+
+		return $response;
+	}
+
+	public function getCurrentVersion($machine, $cluster) {
+		$query = "SELECT name FROM bundles WHERE machine = '".$machine."' 
+		AND cluster = '".$cluster."' AND isCurrentVersion = 1;";
+		$response = handleQuery($query, $this->mydb, "Query Status: Count All Versions Successful");
+
+		$response->fetch_array(MYSQLI_NUM);
+		if ($response == null) {
+			echo "No current version of ".$machine." in cluster ".$cluster." found".PHP_EOL;
+			return null;
+		}
+		
+		return implode($response);
+
+	}
+
+	public function getBundleList($machine, $cluster) {
 		$query = "SELECT name, status FROM bundles 
-		WHERE machine = '".$machine."';";
+		WHERE machine = '".$machine."'
+		AND cluster = '".$cluster."';";
 		
 		$response = handleQuery($query, $this->mydb, "Query Status: Get Bundle List Successful");
 		if (!$response) {
@@ -484,13 +509,26 @@ class mysqlConnect {
 		return $response_arr;
 	}
 
-	public function getTotalVersionsNum($machine) {
-		$query = "SELECT count(*) FROM bundles WHERE machine = '".$machine."';";
+	public function generateVersionNum($machine, $cluster) {
+		$query = "SELECT count(*) FROM bundles WHERE machine = '".$machine."' 
+		AND cluster = '".$cluster."';";
 		$response = handleQuery($query, $this->mydb, "Query Status: Count All Versions Successful");
 
 		$num = implode($response->fetch_array(MYSQLI_NUM));
 		return $num;
 
+	}
+
+	public function generateVersionNumAll($cluster) {
+		$machines = array("Database", "DMZ", "rabbitmq", "FrontEnd");
+		$total_num = 0;
+		foreach ($machines as $m) {
+			$num = generateVersionNum($m, $cluster);
+			if ($num > $total_num) {  //Replaces total_num with highest version num from all machines
+				$total_num = $num;
+			}
+		}
+		return $total_num;
 	}
 }
 

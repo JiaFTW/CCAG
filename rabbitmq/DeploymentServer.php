@@ -8,7 +8,7 @@ require_once('../Deployment/bundleprocessor.php');
 require_once('../Database/mysqlconnect.php');
 
 
-function doIncoming($tempID) 
+function doIncoming($tempID, $cluster) 
 {
 	$workingDir = "/home/".get_current_user()."/Bundles";
 	$processor = new bundleProcessor ($workingDir);
@@ -16,11 +16,12 @@ function doIncoming($tempID)
 
 	$bundles = $processor->getBundleArrayByID($tempID);
 	//var_dump($bundles);
-
+	$version_num = $connect->generateVersionNumAll($cluster);
+	
 	foreach ($bundles as $b) {
 		$machine = substr($b, 0, strpos($b, '_'));
-		$version = $connect->getTotalVersionsNum($machine) + 1;
-		$name = $machine."_V".$version;
+		$version = $version_num + 1;
+		$name = $machine."_".$cluster."_V".$version;
 		$processor->changeBundleName($b, $name, $machine); //Moves file to appropiate subfolder and changes file name
 		$path = $processor->getBundlePathByNameStr($name).'.zip';
 
@@ -29,11 +30,11 @@ function doIncoming($tempID)
 		echo "Name Created: ".$name." | ";
 		echo "Identified Path: ".$path.PHP_EOL;
 			
-		$connect->recordIncomingBundle($name, $version, $machine, $path);
+		$connect->recordIncomingBundle($name, $version, $machine, $path, $cluster);
 		
 	}
 
-	return ['status' => 'Processed'];
+	return ['msg' => "Successfuly created Bundles Version[". $version_num + 1 ."] for ".$cluster.". Updated Current Versions for Deployment"];
 }
 
 function doChangeBundleStatus($name, $bundle_status) 
@@ -42,7 +43,7 @@ function doChangeBundleStatus($name, $bundle_status)
 	return $connect->changeBundleStatus($name, $bundle_status);
 }
 
-function doGetBundleList($machine)
+function doGetBundleList($machine, $cluster)
 {
 	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDeploy');
 	return $connect->getBundleList($machine);
@@ -64,7 +65,7 @@ function requestProcessor($request)
 	switch ($request['type']) 
 	{
 	case 'incomingBundle':
-		return doIncoming($request['id']);
+		return doIncoming($request['id'], $request['location']);
 	case 'changeBundleStatus':
 		return doChangeBundleStatus($request['name'], $request['bundle_status']);
 	case 'getBundleList':
@@ -78,7 +79,7 @@ function requestProcessor($request)
 }
 
 
-$server = new rabbitMQServer("testRabbitMQ.ini","DeploymentServer");
+$server = new rabbitMQServer("testRabbitMQ.ini","DeploymentServer"); //DeploymentServer
 
 echo "Deployment Server BEGIN".PHP_EOL;
 $server->process_requests('requestProcessor');
