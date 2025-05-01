@@ -20,6 +20,15 @@ class bundleProcessor {
         }
         return $array;
     }
+
+    public function deleteBundlesByID($id) {
+        foreach ($this->iterator as $file) {
+            if ($file->isFile() && str_contains($file->getFilename(), $id)) {          
+                unlink($file->getRealPath()); //deletes $file
+            }
+        }
+
+    }
  
     public function getBundlePathByNameStr($bundle_name) { //returns getrealPath Str
         $this->iterator->rewind();
