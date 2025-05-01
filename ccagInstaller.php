@@ -30,8 +30,10 @@ $response = $client->send_request($request);
 
 if(count($response) > 0)
 {
-    foreach($response as $path)
+    $path;
+    for($i = 0; $i < count($response); $i++)
     {
+        $path = $response[$i];
         exec("scp " . " deploy@192.168.193.69:" . $path . " " . $path, $output);
 
         rename($path, substr($path, 0, strpos($path, "_", 0)));
