@@ -13,34 +13,65 @@ function doIncoming($tempID, $cluster)
 	$workingDir = "/home/".get_current_user()."/Bundles";
 	$processor = new bundleProcessor ($workingDir);
 	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDeploy');
+	$bundle_status = "new";
 
 	$bundles = $processor->getBundleArrayByID($tempID);
 	//var_dump($bundles);
-	$version_num = $connect->generateVersionNumAll($cluster);
+
+	if ($cluster == 'Production') {
+		foreach ($bundles as $b) { //Checks if Current QA Versions are suitable for Production Deployment
+			$machine = substr($b, 0, strpos($b, '_'));
+			$current_name = $connect->getCurrentVersion($machine, 'QA');
+			if ($current_name == null) {
+				$processor->deleteBundlesByID($tempID);
+				return ['msg' => "No current QA bundle for " . $machine . " found."];
+			}
+			$current_status = $connect->getBundleStatus($current_name);
+			if ($current_status != "Approved") {
+				$processor->deleteBundlesByID($tempID);
+				return['msg' => "Current QA bundle ".$current_name." must be 'Approved' before deploying to Production. Current Status: ".$current_status ];
+			} 
+		}
+
+		foreach ($bundles as $b) { //Changes statuses for all apporoved QA bundles to Published
+			$machine = substr($b, 0, strpos($b, '_'));
+			$current_name = $connect->getCurrentVersion($machine, 'QA');
+			$connect->changeBundleStatus($current_name, 'Published');
+		}
+		$bundle_status = "Working";
+
+	}
 	
+	$version_num = $connect->generateVersionNumAll($cluster);
 	foreach ($bundles as $b) {
 		$machine = substr($b, 0, strpos($b, '_'));
 		$version = $version_num + 1;
 		$name = $machine."_".$cluster."_V".$version;
-		$processor->changeBundleName($b, $name, $machine); //Moves file to appropiate subfolder and changes file name
-		$path = $processor->getBundlePathByNameStr($name).'.zip';
+		$path = $workingDir."/".$machine."/".$name.".zip";
 
 		echo "Identified Machine: ".$machine." | ";
 		echo "Identified Version Num: ".$version." | ";
 		echo "Name Created: ".$name." | ";
 		echo "Identified Path: ".$path.PHP_EOL;
 			
-		$connect->recordIncomingBundle($name, $version, $machine, $path, $cluster);
+		$record_bool = $connect->recordIncomingBundle($name, $version, $machine, $path, $bundle_status, $cluster);
+		if (!$record_bool) {
+			$processor->deleteBundlesByID($tempID);
+			return ['msg' => 'Deploy Sever Error. Aborting Deployment'];
+		}
+		$processor->changeBundleName($b, $name, $machine); //Moves file to appropiate subfolder and changes file name
 		
 	}
 
-	return ['msg' => "Successfuly created Bundles Version[". $version_num + 1 ."] for ".$cluster.". Updated Current Versions for Deployment"];
+	return ['msg' => "Successfuly created Bundles Version[". $version_num + 1 ."] for ".$cluster.". Updated Current Version Ready for Deployment"];
 }
 
 function doChangeBundleStatus($name, $bundle_status) 
 {
 	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDeploy');
-	return $connect->changeBundleStatus($name, $bundle_status);
+	$status = $connect->changeBundleStatus($name, $bundle_status);
+
+	return ['msg' => $status ? $name.' status changed to '.$bundle_status : 'Deploy Server Error'];
 }
 
 function doGetBundleList($machine, $cluster)

@@ -454,24 +454,25 @@ class mysqlConnect {
 
 //Deployment Function
 
-	public function recordIncomingBundle($name, $version, $machine, $path, $cluster) {
+	public function recordIncomingBundle($name, $version, $machine, $bundle_status, $path, $cluster) { //return boolean
 
-		$query = "INSERT INTO bundles VALUES ('".$name."', ".$version.", 'new', '".$machine."', '".$path."', 1, '".$cluster."');";
+		$query = "INSERT INTO bundles VALUES ('".$name."', ".$version.", '".$bundle_status."', '".$machine."', '".$path."', 1, '".$cluster."');"; 
+		//All new incoming bundles are automatically assigned as the new Current Versions
 		$response = handleQuery($query, $this->mydb, "Query Status: Record Incoming Bundle Successful");
 
 		return $response;
 	}
 
-	public function changeBundleStatus($name, $status) {
+	public function changeBundleStatus($name, $status) { //return boolean
 		$query = "UPDATE bundles SET status = '".$status."' 
 		WHERE name = '".$name."';";
 		$response = handleQuery($query, $this->mydb, "Query Status: Change Bundle Status Successful");
 
-		return array('status' => $response ? 'Success' : 'Error');
+		return $response;
 
 	}
 
-	public function changeCurrentVersion($name, $boolean) {
+	public function changeCurrentVersion($name, $boolean) { //return boolean
 		$c = $boolean ? 1 : 0;
 		$query = "UPDATE bundles SET isCurrentVersion = ".$c."
 		WHERE name = '".$name."';";
@@ -480,7 +481,15 @@ class mysqlConnect {
 		return $response;
 	}
 
-	public function getCurrentVersion($machine, $cluster) {
+	public function getBundleStatus($name) { //return imploded status string
+		$query = "SELECT status FROM bundles WHERE name = '".$name."';";
+		$response = handleQuery($query, $this->mydb, "Query Status: get Bundle Status Successful");
+
+		return implode($response);
+
+	}
+
+	public function getCurrentVersion($machine, $cluster) { //return imploed name string
 		$query = "SELECT name FROM bundles WHERE machine = '".$machine."' 
 		AND cluster = '".$cluster."' AND isCurrentVersion = 1;";
 		$response = handleQuery($query, $this->mydb, "Query Status: Count All Versions Successful");
@@ -495,7 +504,7 @@ class mysqlConnect {
 
 	}
 
-	public function getBundleList($machine, $cluster) {
+	public function getBundleList($machine, $cluster) { //return array of names
 		$query = "SELECT name, status FROM bundles 
 		WHERE machine = '".$machine."'
 		AND cluster = '".$cluster."';";
@@ -509,7 +518,7 @@ class mysqlConnect {
 		return $response_arr;
 	}
 
-	public function generateVersionNum($machine, $cluster) {
+	public function generateVersionNum($machine, $cluster) { //return int
 		$query = "SELECT count(*) FROM bundles WHERE machine = '".$machine."' 
 		AND cluster = '".$cluster."';";
 		$response = handleQuery($query, $this->mydb, "Query Status: Count All Versions Successful");
@@ -519,7 +528,7 @@ class mysqlConnect {
 
 	}
 
-	public function generateVersionNumAll($cluster) {
+	public function generateVersionNumAll($cluster) { //return int
 		$machines = array("Database", "DMZ", "rabbitmq", "FrontEnd");
 		$total_num = 0;
 		foreach ($machines as $m) {
