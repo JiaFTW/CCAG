@@ -28,6 +28,12 @@ sql_query=$(cat <<EOF
         cluster VARCHAR(32)
     );
 
+    CREATE TABLE IF NOT EXISTS machines (
+        address VARCHAR(32) NOT NULL PRIMARY KEY,
+        type VARCHAR(32) NOT NULL,
+        cluster VARCHAR(32) NOT NULL
+    );
+
 
 EOF
 )

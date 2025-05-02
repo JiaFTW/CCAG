@@ -13,7 +13,7 @@ function doIncoming($tempID, $cluster)
 	$workingDir = "/home/".get_current_user()."/Bundles";
 	$processor = new bundleProcessor ($workingDir);
 	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDeploy');
-	$bundle_status = "new";
+	$bundle_status = "Unchecked";
 
 	$bundles = $processor->getBundleArrayByID($tempID);
 	//var_dump($bundles);
@@ -26,11 +26,14 @@ function doIncoming($tempID, $cluster)
 				$processor->deleteBundlesByID($tempID);
 				return ['msg' => "No current QA bundle for " . $machine . " found."];
 			}
-			$current_status = $connect->getBundleStatus($current_name);
-			if ($current_status != "Approved") {
-				$processor->deleteBundlesByID($tempID);
-				return['msg' => "Current QA bundle ".$current_name." must be 'Approved' before deploying to Production. Current Status: ".$current_status ];
-			} 
+			else {
+				$current_status = $connect->getBundleStatus($current_name);
+				if ($current_status != "Approved") {
+					$processor->deleteBundlesByID($tempID);
+					return['msg' => "Current QA bundle ".$current_name." must be 'Approved' before deploying to Production. Current Status: ".$current_status ];
+				} 
+			}
+			
 		}
 
 		foreach ($bundles as $b) { //Changes statuses for all apporoved QA bundles to Published
@@ -38,7 +41,7 @@ function doIncoming($tempID, $cluster)
 			$current_name = $connect->getCurrentVersion($machine, 'QA');
 			$connect->changeBundleStatus($current_name, 'Published');
 		}
-		$bundle_status = "Working";
+		$bundle_status = "Working"; //Setting Status of incoming Production Bundle
 
 	}
 	
@@ -53,17 +56,25 @@ function doIncoming($tempID, $cluster)
 		echo "Identified Version Num: ".$version." | ";
 		echo "Name Created: ".$name." | ";
 		echo "Identified Path: ".$path.PHP_EOL;
-			
-		$record_bool = $connect->recordIncomingBundle($name, $version, $machine, $path, $bundle_status, $cluster);
+
+		$current_name = $connect->getCurrentVersion($machine, $cluster); 
+		if ($current_name != null) { //Set isCurrentVersion of previous Bundle to false if one exists
+			if (!$connect->changeCurrentVersion($current_name, false)) { 
+				$processor->deleteBundlesByID($tempID);
+				return ['msg' => 'Deploy Server Error (changeCurrentVersion). Aborting Deployment'];
+			}
+		}
+		echo $bundle_status.PHP_EOL;
+		$record_bool = $connect->recordIncomingBundle($name, $version, $bundle_status, $machine, $path, $cluster);
 		if (!$record_bool) {
 			$processor->deleteBundlesByID($tempID);
-			return ['msg' => 'Deploy Sever Error. Aborting Deployment'];
+			return ['msg' => 'Deploy Server Error (recordIncomingBundle). Aborting Deployment'];
 		}
 		$processor->changeBundleName($b, $name, $machine); //Moves file to appropiate subfolder and changes file name
 		
 	}
 
-	return ['msg' => "Successfuly created Bundles Version[". $version_num + 1 ."] for ".$cluster.". Updated Current Version Ready for Deployment"];
+	return ['msg' => "Successfuly created Bundles Version[". $version_num + 1 ."] for ".$cluster.". Updated Current Version for Deployment!"];
 }
 
 function doChangeBundleStatus($name, $bundle_status) 
@@ -77,7 +88,21 @@ function doChangeBundleStatus($name, $bundle_status)
 function doGetBundleList($machine, $cluster)
 {
 	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDeploy');
-	return $connect->getBundleList($machine);
+	return $connect->getBundleList($machine, $cluster);
+}
+
+function doGetUpdate($address) {
+	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDeploy');
+	$address_info = $connect->getInfoFromAddress($address);
+	$update_paths = [];
+	if ($address_info['type'] == "BackEnd") {
+		$update_paths[] = $connect->getCurrentPath('Database', $address_info['cluster']);
+		$update_paths[] = $connect->getCurrentPath('rabbitmq', $address_info['cluster']);
+	}
+	else {
+		$update_paths[] = $connect->getCurrentPath($address_info['type'], $address_info['cluster']);
+	}
+	return $update_paths;
 }
 
 function requestProcessor($request)
@@ -101,6 +126,8 @@ function requestProcessor($request)
 		return doChangeBundleStatus($request['name'], $request['bundle_status']);
 	case 'getBundleList':
 		return doGetBundleList($request['location']);
+	case 'getUpdate':
+		return doGetUpdate($request['ipaddress']);
 	default:
 		return [
 			'status' => 'error',
@@ -110,7 +137,7 @@ function requestProcessor($request)
 }
 
 
-$server = new rabbitMQServer("testRabbitMQ.ini","DeploymentServer"); //DeploymentServer
+$server = new rabbitMQServer("testRabbitMQ.ini","testServer"); //DeploymentServer
 
 echo "Deployment Server BEGIN".PHP_EOL;
 $server->process_requests('requestProcessor');
