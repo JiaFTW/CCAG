@@ -54,7 +54,6 @@ class mysqlConnect {
 
 	//Returns Array
 	public function loginAccount($username, $password) {
-		echo 'sdioj';
 		$query = "SELECT username, password FROM accounts 
 		WHERE username = '".$username."';";
 		$status;
@@ -454,7 +453,7 @@ class mysqlConnect {
 
 //Deployment Function
 
-	public function recordIncomingBundle($name, $version, $machine, $bundle_status, $path, $cluster) { //return boolean
+	public function recordIncomingBundle($name, $version, $bundle_status, $machine, $path, $cluster) { //return boolean
 
 		$query = "INSERT INTO bundles VALUES ('".$name."', ".$version.", '".$bundle_status."', '".$machine."', '".$path."', 1, '".$cluster."');"; 
 		//All new incoming bundles are automatically assigned as the new Current Versions
@@ -485,23 +484,43 @@ class mysqlConnect {
 		$query = "SELECT status FROM bundles WHERE name = '".$name."';";
 		$response = handleQuery($query, $this->mydb, "Query Status: get Bundle Status Successful");
 
-		return implode($response);
+		$response_arr = $response->fetch_array(MYSQLI_NUM);
+		if ($response_arr == null) {
+			echo "Name ".$name." not found".PHP_EOL;
+			return null;
+		}
+		var_dump($response_arr);
+		return implode($response_arr);
 
 	}
 
 	public function getCurrentVersion($machine, $cluster) { //return imploed name string
 		$query = "SELECT name FROM bundles WHERE machine = '".$machine."' 
 		AND cluster = '".$cluster."' AND isCurrentVersion = 1;";
-		$response = handleQuery($query, $this->mydb, "Query Status: Count All Versions Successful");
+		$response = handleQuery($query, $this->mydb, "Query Status: Get Current Version Successful");
 
-		$response->fetch_array(MYSQLI_NUM);
-		if ($response == null) {
+		$response_arr = $response->fetch_array(MYSQLI_NUM);
+		if ($response_arr == null) {
 			echo "No current version of ".$machine." in cluster ".$cluster." found".PHP_EOL;
 			return null;
 		}
-		
-		return implode($response);
+		//var_dump($response_arr);
+		return implode($response_arr);
 
+	}
+
+	public function getCurrentPath($machine, $cluster) { 
+		$query = "SELECT path FROM bundles WHERE machine = '".$machine."' 
+		AND cluster = '".$cluster."' AND isCurrentVersion = 1;";
+		$response = handleQuery($query, $this->mydb, "Query Status: Get Current Path Successful");
+
+		$response_arr = $response->fetch_array(MYSQLI_NUM);
+		if ($response_arr == null) {
+			echo "No current path of ".$machine." in cluster ".$cluster." found".PHP_EOL;
+			return null;
+		}
+		//var_dump($response_arr);
+		return implode($response_arr);
 	}
 
 	public function getBundleList($machine, $cluster) { //return array of names
@@ -532,13 +551,24 @@ class mysqlConnect {
 		$machines = array("Database", "DMZ", "rabbitmq", "FrontEnd");
 		$total_num = 0;
 		foreach ($machines as $m) {
-			$num = generateVersionNum($m, $cluster);
+			$num = $this->generateVersionNum($m, $cluster);
 			if ($num > $total_num) {  //Replaces total_num with highest version num from all machines
 				$total_num = $num;
 			}
 		}
 		return $total_num;
 	}
+
+	public function getInfoFromAddress($address) {
+		$query = "SELECT type, cluster FROM machines
+		WHERE address = '".$address."';";
+
+		$response = handleQuery($query, $this->mydb, "Query Status: getInfoFromAddress");
+		$response_arr = $response->fetch_assoc();
+
+		return $response_arr;
+	}
+	
 }
 
 
