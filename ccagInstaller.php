@@ -36,10 +36,10 @@ if(count($response) > 0)
         $path = $response[$i];
         exec("scp " . " deploy@192.168.193.69:" . $path . " " . $path, $output);
 
-        rename($path, substr($path, 0, strpos($path, "_", 0)));
+        rename($path, substr($path, 0, strpos($path, "_", 0)) . ".zip");
         extract_bundle($path);
         exec("rm " . $path, $killme);
     }
-    echo "Bundles Updated and extracted";
+    echo "Bundles Updated and extracted" . PHP_EOL;
 }
 ?>
