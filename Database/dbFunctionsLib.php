@@ -11,7 +11,9 @@ function showAr ($array) {
 function handleQuery($q, mysqli $db, $msg = 'Query Status: Successful') {
     try {
         mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-	$response = $db->query($q); 
+	$response = $db->execute_query($q);
+
+//	$response = $db->query($q); 
         echo $msg.PHP_EOL;
         return $response;
 
@@ -86,15 +88,16 @@ function getUIDbyUsername(string $username, mysqli $db) {
 
 
 //Account Functions
-function addAccount($username, $email, $password, $connection) {
+function addAccount($username, $email, $password, $db) {
     $esc_username = $connection->real_escape_string($username);
     $esc_email = $connection->real_escape_string($email);
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     
     $query = "INSERT INTO accounts (username, email, password) 
               VALUES ('$esc_username', '$esc_email', '$hashed_password')";
-    
-    return $connection->query($query);
+    $response = handleQuery($query, $db, "Query Status: Added Account Query Succesful");
+    return response;
+    //return $connection->query($query);
 }
 
 /*function addAccount(string $username, $email , $password, mysqli $db) {
