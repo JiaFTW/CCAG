@@ -1,3 +1,9 @@
+<?php
+if ($_SERVER['REQUEST_METHOD'] === "POST") {
+
+  writelog("SAYS BYEEE", "BOB"); 
+  }
+?>
 <!DOCTYPE html>
 <html>
   <head>

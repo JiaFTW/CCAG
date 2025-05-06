@@ -118,8 +118,6 @@ switch ($request['type'])
       $request['SUN2'] = $info['SUN2'];
       $request['SUN3'] = $info['SUN3'];
       break;
-<<<<<<< HEAD
-<<<<<<< HEAD
      case "getUserMealPlans":
       $request['username'] = $info['username'];
       break;
@@ -139,19 +137,12 @@ switch ($request['type'])
       break;
 
 // 
-=======
-=======
->>>>>>> origin/SnailZipAndLog
     case "getUserMealPlans":
       $request['username'] = $info['username']; 
       break;
     case "getRex":
         $request['username'] = $info['username'];
       break;
-<<<<<<< HEAD
->>>>>>> origin/SnailZipAndLog
-=======
->>>>>>> origin/SnailZipAndLog
     default:
       return $request['type'].PHP_EOL;
   }
@@ -167,5 +158,4 @@ echo "\n\n";
 
 echo $argv[0]." END".PHP_EOL;
 }
-
-
+?>

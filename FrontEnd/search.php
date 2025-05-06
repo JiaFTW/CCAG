@@ -1,5 +1,7 @@
 <?php 
 require_once('../rabbitmq/testRabbitMQClient.php');
+require_once('./logging/writelog.php');
+require_once('./logging/sendlogs.php');
 
 $recipedata = array (
     'type' => 'getRecipe',
@@ -8,7 +10,11 @@ $recipedata = array (
 );
 
 //Sends the login request
+
+writelog("searched for: " . $recipedata['keyword'], $_COOKIE['username']);
+sendinglogs();
 $response = sendMessage($recipedata);
+
 echo json_encode($response); 
 
 /*//Test Code (To Do: Replace with real API call)

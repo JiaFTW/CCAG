@@ -1,23 +1,23 @@
 <?php
-require_once('../rabbitmq/testRabbitMQClient.php');
+require_once('./logging/writelog.php');
 
 
-$reviewRequest = array (
-  'type' => 'editRecipe',
-  'username' => $_COOKIE['username'],
-  'rid' => intval($_POST['recipe_id']),
-  'name' => $_POST['newRecipeName'],
-  'ingredients' => $_POST['newIngredients'],
-);
+if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
-if (!strcmp($_POST['newRecipeName'],$_POST['name'])) {
-  $reviewRequest['name'] = $_COOKIE['username'] . "'s " . $_POST['name'];
+writelog("SAYS HI", "bob"); 
+
+
 }
-
-print_r($reviewRequest);
-
-
 
 ?>
 
 
+<!DOCTYPE html>
+<html>
+  <body>
+    <h2>Testing</h2>
+    <form method="POST"> 
+      <button type="submit">BOB</button>
+    </form>
+  </body>
+</html>

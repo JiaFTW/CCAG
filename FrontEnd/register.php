@@ -1,6 +1,8 @@
 <?php 
 require_once('../rabbitmq/testRabbitMQClient.php');
 require_once('emailConfig.php'); 
+require_once('./logging/writelog.php');
+require_once('./logging/sendlogs.php');
 
 $registerdata = array(
     'type' => 'register',
@@ -11,6 +13,14 @@ $registerdata = array(
 );
 
 $response = sendMessage($registerdata);
+
+writelog("successfully registered.", $logindata['username']);
+sendinglogs();
+//sendMessage($registerdata);
+
+
+//header("Location: loginPage.php");
+//exit();
 
 if ($response['status'] === 'Success') {
     // Registration successful but not verified
