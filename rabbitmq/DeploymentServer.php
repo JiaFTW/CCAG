@@ -70,6 +70,11 @@ function doIncoming($tempID, $cluster)
 			$processor->deleteBundlesByID($tempID);
 			return ['msg' => 'Deploy Server Error (recordIncomingBundle). Aborting Deployment'];
 		}
+		$release_bool = $connect->recordRelease($name, $machine, $cluster);
+		if (!$release_bool) {
+			$processor->deleteBundlesByID($tempID);
+			return ['msg' => 'Deploy Server Error (recordRelease). Aborting Deployment'];
+		}
 		$processor->changeBundleName($b, $name, $machine); //Moves file to appropiate subfolder and changes file name
 		
 	}
@@ -93,10 +98,17 @@ function doGetBundleList($machine, $cluster)
 
 function doGetUpdate($address) {
 	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDeploy');
-	$address_info = $connect->getInfoFromAddress($address);
+	//$address_info = $connect->getInfoFromAddress($address);
 	$update_paths = [];
-	var_dump($address_info);
-	
+	$names = $connect->getReleaseList($address);
+	//var_dump($address_info);
+	if ($names == null) {
+		return $update_paths;
+	}
+	foreach ($names as $n) {
+		$update_paths[] = $connect->getBundlePath($n);
+	}
+	/*
 	if ($address_info['type'] == "BackEnd") {
 		$update_paths[] = $connect->getCurrentPath('Database', $address_info['cluster']);
 		$update_paths[] = $connect->getCurrentPath('rabbitmq', $address_info['cluster']);
@@ -104,7 +116,9 @@ function doGetUpdate($address) {
 	else {
 		$update_paths[] = $connect->getCurrentPath($address_info['type'], $address_info['cluster']);
 	}
-	var_dump($update_paths);
+	*/
+	$connect->refreshIsDeployed($address);
+	//var_dump($update_paths); 
 	return $update_paths;
 }
 
@@ -143,7 +157,10 @@ function requestProcessor($request)
 $server = new rabbitMQServer("testRabbitMQ.ini","DeploymentServer"); //DeploymentServer
 
 echo "Deployment Server BEGIN".PHP_EOL;
-//var_dump(doGetUpdate('1.1.1.1'));
+
+var_dump(doIncoming(111, 'QA'));
+var_dump(doGetUpdate('1.1.1.1'));
+
 $server->process_requests('requestProcessor');
 echo "Deployment Server END".PHP_EOL;
 exit();
