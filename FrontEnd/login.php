@@ -1,6 +1,7 @@
 <?php 
 require_once('../rabbitmq/testRabbitMQClient.php');
 require_once('./logging/writelog.php');
+require_once('./logging/sendlogs.php');
 
 $logindata = array (
     'type' => 'login',
@@ -17,9 +18,10 @@ if ($response['status'] == 'Success') {
     setcookie("session_token", $response['cookie'],time()+3600,"/");
     setcookie("username", $response['username'], time()+3600,"/");
     //$message = "has successfully logged in!";
-    writelog("SAYS HI", "BOB");
-    //header("Location: homepage.php");
-    //die();
+    writelog("logged in.", $logindata['username']);
+    //sendinglogs();
+    header("Location: homepage.php");
+    die();
 } else {
     echo "<script>alert('Invalid Credentials');
     window.location.href='loginPage.php';</script>";

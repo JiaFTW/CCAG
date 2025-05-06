@@ -1,7 +1,7 @@
 <?php
 require_once('../rabbitmq/testRabbitMQClient.php');
 
-if (!isset($_COOKIE['session_token'])) {
+if (!isset($_COOKIE['session_token']) || !isset($_COOKIE['username'])) {
     header("Location: loginPage.php");
     die();
 }
@@ -18,4 +18,6 @@ if ($sessioncheck['status'] !== 'Success') {
     header("Location: loginPage.php");
     die();
 }
+
+
 ?>
