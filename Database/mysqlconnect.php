@@ -480,6 +480,15 @@ class mysqlConnect {
 		return $response;
 	}
 
+	public function changeIsDeployed($address, $name, $boolean) { //return boolean
+		$c = $boolean ? 1 : 0;
+		$query = "UPDATE releases SET isDeployed = ".$c."
+		WHERE name = '".$name."' AND address = '".$address."';";
+		$response = handleQuery($query, $this->mydb, "Query Status: Change Is Deployed Successful");
+
+		return $response;
+	}
+
 	public function getBundleStatus($name) { //return imploded status string
 		$query = "SELECT status FROM bundles WHERE name = '".$name."';";
 		$response = handleQuery($query, $this->mydb, "Query Status: get Bundle Status Successful");
@@ -551,7 +560,9 @@ class mysqlConnect {
 
 	public function generateVersionNum($machine, $cluster) { //return int
 		$query = "SELECT version FROM bundles WHERE machine = '".$machine."' 
-		AND cluster = '".$cluster."';";
+		AND cluster = '".$cluster."'
+		ORDER BY version DESC
+		LIMIT 1;";
 		$response = handleQuery($query, $this->mydb, "Query Status: Count Versions Successful");
 
 		$num = $response->fetch_array(MYSQLI_NUM);
@@ -559,6 +570,7 @@ class mysqlConnect {
 		if ($num == NULL) {
 			return 0;
 		}
+		var_dump($num);
 		return implode($num);
 
 	}
@@ -632,6 +644,31 @@ class mysqlConnect {
 		$query = "UPDATE releases SET isDeployed = 1 WHERE address = '".$address."';";
 		$response = handleQuery($query, $this->mydb, "Query Status: refresh isDeployed successful");
 		return $response;
+	}
+
+	public function rollbackPrevious($address, $machine, $cluster) { //return Boolean
+		$deprecated_name = $this->getCurrentVersion($machine, $cluster);
+		$d_num = $this->generateVersionNum($machine, $cluster);
+
+		$previous_query = "SELECT name FROM bundles WHERE version < ".$d_num. "
+		ORDER BY version DESC LIMIT 1;";
+		$response = handleQuery($previous_query, $this->mydb, "Query Status: rollBackPrevious successful");
+		if (!$response) {
+			if ($response == NULL) {
+				echo "Could Not Find a Previous Bundle".PHP_EOL;
+			}
+			return false;
+		}
+
+		$previous_name = implode($response->fetch_array(MYSQLI_NUM));
+		var_dump($previous_name);
+
+		$this->changeCurrentVersion($deprecated_name, false);
+		$this->changeIsDeployed($address, $deprecated_name, true);
+		$this->changeCurrentVersion($previous_name, true);
+		$this->changeIsDeployed($address, $previous_name, false);
+
+		return true;
 	}
 	
 }

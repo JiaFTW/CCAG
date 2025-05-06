@@ -122,6 +122,15 @@ function doGetUpdate($address) {
 	return $update_paths;
 }
 
+function doRollBack($address, $machine) {
+	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDeploy');
+	$info = $connect->getInfoFromAddress($address);
+	$cluster = $info['cluster'];
+	$boolean = $connect->rollbackPrevious($address, $machine, $cluster);
+	
+	return ['msg' => $boolean ? "RollBack Succesfully" : 'Deploy Server Error'];
+} 
+
 function requestProcessor($request)
 {
 	echo "received request".PHP_EOL;
@@ -145,6 +154,8 @@ function requestProcessor($request)
 		return doGetBundleList($request['location']);
 	case 'getUpdate':
 		return doGetUpdate($request['ip']);
+	case 'rollback':
+		return doRollBack($request['ip'], $request['location']);
 	default:
 		return [
 			'status' => 'error',
@@ -158,8 +169,10 @@ $server = new rabbitMQServer("testRabbitMQ.ini","DeploymentServer"); //Deploymen
 
 echo "Deployment Server BEGIN".PHP_EOL;
 
-var_dump(doIncoming(111, 'QA'));
-var_dump(doGetUpdate('1.1.1.1'));
+//var_dump(doIncoming(111, 'QA'));
+//var_dump(doGetUpdate('1.1.1.1'));
+
+//var_dump(doRollBack('192.168.193.142', "Database"));
 
 $server->process_requests('requestProcessor');
 echo "Deployment Server END".PHP_EOL;
