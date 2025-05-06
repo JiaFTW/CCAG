@@ -118,6 +118,7 @@ switch ($request['type'])
       $request['SUN2'] = $info['SUN2'];
       $request['SUN3'] = $info['SUN3'];
       break;
+<<<<<<< HEAD
      case "getUserMealPlans":
       $request['username'] = $info['username'];
       break;
@@ -137,6 +138,14 @@ switch ($request['type'])
       break;
 
 // 
+=======
+    case "getUserMealPlans":
+      $request['username'] = $info['username']; 
+      break;
+    case "getRex":
+        $request['username'] = $info['username'];
+      break;
+>>>>>>> origin/SnailZipAndLog
     default:
       return $request['type'].PHP_EOL;
   }

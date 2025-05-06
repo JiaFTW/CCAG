@@ -335,6 +335,12 @@ function doGetUserMealPlans($username) {
   return $connect->getUserMealPlans($username);
 }
 
+function doGetRex($username) {
+  $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
+
+  return $connect->getRex($username);
+}
+
 function doRecipe($keyword, $username) //perform search check
 {
   $connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDB');
@@ -421,6 +427,7 @@ function requestProcessor($request)
       return doAddMealPlan($request);
     case "getUserMealPlans":
       return doGetUserMealPlans($request['username']);
+<<<<<<< HEAD
     case "verify_code":
       return doVerification($request['email'], $request['code']);
 //new cases
@@ -431,6 +438,10 @@ function requestProcessor($request)
       return doGet2FAStatus($request['username']);
 
 //
+=======
+    case "getRex":
+      return doGetRex($request['username']);
+>>>>>>> origin/SnailZipAndLog
     default:
       return "type fail".PHP_EOL;
   }
