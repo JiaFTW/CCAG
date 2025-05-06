@@ -26,11 +26,11 @@ $zip->addFile($filePath, basename($filePath));
 $zip->close();
 */
 
-//echo "Zip file created at: " . $filePath . PHP_EOL;
+echo "Zip file created at: " . $filePath . PHP_EOL;
 
 exec("scp " . $filePath . " deploy@192.168.193.69:~/Logs/");
 
 }
 
-
+//sendinglogs();
 ?>

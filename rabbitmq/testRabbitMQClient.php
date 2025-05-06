@@ -122,7 +122,7 @@ switch ($request['type'])
     default:
       return $request['type'].PHP_EOL;
   }
-$request['message'] = $info['message'];
+$request['message'] = $info['message'] ?? 'No message provided';
 $response = $client->send_request($request);
 //$response = $client->publish($request);
 return $response;

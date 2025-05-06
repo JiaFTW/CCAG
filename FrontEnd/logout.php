@@ -10,7 +10,7 @@ if (isset($_COOKIE['session_token'])) {
     );
 
     $response = sendMessage($logoutData);
-    sendinglogs();
+    //sendinglogs();
 
     if ($response['status'] == 'Success') {
         writelog("logged out.", $_COOKIE['username']);
