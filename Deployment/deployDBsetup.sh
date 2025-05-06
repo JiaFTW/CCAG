@@ -36,7 +36,7 @@ sql_query=$(cat <<EOF
     CREATE TABLE IF NOT EXISTS releases (
         address VARCHAR(32) NOT NULL,
         name VARCHAR(32) NOT NULL,
-        isUpdated BOOL,
+        isDeployed BOOL,
         PRIMARY KEY (address, name), 
         FOREIGN KEY (address) REFERENCES machines(address) ON DELETE CASCADE,
         FOREIGN KEY (name) REFERENCES bundles(name) ON DELETE CASCADE

@@ -489,9 +489,21 @@ class mysqlConnect {
 			echo "Name ".$name." not found".PHP_EOL;
 			return null;
 		}
-		var_dump($response_arr);
+		//var_dump($response_arr);
 		return implode($response_arr);
+	}
 
+	public function getBundlePath($name) { //return imploded path string
+		$query = "SELECT path FROM bundles WHERE name = '".$name."';";
+		$response = handleQuery($query, $this->mydb, "Query Status: getBundlePath Successful");
+
+		$response_arr = $response->fetch_array(MYSQLI_NUM);
+		if ($response_arr == null) {
+			echo "Name ".$name." not found".PHP_EOL;
+			return null;
+		}
+		//var_dump($response_arr);
+		return implode($response_arr);
 	}
 
 	public function getCurrentVersion($machine, $cluster) { //return imploed name string
@@ -538,12 +550,16 @@ class mysqlConnect {
 	}
 
 	public function generateVersionNum($machine, $cluster) { //return int
-		$query = "SELECT count(*) FROM bundles WHERE machine = '".$machine."' 
+		$query = "SELECT version FROM bundles WHERE machine = '".$machine."' 
 		AND cluster = '".$cluster."';";
-		$response = handleQuery($query, $this->mydb, "Query Status: Count All Versions Successful");
+		$response = handleQuery($query, $this->mydb, "Query Status: Count Versions Successful");
 
-		$num = implode($response->fetch_array(MYSQLI_NUM));
-		return $num;
+		$num = $response->fetch_array(MYSQLI_NUM);
+
+		if ($num == NULL) {
+			return 0;
+		}
+		return implode($num);
 
 	}
 
@@ -571,21 +587,51 @@ class mysqlConnect {
 
 	public function recordRelease($name, $machine, $cluster) {  //return boolean
 
-		$type = ($machine == "Database") ? "BackEnd" : $machine; //Identify address based on machine and cluster from Incoming Bundles
+		$type =  $machine; //Identify address based on machine and cluster from Incoming Bundles
+		if ($machine == "Database") {
+			$type = "BackEnd";
+		}
 		$address_query = "SELECT address FROM machines WHERE cluster = '".$cluster."'";
-		$address_query .= ($machine != "rabbitmq") ? "AND type = '".$machine."';" : ";";
+		if ($machine != "rabbitmq") {
+			$address_query .= " AND type = '".$type."';";
+		}
+		else {
+			$address_query .= ";";
+		}
+
+		echo $address_query.PHP_EOL;
 		
-		$address_response = handleQuery($query, $this->mydb, "Query Status: recordRelease | address query successful"); 
-		if (!$address_response || $address_response == null) {
+		$address_response = handleQuery($address_query, $this->mydb, "Query Status: recordRelease | address query successful"); 
+		$response_arr = $address_response->fetch_array(MYSQLI_NUM);
+		if (!$response_arr || $response_arr == null) {
 			echo "No Machine Address Found Assoicated with ".$machine."|".$cluster.PHP_EOL;
 			return false;
 		}
-		$address = implode($address_response->fetch_array(MYSQLI_NUM)); //Address Result
-	
-		$release_query = "INSERT INTO releases VALUES ('".$address."', '".$name."', 0)";
-		$release_response = handleQuery($query, $this->mydb, "Query Status: recordRelease | release query successful");
+		//var_dump($response_arr);
+		
+		foreach ($response_arr as $a) {
+			$release_query = "INSERT INTO releases VALUES ('".$a."', '".$name."', 0)"; //isDeployed defaulted to false
+			$release_response = handleQuery($release_query, $this->mydb, "Query Status: recordRelease | release query successful");
+		}
 
 		return $release_response;
+	}
+
+	public function getReleaseList($address) { //return array of bundle names that aren't updated yet
+		$query = "SELECT name FROM releases WHERE address = '".$address."' AND isDeployed = 0;";
+		$response = handleQuery($query, $this->mydb, "Query Status: getReleaseList successful");
+
+		$release_array = $response->fetch_array(MYSQLI_NUM);
+		if ($release_array == null) {
+			echo "No Releases found for ".$address.PHP_EOL;
+		}
+		return $release_array;
+	}
+
+	public function refreshIsDeployed($address) { //marks isDeployed to True
+		$query = "UPDATE releases SET isDeployed = 1 WHERE address = '".$address."';";
+		$response = handleQuery($query, $this->mydb, "Query Status: refresh isDeployed successful");
+		return $response;
 	}
 	
 }
