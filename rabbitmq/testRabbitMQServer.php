@@ -428,6 +428,7 @@ function requestProcessor($request)
     case "getUserMealPlans":
       return doGetUserMealPlans($request['username']);
 <<<<<<< HEAD
+<<<<<<< HEAD
     case "verify_code":
       return doVerification($request['email'], $request['code']);
 //new cases
@@ -438,6 +439,10 @@ function requestProcessor($request)
       return doGet2FAStatus($request['username']);
 
 //
+=======
+    case "getRex":
+      return doGetRex($request['username']);
+>>>>>>> origin/SnailZipAndLog
 =======
     case "getRex":
       return doGetRex($request['username']);
