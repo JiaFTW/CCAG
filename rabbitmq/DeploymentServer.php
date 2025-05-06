@@ -74,7 +74,7 @@ function doIncoming($tempID, $cluster)
 		
 	}
 
-	return ['msg' => "Successfuly created Bundles Version[". $version_num + 1 ."] for ".$cluster.". Updated Current Version for Deployment!"];
+	return ['msg' => "Successfuly created Bundles Version ". $version_num + 1 ." for ".$cluster.". Updated Current Version for Deployment!"];
 }
 
 function doChangeBundleStatus($name, $bundle_status) 
@@ -95,6 +95,8 @@ function doGetUpdate($address) {
 	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDeploy');
 	$address_info = $connect->getInfoFromAddress($address);
 	$update_paths = [];
+	var_dump($address_info);
+	
 	if ($address_info['type'] == "BackEnd") {
 		$update_paths[] = $connect->getCurrentPath('Database', $address_info['cluster']);
 		$update_paths[] = $connect->getCurrentPath('rabbitmq', $address_info['cluster']);
@@ -102,6 +104,7 @@ function doGetUpdate($address) {
 	else {
 		$update_paths[] = $connect->getCurrentPath($address_info['type'], $address_info['cluster']);
 	}
+	var_dump($update_paths);
 	return $update_paths;
 }
 
@@ -127,7 +130,7 @@ function requestProcessor($request)
 	case 'getBundleList':
 		return doGetBundleList($request['location']);
 	case 'getUpdate':
-		return doGetUpdate($request['ipaddress']);
+		return doGetUpdate($request['ip']);
 	default:
 		return [
 			'status' => 'error',
@@ -137,9 +140,10 @@ function requestProcessor($request)
 }
 
 
-$server = new rabbitMQServer("testRabbitMQ.ini","testServer"); //DeploymentServer
+$server = new rabbitMQServer("testRabbitMQ.ini","DeploymentServer"); //DeploymentServer
 
 echo "Deployment Server BEGIN".PHP_EOL;
+//var_dump(doGetUpdate('1.1.1.1'));
 $server->process_requests('requestProcessor');
 echo "Deployment Server END".PHP_EOL;
 exit();

@@ -5,9 +5,8 @@ set -e
 
 db_name="ccagDeploy"
 db_user="ccagUser"
-db_pass="12345"  #TODO store password elsewhere (config file?)
+db_pass="12345"  
 
-#TODO add personal deliverable tables
 
 sql_query=$(cat <<EOF
 
@@ -34,6 +33,14 @@ sql_query=$(cat <<EOF
         cluster VARCHAR(32) NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS releases (
+        address VARCHAR(32) NOT NULL,
+        name VARCHAR(32) NOT NULL,
+        isUpdated BOOL,
+        PRIMARY KEY (address, name), 
+        FOREIGN KEY (address) REFERENCES machines(address) ON DELETE CASCADE,
+        FOREIGN KEY (name) REFERENCES bundles(name) ON DELETE CASCADE
+    );
 
 EOF
 )

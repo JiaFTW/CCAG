@@ -568,6 +568,25 @@ class mysqlConnect {
 
 		return $response_arr;
 	}
+
+	public function recordRelease($name, $machine, $cluster) {  //return boolean
+
+		$type = ($machine == "Database") ? "BackEnd" : $machine; //Identify address based on machine and cluster from Incoming Bundles
+		$address_query = "SELECT address FROM machines WHERE cluster = '".$cluster."'";
+		$address_query .= ($machine != "rabbitmq") ? "AND type = '".$machine."';" : ";";
+		
+		$address_response = handleQuery($query, $this->mydb, "Query Status: recordRelease | address query successful"); 
+		if (!$address_response || $address_response == null) {
+			echo "No Machine Address Found Assoicated with ".$machine."|".$cluster.PHP_EOL;
+			return false;
+		}
+		$address = implode($address_response->fetch_array(MYSQLI_NUM)); //Address Result
+	
+		$release_query = "INSERT INTO releases VALUES ('".$address."', '".$name."', 0)";
+		$release_response = handleQuery($query, $this->mydb, "Query Status: recordRelease | release query successful");
+
+		return $release_response;
+	}
 	
 }
 
