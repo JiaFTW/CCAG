@@ -177,5 +177,5 @@
     $request['location'] = $location;
     $request['id'] = $id;
     $response = $client->send_request($request);
-    echo $response;
+    echo $response['msg'] . PHP_EOL;
 ?>
