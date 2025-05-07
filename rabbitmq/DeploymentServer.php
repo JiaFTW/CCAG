@@ -50,7 +50,7 @@ function doIncoming($tempID, $cluster)
 		$machine = substr($b, 0, strpos($b, '_'));
 		$version = $version_num + 1;
 		$name = $machine."_".$cluster."_V".$version;
-		$path = $workingDir."/".$machine."/".$name.".zip";
+		$path = $workingDir."/".$machine."/".$name;
 
 		echo "Identified Machine: ".$machine." | ";
 		echo "Identified Version Num: ".$version." | ";
@@ -82,10 +82,13 @@ function doIncoming($tempID, $cluster)
 	return ['msg' => "Successfuly created Bundles Version ". $version_num + 1 ." for ".$cluster.". Updated Current Version for Deployment!"];
 }
 
-function doChangeBundleStatus($name, $bundle_status) 
+function doChangeBundleStatus($machine, $cluster, $bundle_status) //changes the status of current Bundle Deployed
 {
 	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDeploy');
-	$status = $connect->changeBundleStatus($name, $bundle_status);
+
+	$current_name = $connect->getCurrentVersion($machine, $cluster);
+
+	$status = $connect->changeBundleStatus($current_name, $bundle_status);
 
 	return ['msg' => $status ? $name.' status changed to '.$bundle_status : 'Deploy Server Error'];
 }
@@ -103,6 +106,7 @@ function doGetUpdate($address) {
 	$names = $connect->getReleaseList($address);
 	//var_dump($address_info);
 	if ($names == null) {
+		echo "No Updates Needed".PHP_EOL;
 		return $update_paths;
 	}
 	foreach ($names as $n) {
@@ -149,13 +153,13 @@ function requestProcessor($request)
 	case 'incomingBundle':
 		return doIncoming($request['id'], $request['location']);
 	case 'changeBundleStatus':
-		return doChangeBundleStatus($request['name'], $request['bundle_status']);
+		return doChangeBundleStatus($request['type'], $request['location'], $request['bundle_status']);
 	case 'getBundleList':
 		return doGetBundleList($request['location']);
 	case 'getUpdate':
 		return doGetUpdate($request['ip']);
 	case 'rollback':
-		return doRollBack($request['ip'], $request['location']);
+		return doRollBack($request['ip'], $request['type']);
 	default:
 		return [
 			'status' => 'error',
@@ -172,7 +176,7 @@ echo "Deployment Server BEGIN".PHP_EOL;
 //var_dump(doIncoming(111, 'QA'));
 //var_dump(doGetUpdate('1.1.1.1'));
 
-//var_dump(doRollBack('192.168.193.142', "Database"));
+//var_dump(doRollBack('192.168.193.71', "FrontEnd"));
 
 $server->process_requests('requestProcessor');
 echo "Deployment Server END".PHP_EOL;
