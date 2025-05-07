@@ -614,15 +614,15 @@ class mysqlConnect {
 		echo $address_query.PHP_EOL;
 		
 		$address_response = handleQuery($address_query, $this->mydb, "Query Status: recordRelease | address query successful"); 
-		$response_arr = $address_response->fetch_array(MYSQLI_NUM);
+		$response_arr = $address_response->fetch_all(MYSQLI_ASSOC);
 		if (!$response_arr || $response_arr == null) {
 			echo "No Machine Address Found Assoicated with ".$machine."|".$cluster.PHP_EOL;
 			return false;
 		}
-		//var_dump($response_arr);
+		var_dump($response_arr);
 		
 		foreach ($response_arr as $a) {
-			$release_query = "INSERT INTO releases VALUES ('".$a."', '".$name."', 0)"; //isDeployed defaulted to false
+			$release_query = "INSERT INTO releases VALUES ('".$a['address']."', '".$name."', 0)"; //isDeployed defaulted to false
 			$release_response = handleQuery($release_query, $this->mydb, "Query Status: recordRelease | release query successful");
 		}
 
