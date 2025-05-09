@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#Run this script to setup 
+#Run this script to setup MASTER
 ID=1                     # Uses 1 for Main and 2 for Backup
 BACKUP_IP="10.0.0.0"       # IP of backup BackEnd server
-ROOT_PASSWORD="password"
+ROOT_PASSWORD="password"       #IMPORTANT!! change this to your root pw before running
 USER="ccag_duplicater"
 PASSWORD="ccag"
 
@@ -27,6 +27,6 @@ GRANT REPLICATION SLAVE ON *.* TO '$USER'@'$BACKUP_IP';
 FLUSH PRIVILEGES;
 EOF
 
-# Ensure you edit BackupReplicationSetup to match this output
-echo "Record the following MASTER STATUS to BackUpReplicationSetup.sh :"
+# Ensure your MASTER_LOG_FILE & POS in BackupReplicationSetup matches this output
+echo "Record the following MASTER STATUS to BackUpReplicationSetup.sh in LOG_FILE & LOG_POS:"
 sudo mysql -u root -p$ROOT_PASSWORD -e "SHOW MASTER STATUS"
