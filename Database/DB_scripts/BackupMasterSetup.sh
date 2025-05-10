@@ -1,7 +1,8 @@
 #!/bin/bash
 
 #Run this script to setup MASTER
-ID=2                     # Uses 1 for Main and 2 for Backup
+ID=2                           # Uses 1 for Main and 2 for Backup
+BACKUP_IP="10.0.0.0"           # IP of Backup BackEnd server
 MAIN_IP="192.168.194.15"       # IP of Main BackEnd server
 ROOT_PASSWORD="password"       #IMPORTANT!! change this to your root pw before running
 USER="ccag_duplicater"
@@ -18,8 +19,7 @@ auto_increment_increment = 2
 auto_increment_offset = $ID
 relay_log = /var/log/mysql/mysql-relay-bin.log
 log_slave_updates = ON
-skip_slave_start = 1
-bind-address = $MAIN_IP
+bind-address = $BACKUP_IP
 EOF
 
 sudo systemctl restart mysql
