@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# IMPORTANT run this only once. Must have done master setup for both Main and Backup Servers first
-#
+# IMPORTANT Must have done master setup for both Main and Backup Servers first
 
-BACKUP_IP="192.168.194.20"       # IP of backup BackEnd server
-BACKUP_MASTER_LOG_FILE="mysql-bin.000001"  # From Backup Server's SHOW MASTER STATUS
-BACKUP_MASTER_LOG_POS="894"                # From Backup Server's SHOW MASTER STATUS
+
+BACKUP_IP="192.168.193.78"       # IP of backup BackEnd server
+BACKUP_MASTER_LOG_FILE="mysql-bin.000002"  # Insert From Backup Server's SHOW MASTER STATUS message
+BACKUP_MASTER_LOG_POS="864"                # Insert From Backup Server's SHOW MASTER STATUS message
 ROOT_PASSWORD="password"
 USER="ccag_duplicater"
 PASSWORD="ccag"
@@ -25,3 +25,4 @@ EOF
 
 echo "Replication Status:"
 sudo mysql -u root -p$ROOT_PASSWORD -e "SHOW SLAVE STATUS\G"
+#run this command above in command line to check setup issues

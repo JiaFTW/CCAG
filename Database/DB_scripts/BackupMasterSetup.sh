@@ -2,7 +2,7 @@
 
 #Run this script to setup MASTER
 ID=2                           # Uses 1 for Main and 2 for Backup
-BACKUP_IP="192.168.194.20"           # IP of Backup BackEnd server
+BACKUP_IP="192.168.193.78"           # IP of Backup BackEnd server
 ROOT_PASSWORD="password"       #IMPORTANT!! change this to your root pw before running
 USER="ccag_duplicater"
 PASSWORD="ccag"
