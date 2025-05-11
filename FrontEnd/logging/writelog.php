@@ -1,7 +1,5 @@
 
 <?php
-
-
 function writelog($message,$username){
 
 $ipline = exec("hostname -I");

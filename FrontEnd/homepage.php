@@ -3,6 +3,7 @@
   <head>
     <title>CCAG Homepage</title>
     <link rel="stylesheet" href="./styles/styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   </head>
 
   <body>
