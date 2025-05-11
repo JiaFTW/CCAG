@@ -12,6 +12,7 @@ require_once('favoriteCheck.php');
     <title>CCAG Search Page</title>
     <link rel="stylesheet" href="./styles/styles.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!--Using AJAX PLEASEEEE WORK :CCCCCC -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <?php include('header.php'); ?>

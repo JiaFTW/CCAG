@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   <head>
     <title>CCAG</title>
     <link rel="stylesheet" href="./styles/styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <?php include('header.php'); ?>
   </head>
 
