@@ -5,7 +5,7 @@
 
 BACKUP_IP="192.168.194.20"       # IP of backup BackEnd server
 BACKUP_MASTER_LOG_FILE="mysql-bin.000001"  # From Backup Server's SHOW MASTER STATUS
-BACKUP_MASTER_LOG_POS="123"                # From Backup Server's SHOW MASTER STATUS
+BACKUP_MASTER_LOG_POS="894"                # From Backup Server's SHOW MASTER STATUS
 ROOT_PASSWORD="password"
 USER="ccag_duplicater"
 PASSWORD="ccag"

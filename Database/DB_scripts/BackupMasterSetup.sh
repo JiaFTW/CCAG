@@ -24,7 +24,7 @@ COMMENT
 
 sudo systemctl restart mysql
 sudo mysql -u root -p$ROOT_PASSWORD <<EOF
-CREATE USER '$USER'@'%' IDENTIFIED BY '$PASSWORD';
+CREATE USER '$USER'@'%' IDENTIFIED WITH mysql_native_password BY '$PASSWORD';
 GRANT REPLICATION SLAVE ON *.* TO '$USER'@'%';
 FLUSH PRIVILEGES;
 EOF
