@@ -79,6 +79,8 @@ class mysqlConnect {
 		return $arraytest; 
 	
 	}*/
+
+/*
 	public function loginAccount($username, $password) {
 	    $esc_username = $this->mydb->real_escape_string($username);
     
@@ -110,9 +112,36 @@ class mysqlConnect {
 	    return ['status' => 'Invalid'];
 	}
 
+*/
 
+// Main branch style with password verification
+public function loginAccount($username, $password) {
+    $query = "SELECT username, password FROM accounts 
+    WHERE username = '".$this->mydb->real_escape_string($username)."';";
+    $status;
+    $cookie = null;
+
+    $response = handleQuery($query, $this->mydb, "Query Status: Login Successful");
+
+    if ($response == false) {
+        $status = 'Error';
+        return array('status' => $status, 'cookie' => $cookie );
+    }
+
+    $ac = $response->fetch_assoc();
+
+    if ($ac == null || !password_verify($password, $ac['password'])) {
+        $status = 'Invalid';
+    } 
+    else {
+        $status = 'Success';
+        $cookie = generateSession($username, 3600, $this->mydb);
+    }
+
+    return array('status' => $status, 'cookie' => $cookie, 'username' => $username );
+}
 //
-
+/*
 	public function getEmailForUser($username) {
 	    $stmt = $this->mydb->prepare("SELECT email FROM accounts WHERE username = ?");
 	    $stmt->bind_param("s", $username);
@@ -127,9 +156,23 @@ class mysqlConnect {
 	    $result = $stmt->get_result();
 	    return $result->fetch_assoc()['email'];
 	}
-
+*/
 //
 
+// Convert to main branch query style
+public function getEmailForUser($username) {
+    $query = "SELECT email FROM accounts WHERE username = '".
+              $this->mydb->real_escape_string($username)."'";
+    $response = handleQuery($query, $this->mydb, "Get Email Query");
+    return $response->fetch_column(0);
+}
+
+public function getEmail($username) {
+    $query = "SELECT email FROM accounts WHERE username = '".
+              $this->mydb->real_escape_string($username)."'";
+    $response = handleQuery($query, $this->mydb, "Get Email Query");
+    return $response->fetch_assoc()['email'];
+}
 
 
 

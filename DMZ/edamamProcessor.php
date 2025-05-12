@@ -5,29 +5,39 @@ require_once('../rabbitmq/get_host_info.inc');
 require_once('../rabbitmq/rabbitMQLib.inc');  
 
 $app_id = "e87d2844";               
-$app_key = "5a5a8669d8e868a26407128df3f1f1d7"; 
+$app_key = "1faff54f270bb1c8b34f8a57dc656b18"; 
 
-// list of all allowed labels
+//list of all allowed labels
 $allowedLabels = ['Dairy-Free', 'Egg-Free', 'Peanut-Free', 'Tree-Nut-Free', 'Wheat-Free','Soy-Free', 'Fish-Free', 'Shellfish-Free', 'Sesame-Free', 'Gluten-Free','Alcohol-Free', 'Kosher', 'Keto', 'Vegetarian', 'High-Fiber', 'High-Protein','Low-Carb', 'Low-Fat', 'Low-Sodium', 'Low-Sugar'];
+
 
 // function used to fetch data from Edamam API
 function fetchEdamamData($query)
 {
-       	global $app_id, $app_key, $allowedLabels;
+    global $app_id, $app_key, $allowedLabels;
 
-	//  the query will be able handle spaces and special characters
-    	$encodedQuery = urlencode($query);
+    //  the query will be able handle spaces and special characters
+    $encodedQuery = urlencode($query);
 
-    	// initialize cURL to make an HTTP request to the Edamam API
-	$url = "https://api.edamam.com/search?q=" . $encodedQuery . "&app_id=" . $app_id . "&app_key=" . $app_key . "&to=10";
-    	$ch = curl_init();
-    	curl_setopt($ch, CURLOPT_URL, $url);
-    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    	$response = curl_exec($ch);
-    	curl_close($ch);
-    	$data = json_decode($response, true);
+    // FIX 1: Updated API endpoint with /v2/ and type=public
+    $url = "https://api.edamam.com/api/recipes/v2?type=public&q=" 
+         . $encodedQuery
+         . "&app_id=" . $app_id 
+         . "&app_key=" . $app_key 
+         . "&to=10";
 
-    	// check if data was successfully fetched
+    // FIX 2: Add required Accept header
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: application/json']); // Essential header
+    
+    $response = curl_exec($ch);
+    curl_close($ch);
+    
+    $data = json_decode($response, true);
+
+        // check if data was successfully fetched
     	if ($data && isset($data['hits']))
 	{
 	       	// multidimensional array to store all recipes
@@ -59,6 +69,7 @@ function fetchEdamamData($query)
 		// returns an empty array if no data is found
 		return []; 
 	}
+
 }
 
 // function used to filter and merge health and diet labels

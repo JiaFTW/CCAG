@@ -14,3 +14,19 @@
 [2025-05-06 07:46:55] User: ccag logged out.
 [2025-05-06 07:56:05] User: ccag logged in.
 [2025-05-06 07:56:20] User: ccag searched for: steak
+[2025-05-12 14:04:14] User:  successfully registered.
+[2025-05-12 14:04:43] User: ccag logged in.
+[2025-05-12 14:05:06] User: ccag logged out.
+[2025-05-12 14:36:25] User: ccag logged out.
+[2025-05-12 14:36:40] User:  successfully registered.
+[2025-05-12 14:37:44] User: al logged in.
+[2025-05-12 14:37:57] User: al logged out.
+[2025-05-12 14:46:16] User:  successfully registered.
+[2025-05-12 14:46:57] User: ccag logged in.
+[2025-05-12 14:47:18] User: ccag logged out.
+[2025-05-12 14:58:14] User:  successfully registered.
+[2025-05-12 14:58:48] User: cc logged in.
+[2025-05-12 14:58:58] User: cc logged out.
+[2025-05-12 15:00:08] User: cc logged out.
+[2025-05-12 15:00:17] User: cc logged in.
+[2025-05-12 15:00:21] User: cc logged out.
