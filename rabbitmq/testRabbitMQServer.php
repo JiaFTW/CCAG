@@ -6,6 +6,10 @@ require_once('rabbitMQLib.inc');
 require_once('../Database/mysqlconnect.php');
 require_once('pulseCheck.php');
 
+function contactDMZ() {
+  
+}
+
 function doLogin($username,$password)
 {
   

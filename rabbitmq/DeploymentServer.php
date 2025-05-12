@@ -93,10 +93,12 @@ function doChangeBundleStatus($machine, $cluster, $bundle_status) //changes the 
 	return ['msg' => $status ? $name.' status changed to '.$bundle_status : 'Deploy Server Error'];
 }
 
-function doGetBundleList($machine, $cluster)
+function doGetBundleList($ip)
 {
 	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDeploy');
-	return $connect->getBundleList($machine, $cluster);
+	$info = $connect->getInfoFromAddress($address);
+	$cluster = $info['cluster'];
+	return $connect->getBundleList($cluster);
 }
 
 function doGetUpdate($address) {
@@ -153,9 +155,9 @@ function requestProcessor($request)
 	case 'incomingBundle':
 		return doIncoming($request['id'], $request['location']);
 	case 'changeBundleStatus':
-		return doChangeBundleStatus($request['type'], $request['location'], $request['bundle_status']);
+		return doChangeBundleStatus($request['bundle_name'], $request['bundle_status']); //change to name and status only
 	case 'getBundleList':
-		return doGetBundleList($request['location']);
+		return doGetBundleList($request['ip']); 
 	case 'getUpdate':
 		return doGetUpdate($request['ip']);
 	case 'rollback':
