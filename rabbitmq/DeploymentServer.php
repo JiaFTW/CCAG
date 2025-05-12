@@ -169,7 +169,7 @@ function requestProcessor($request)
 }
 
 
-$server = new rabbitMQServer("testRabbitMQ.ini","DeploymentServer"); //DeploymentServer
+$server = new rabbitMQServer("testRabbitMQ.ini","DeploymentServer"); //DeploymentServer does not need to use getRabbitMQChannel()
 
 echo "Deployment Server BEGIN".PHP_EOL;
 

@@ -2,8 +2,7 @@
 require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
-
-
+require_once('pulseCheck.php');
 
 if(isset($argv[1]))
 {
@@ -24,7 +23,7 @@ else
 }
 
 function sendMessage($info){
-$client = new rabbitMQClient("testRabbitMQ.ini","testServer");
+$client = new rabbitMQClient("testRabbitMQ.ini", getRabbitMQChannel('backend'));
 $request = array();
 $request['type'] = $info['type'];
 switch ($request['type'])

@@ -4,6 +4,7 @@ require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
 require_once('../Database/mysqlconnect.php');
+require_once('pulseCheck.php');
 
 function doLogin($username,$password)
 {
@@ -198,7 +199,13 @@ function requestProcessor($request)
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }
 
-$server = new rabbitMQServer("testRabbitMQ.ini","testServer");
+$rabbit_channel = getRabbitMQChannel('backend');
+$cluster = detectCluster();
+if ($cluster === 'Production_Backup') $rabbit_channel = 'BackEnd_Prod_BK';
+
+echo "You are in ".$cluster." running in Rabbit Channel: ".$rabbit_channel.PHP_EOL;
+
+$server = new rabbitMQServer("testRabbitMQ.ini",$rabbit_channel);
 
 echo "testRabbitMQServer BEGIN".PHP_EOL;
 $server->process_requests('requestProcessor');
