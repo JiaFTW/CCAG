@@ -78,9 +78,13 @@ function getUIDbyUsername(string $username, mysqli $db) {
 //Account Functions
 
 function addAccount(string $username, $email , $password, mysqli $db) {
+    $esc_username = $connection->real_escape_string($username);
+    $esc_email = $connection->real_escape_string($email);
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
     $query = "INSERT INTO accounts
     (username, email, password) 
-    VALUES ('".$username."', '".$email."', '".$password."');";
+    VALUES ('".$esc_username."', '".$esc_email."', '".$hashed_password."');";
 
     $response = handleQuery($query, $db, "Query Status: Added Account Query Succesful");
     

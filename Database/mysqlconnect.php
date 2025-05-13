@@ -68,7 +68,7 @@ class mysqlConnect {
 
 		$ac = $response->fetch_assoc();
 
-		if ($ac == null || $password != $ac['password']) { //TODO: change != to password_verify() or bycrypt_vertify() for hashed
+		if ($ac == null || !password_verify($password, $ac['password'])) { //TODO: change != to password_verify() or bycrypt_vertify() for hashed
 			$status = 'Invalid';
 		} 
 		else {

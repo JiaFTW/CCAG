@@ -4,8 +4,8 @@
 
 
 MAIN_IP="192.168.193.161"       # IP of Main BackEnd server
-MAIN_MASTER_LOG_FILE="mysql-bin.000001"  #Insert From Main Server's SHOW MASTER STATUS message
-MAIN_MASTER_LOG_POS="919"                #Insert From Main Server's SHOW MASTER STATUS message
+MAIN_MASTER_LOG_FILE="mysql-bin.000003"  #Insert From Main Server's SHOW MASTER STATUS message
+MAIN_MASTER_LOG_POS="6721"                #Insert From Main Server's SHOW MASTER STATUS message
 ROOT_PASSWORD="password"
 USER="ccag_duplicater"
 PASSWORD="ccag"
