@@ -82,21 +82,26 @@ function doIncoming($tempID, $cluster)
 	return ['msg' => "Successfuly created Bundles Version ". $version_num + 1 ." for ".$cluster.". Updated Current Version for Deployment!"];
 }
 
-function doChangeBundleStatus($machine, $cluster, $bundle_status) //changes the status of current Bundle Deployed
+function doChangeBundleStatus($name, $bundle_status) //changes the status of current Bundle Deployed
 {
 	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDeploy');
 
-	$current_name = $connect->getCurrentVersion($machine, $cluster);
+	$status = $connect->changeBundleStatus($name, $bundle_status);
 
-	$status = $connect->changeBundleStatus($current_name, $bundle_status);
-
-	return ['msg' => $status ? $name.' status changed to '.$bundle_status : 'Deploy Server Error'];
+	//return ['msg' => $status ? $name.' status changed to '.$bundle_status : 'Deploy Server Error'];
+	//var_dump($status);
+	return $status;
 }
 
-function doGetBundleList($machine, $cluster)
+function doGetBundleList($address)
 {
 	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDeploy');
-	return $connect->getBundleList($machine, $cluster);
+	$info = $connect->getInfoFromAddress($address);
+	$cluster = $info['cluster'];
+
+	$list = $connect->getBundleList($cluster);
+	//var_dump($list);
+	return $list;
 }
 
 function doGetUpdate($address) {
@@ -132,7 +137,10 @@ function doRollBack($address, $machine) {
 	$cluster = $info['cluster'];
 	$boolean = $connect->rollbackPrevious($address, $machine, $cluster);
 	
-	return ['msg' => $boolean ? "RollBack Succesfully" : 'Deploy Server Error'];
+	//$current_name = $connect->getCurrentVersion($machine, $cluster);
+	//var_dump($boolean);
+	return $boolean;
+	//return ['msg' => $boolean ? "RollBack Succesfully" : 'Deploy Server Error'];
 } 
 
 function requestProcessor($request)
@@ -153,13 +161,13 @@ function requestProcessor($request)
 	case 'incomingBundle':
 		return doIncoming($request['id'], $request['location']);
 	case 'changeBundleStatus':
-		return doChangeBundleStatus($request['type'], $request['location'], $request['bundle_status']);
+		return doChangeBundleStatus($request['bundle_name'], $request['bundle_status']); //change to name and status only
 	case 'getBundleList':
-		return doGetBundleList($request['location']);
+		return doGetBundleList($request['ip']); 
 	case 'getUpdate':
 		return doGetUpdate($request['ip']);
 	case 'rollback':
-		return doRollBack($request['ip'], $request['type']);
+		return doRollBack($request['ip'], $request['bundle_type']);
 	default:
 		return [
 			'status' => 'error',
@@ -169,12 +177,13 @@ function requestProcessor($request)
 }
 
 
-$server = new rabbitMQServer("testRabbitMQ.ini","DeploymentServer"); //DeploymentServer
+$server = new rabbitMQServer("testRabbitMQ.ini","DeploymentServer"); //DeploymentServer does not need to use getRabbitMQChannel()
 
 echo "Deployment Server BEGIN".PHP_EOL;
 
 //var_dump(doIncoming(111, 'QA'));
 //var_dump(doGetUpdate('1.1.1.1'));
+//var_dump(doGetBundleList('192.168.193.71'));
 
 //var_dump(doRollBack('192.168.193.71', "FrontEnd"));
 

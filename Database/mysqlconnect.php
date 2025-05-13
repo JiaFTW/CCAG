@@ -544,10 +544,10 @@ class mysqlConnect {
 		return implode($response_arr);
 	}
 
-	public function getBundleList($machine, $cluster) { //return array of names
+	public function getBundleList($cluster) { //return array of current bundle names & status from cluster
 		$query = "SELECT name, status FROM bundles 
-		WHERE machine = '".$machine."'
-		AND cluster = '".$cluster."';";
+		WHERE cluster = '".$cluster."' 
+		AND isCurrentVersion = 1;";
 		
 		$response = handleQuery($query, $this->mydb, "Query Status: Get Bundle List Successful");
 		if (!$response) {

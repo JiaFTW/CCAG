@@ -5,6 +5,7 @@ require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
 //require_once('../Database/mysqlconnect.php');
 require_once('../DMZ/edamamProcessor.php');
+require_once('pulseCheck.php');
 
 
 function searchRecipe($query)
@@ -34,6 +35,13 @@ function requestProcessor($request)
 {
 	echo "received request".PHP_EOL;
   	var_dump($request);
+	if (detectCluster() === "Production_Backup") {
+		if(pulseCheck($ccag_machines['Production_Main']['DMZ'])) {
+			echo "Main DMZ Server Online, ignoring request".PHP_EOL;
+			return;
+		}
+	}
+	
 
   	if (!isset($request['type'])) 
        	{
@@ -65,8 +73,12 @@ function requestProcessor($request)
 	}
 }
 
+$rabbit_channel = getRabbitMQChannel('dmz');
+$cluster = detectCluster();
 
-$server = new rabbitMQServer("testRabbitMQ.ini","DMZServer");
+echo "You are in ".$cluster." running in Rabbit Channel: ".$rabbit_channel.PHP_EOL;
+
+$server = new rabbitMQServer("testRabbitMQ.ini",$rabbit_channel);
 
 echo "DMZServer BEGIN".PHP_EOL;
 $server->process_requests('requestProcessor');
