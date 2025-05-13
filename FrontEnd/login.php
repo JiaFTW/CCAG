@@ -19,7 +19,7 @@ if ($response['status'] == 'Success') {
     setcookie("username", $response['username'], time()+3600,"/");
     //$message = "has successfully logged in!";
     writelog("logged in.", $logindata['username']);
-    //sendinglogs();
+    sendinglogs();
     header("Location: homepage.php");
     die();
 } else {
