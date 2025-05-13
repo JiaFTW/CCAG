@@ -88,7 +88,9 @@ function doChangeBundleStatus($name, $bundle_status) //changes the status of cur
 
 	$status = $connect->changeBundleStatus($name, $bundle_status);
 
-	return ['msg' => $status ? $name.' status changed to '.$bundle_status : 'Deploy Server Error'];
+	//return ['msg' => $status ? $name.' status changed to '.$bundle_status : 'Deploy Server Error'];
+	//var_dump($status);
+	return $status;
 }
 
 function doGetBundleList($address)
@@ -96,7 +98,10 @@ function doGetBundleList($address)
 	$connect = new mysqlConnect('127.0.0.1','ccagUser','12345','ccagDeploy');
 	$info = $connect->getInfoFromAddress($address);
 	$cluster = $info['cluster'];
-	return $connect->getBundleList($cluster);
+
+	$list = $connect->getBundleList($cluster);
+	//var_dump($list);
+	return $list;
 }
 
 function doGetUpdate($address) {
@@ -132,8 +137,10 @@ function doRollBack($address, $machine) {
 	$cluster = $info['cluster'];
 	$boolean = $connect->rollbackPrevious($address, $machine, $cluster);
 	
-	$current_name = $connect->getCurrentVersion($machine, $cluster);
-	return ['msg' => $boolean ? "RollBack Succesfully" : 'Deploy Server Error'];
+	//$current_name = $connect->getCurrentVersion($machine, $cluster);
+	//var_dump($boolean);
+	return $boolean;
+	//return ['msg' => $boolean ? "RollBack Succesfully" : 'Deploy Server Error'];
 } 
 
 function requestProcessor($request)
