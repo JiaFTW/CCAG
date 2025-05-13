@@ -35,6 +35,13 @@ function requestProcessor($request)
 {
 	echo "received request".PHP_EOL;
   	var_dump($request);
+	if (detectCluster() === "Production_Backup") {
+		if(pulseCheck($ccag_machines['Production_Main']['DMZ'])) {
+			echo "Main DMZ Server Online, ignoring request".PHP_EOL;
+			return;
+		}
+	}
+	
 
   	if (!isset($request['type'])) 
        	{

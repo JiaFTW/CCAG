@@ -6,8 +6,16 @@ require_once('rabbitMQLib.inc');
 require_once('../Database/mysqlconnect.php');
 require_once('pulseCheck.php');
 
-function contactDMZ() {
-  
+function contactDMZ($keyword) { 
+    $client = new rabbitMQClient("testRabbitMQ.ini", getRabbitMQChannel('dmz'));
+    $request = array();
+    $request['type'] = "searchRecipe";
+    $request['query'] = $keyword; 
+    $response = $client->send_request($request);
+
+    if (isset($client)) unset($client);
+
+    return $response;
 }
 
 function doLogin($username,$password)
@@ -129,11 +137,12 @@ function doRecipe($keyword, $username) //perform search check
   if ($response == null) { //will fetch from DMZ if no results from database
     
     echo "Recipe Search: Not Enough Results Found in Database | Calling DMZ".PHP_EOL;
-    $client = new rabbitMQClient("testRabbitMQ.ini","DMZServer");
+    $dmz_response = contactDMZ($keyword);
+    /*$client = new rabbitMQClient("testRabbitMQ.ini","DMZServer");
     $request = array();
     $request['type'] = "searchRecipe";
     $request['query'] = $keyword; 
-    $dmz_response = $client->send_request($request);
+    $dmz_response = $client->send_request($request);*/
     //print_r($dmz_response);
     if($dmz_response['status'] != 'success') {
       echo $dmz_response['message'];

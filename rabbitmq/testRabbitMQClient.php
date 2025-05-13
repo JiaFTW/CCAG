@@ -23,6 +23,14 @@ else
 }
 
 function sendMessage($info){
+
+if (detectCluster() === "Production_Backup") {
+  if(pulseCheck($ccag_machines['Production_Main']['FrontEnd'])) {
+    //echo "Main DMZ Server Online, ignoring request".PHP_EOL;
+    return;
+  }
+}
+
 $client = new rabbitMQClient("testRabbitMQ.ini", getRabbitMQChannel('backend'));
 $request = array();
 $request['type'] = $info['type'];
